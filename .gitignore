@@ -1,0 +1,10 @@
+*/bin/
+*/obj/
+.vscode/
+coverage*.xml
+.vs/
+*.orig
+coveragereport/
+Ellucian.EthosIntegration.SDK/_site/
+Ellucian.EthosIntegration.SDK/api/
+*.nupkg
