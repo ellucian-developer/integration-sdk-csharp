@@ -27,10 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Program.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Ellucian.Ethos.Integration\Ellucian.Ethos.Integration.csproj" />
   </ItemGroup>
 

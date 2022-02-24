@@ -38,15 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Client\Proxy\Filter\CriteriaSet.cs" />
-    <Compile Remove="Client\Proxy\Filter\NamedSimpleCriteria.cs" />
-    <Compile Remove="Client\Proxy\Filter\SimpleCriteria.cs" />
-    <Compile Remove="Client\Proxy\VersionAcceptHeader.cs" />
-    <Compile Remove="Notification\AbstractEthosNotificationListPollService.cs" />
-    <Compile Remove="Notification\AbstractEthosNotificationListSubscription.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

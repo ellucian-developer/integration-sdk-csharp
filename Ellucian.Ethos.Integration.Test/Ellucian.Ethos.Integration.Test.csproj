@@ -32,8 +32,4 @@
     <ProjectReference Include="..\Ellucian.Ethos.Integration\Ellucian.Ethos.Integration.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
 </Project>
