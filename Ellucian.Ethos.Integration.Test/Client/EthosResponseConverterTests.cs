@@ -6,6 +6,7 @@
 
 using Ellucian.Ethos.Integration.Client;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using System;
@@ -39,7 +40,7 @@ namespace Ellucian.Ethos.Integration.Test.Client
             responseList.Add( new EthosResponse( respMessage.Headers, "[ {\"id\":\"1\"}, {\"id\":\"2\"} ]", 200 ) );
             responseList.Add( new EthosResponse( respMessage.Headers, "{\"id\":\"3\"}", 200 ) );
             // should throw an exception because the 2nd response content is not in a JSON array format
-            Assert.Throws<InvalidCastException>( () => converter.ToJArray( responseList ) );
+            Assert.Throws<JsonSerializationException>( () => converter.ToJArray( responseList ) );
         }
 
         [Fact]
