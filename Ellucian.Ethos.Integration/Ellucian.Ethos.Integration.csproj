@@ -11,18 +11,18 @@
       Develop applications that integrate with Ellucian Ethos Integration using your own code and our C# libraries, without the need to call REST APIs.
       Please note that this package is still under development and will be subject to change in the coming months.
     </PackageDescription>
-    <Copyright>© 2020 Ellucian Company L.P. and its affiliates. All rights reserved.</Copyright>
+    <Copyright>© 2022 Ellucian Company L.P. and its affiliates. All rights reserved.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl> 
-    <RepositoryUrl>https://github.com/ellucianEthos/integration-sdk-dotnet</RepositoryUrl>
+    <RepositoryUrl>https://github.com/ellucian-developer/integration-sdk-csharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType> 
     <!-- generate Nuget on every build to make life easier for everyone. -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp3.1\Ellucian.Ethos.Integration.xml</DocumentationFile>
-    <OutputPath>bin\netcoreapp3.1</OutputPath>
+    <DocumentationFile>bin\Debug\net6.0\Ellucian.Ethos.Integration.xml</DocumentationFile>
+    <OutputPath>bin</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

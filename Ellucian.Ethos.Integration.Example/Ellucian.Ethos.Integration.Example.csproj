@@ -13,7 +13,7 @@
     <Copyright>© 2022 Ellucian Company L.P. and its affiliates. All rights reserved.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl> 
-    <RepositoryUrl>https://github.com/ellucianEthos/integration-sdk-dotnet</RepositoryUrl>
+    <RepositoryUrl>https://github.com/ellucian-developer/integration-sdk-csharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType> 
     <!-- generate Nuget on every build to make life easier for everyone. -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    

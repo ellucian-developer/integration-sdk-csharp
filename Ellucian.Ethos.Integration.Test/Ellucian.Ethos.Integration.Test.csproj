@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RepositoryUrl>https://github.com/ellucian-developer/integration-sdk-csharp</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
