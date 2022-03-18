@@ -21,11 +21,17 @@ namespace Ellucian.Ethos.Integration.Client
     {
         ///<value>The Http status code of the Http response.</value>
         public int HttpStatusCode { get; }
+
         ///<value>The response body content.</value>
-        public string Content { get; }
+        public string Content { get; internal set; }
 
         ///<value>The URL that the corresponding request was made for.</value>
         public string RequestedUrl { get; set; }
+
+        /// <summary>
+        /// Content of a strongly typed object.
+        /// </summary>
+        public dynamic Dto { get; internal set; }
 
         ///<returns>The response body content as JToken.</returns>
         public JToken GetContentAsJson()
@@ -59,7 +65,7 @@ namespace Ellucian.Ethos.Integration.Client
                 if ( token is JArray )
                 {
                     JArray array = token.ToObject<JArray>();
-                    if ( array.HasValues )
+                    if ( array.HasValues && array.Any() )
                     {
                         count = array.Count;
                     }

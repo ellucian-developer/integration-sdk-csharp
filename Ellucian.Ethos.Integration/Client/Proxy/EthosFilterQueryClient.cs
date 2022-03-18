@@ -1,9 +1,10 @@
 /*
  * ******************************************************************************
- *   Copyright  2021 Ellucian Company L.P. and its affiliates.
+ *   Copyright  2021-2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
+using Ellucian.Ethos.Integration.Client.Filter.Extensions;
 using Ellucian.Ethos.Integration.Client.Proxy.Filter;
 
 using System;
@@ -25,6 +26,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /** Prefix value used when specifying criteria filter syntax. */
         public const string CRITERIA_FILTER_PREFIX = "?criteria=";
 
+
         /// <summary>
         /// Instantiates this class using the given API key and HttpClient.
         /// </summary>
@@ -35,6 +37,235 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
 
         }
+
+        #region Strongly Typed GET
+
+        /// <summary>
+        /// Gets a page of data for the given resource by name and version with the given filter.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="criteriaFilterStr">The string resource filter in JSON format contained in the URL, e.g: <pre>?criteria={"names":[{"firstName":"John"}]}</pre></param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according  
+        /// to the requested version and filter of the resource.</returns>
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName is null.</exception>
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the criteriaFilterStr is null.</exception>
+        /// <exception cref="HttpRequestException">Returns <see cref="HttpRequestException"/> exception if the request fails.</exception>
+        public async Task<EthosResponse> GetWithCriteriaFilterAsync<T>( string resourceName, string criteriaFilterStr, string version = "" ) where T : class
+        {
+            var response = await GetWithCriteriaFilterAsync( resourceName, criteriaFilterStr, version );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets a page of data for the given resource by name and version with the given filter.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="criteria">A previously built Criteria containing the filter criteria used in the request URL.
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// A simple call to criteriaFilter.BuildCriteria() should output the criteria filter portion of the request URL,
+        /// e.g: <code>?criteria={"names":[{"firstName":"John"}]}</code>.</param>
+        /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according to the requested version and filter of the resource.  
+        /// to the requested version and filter of the resource.</returns>
+        /// <exception cref="ArgumentNullException">Throws if the given criteriaFilter is null.</exception>
+        public async Task<EthosResponse> GetWithCriteriaFilterAsync<T>( string resourceName, CriteriaFilter criteria, string version = "" ) where T : class
+        {
+            var response = await GetWithCriteriaFilterAsync( resourceName, criteria.BuildCriteria(), version );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Convenience method to submit a GET request with a single set of criteria filter. This is intended only to be used
+        /// for a single set of criteria filter, e.g: <code>?criteria={"names":[{"firstName":"John"}]}</code>, where <b>names</b> is the
+        /// criteriaSetName, <b>firstName</b> is the criteriaKey, and <b>John</b> is the criteriaValue. Requests requiring
+        /// a more complex criteria filter should first build the Criteria with the necessary criteria, and then call
+        /// <code>getWithCriteriaFilterAsync(resourceName, version, criteriaFilter)</code>.
+        /// <p>The parameters criteriaSetName, criteriaKey, and criteriaValue should only specify the values within quotes of the
+        /// JSON filter syntax. No JSON syntax (square or angeled braces, etc) should be contained within those parameter values.</p>
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="criteriaSetName">The name of the criteria set that the given criteriaKey and criteriaValue are associated with,
+        /// e.g: "<b>names</b>":[{"firstName":"John"}]}, where <b>names</b> is the criteriaSetName associated to the
+        /// criteriaKey (firstName) and criteriaValue (John).</param>
+        /// <param name="criteriaKey">The JSON label key for the criteria.</param>
+        /// <param name="criteriaValue">The value associated with the criteriaKey.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or criteriaSetName or criteriaKey or criteriaValue is null.</exception>
+        public async Task<EthosResponse> GetWithSimpleCriteriaValuesAsync<T>( string resourceName, string criteriaSetName, string criteriaKey, string criteriaValue, string version = "" ) where T : class
+        {
+            var response = await GetWithSimpleCriteriaValuesAsync( resourceName, version, criteriaSetName, criteriaKey, criteriaValue );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets a page of data for the given resource by name and version with the given filter.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="namedQueryFilterStr">The string resource filter in JSON format contained in the URL.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according  
+        /// to the requested version and filter of the resource.</returns>
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName is null.</exception>
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the namedQuery is null.</exception>
+        /// <exception cref="HttpRequestException">Returns <see cref="HttpRequestException"/> exception if the request fails.</exception>
+        public async Task<EthosResponse> GetWithNamedQueryFilterAsync<T>( string resourceName, string namedQueryFilterStr, string version = "" ) where T : class
+        {
+            var response = await GetWithNamedQueryFilterAsync( resourceName, namedQueryFilterStr, version );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets a page of data for the given resource by name and version with the given filter.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="namedQueryFilter">A previously built namedQueryFilter containing the filter used in the request URL.
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// A simple call to namedQueryFilter.BuildNamedQuery() should output the named query portion of the request URL.</param>
+        /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according to the requested version and filter of the resource.  
+        /// to the requested version and filter of the resource.</returns>
+        /// <exception cref="ArgumentNullException">Throws if the given criteriaFilter is null.</exception>
+        public async Task<EthosResponse> GetWithNamedQueryFilterAsync<T>( string resourceName, NamedQueryFilter namedQueryFilter, string version = "" ) where T : class
+        {
+            var response = await GetWithNamedQueryFilterAsync( resourceName, namedQueryFilter.BuildNamedQuery(), version );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Submits a GET request for the given resource and version using the given filterMapStr. The filterMapStr
+        /// is intended to support the filter syntax for resources versions 7 and older. An example of a filterMapStr is:
+        /// <code>?firstName=James</code>.
+        /// <p>This is NOT intended to be used for resource versions after version 7 and/or for criteria filters.</p>
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="filterMapStr">A string containing the filter syntax used for request URL filters with resource versions 7 or older.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or filterMapStr is null.</exception>
+        public async Task<EthosResponse> GetWithFilterMapAsync<T>( string resourceName, string filterMapStr, string version = "" ) where T : class
+        {
+            var response = await GetWithFilterMapAsync( resourceName, filterMapStr, version );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Submits a GET request for the given resource and version using the given filterMap. The filterMap
+        /// is intended to support the filter syntax for resources versions 7 and older. A FilterMap contains a map of
+        /// one or many filter parameter pair(s).  An example of a filterMap string indicating the contents of the map is:
+        /// <code>?firstName=James</code>.
+        /// <p>This is NOT intended to be used for resource versions after version 7 and/or for criteria filters.</p>
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="filterMap">A string containing the filter syntax used for request URL filters with resource versions 7 or older.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or filterMap is null.</exception>
+        public async Task<EthosResponse> GetWithFilterMapAsync<T>( string resourceName, FilterMap filterMap, string version = "" ) where T : class
+        {
+            var response = await GetWithFilterMapAsync( resourceName, filterMap.ToString(), version );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets all the pages for a given resource using the specified criteria filter and page size for the given version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="criteria">A previously built Criteria containing the filter criteria used in the request URL.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
+        /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>  
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithCriteriaFilterAsync<T>( string resourceName, CriteriaFilter criteria, string version = "", int pageSize = 0 ) where T : class
+        {
+            var response = await GetPagesWithCriteriaFilterAsync( resourceName, version, criteria, pageSize );
+            return ConvertEthosResponseContentListToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets all the pages for a given resource using the specified namedQueryFilter filter and page size for the given version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="namedQueryFilter">A previously built namedQueryFilter containing the filter named query used in the request URL.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
+        /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>  
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithNamedQueryFilterAsync<T>( string resourceName, NamedQueryFilter namedQueryFilter, string version = "", int pageSize = 0 ) where T : class
+        {
+            var response = await GetPagesWithNamedQueryFilterAsync( resourceName, version, namedQueryFilter, pageSize );
+            return ConvertEthosResponseContentListToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets all the pages for a given resource beginning at the given offset index, using the specified criteria filter
+        /// and page size for the given version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="criteria">A previously built Criteria containing the filter criteria used in the request URL.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
+        /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
+        /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>  
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or criteriaFilter is null.</exception>
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync<T>( string resourceName, CriteriaFilter criteria, string version = "", int pageSize = 0, int offset = 0 ) where T : class
+        {
+            var response = await GetPagesFromOffsetWithCriteriaFilterAsync( resourceName, version, criteria, pageSize, offset );
+            return ConvertEthosResponseContentListToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets all the pages for a given resource using the specified filter map and page size for the given version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="filterMap">A previously built FilterMap containing the filter parameters used in the request URL.
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// A simple call to filterMap.tostring() should output the criteria filter portion of the request URL,
+        /// e.g: <code>?firstName=John&amp;lastName=Smith</code>.</param>
+        /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
+        /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>  
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithFilterMapAsync<T>( string resourceName, FilterMap filterMap, string version = "", int pageSize = 0 ) where T : class
+        {
+            var response = await GetPagesWithFilterMapAsync( resourceName, version, filterMap, pageSize );
+            return ConvertEthosResponseContentListToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets all the pages for a given resource beginning at the given offset index, using the specified filter map and
+        /// page size for the given version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the IEnumerable&lt;<see cref="EthosResponse"/>&gt; returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="filterMap">A previously built FilterMap containing the filter parameters used in the request URL.
+        /// A simple call to filterMap.tostring() should output the criteria filter portion of the request URL,
+        /// e.g: <code>?firstName=John&amp;lastName=Smith</code>.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
+        /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
+        /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>  
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithFilterMapAsync<T>( string resourceName, FilterMap filterMap, string version = "", int pageSize = 0, int offset = 0 ) where T : class
+        {
+            var response = await GetPagesFromOffsetWithFilterMapAsync( resourceName, version, filterMap, pageSize, offset );
+            return ConvertEthosResponseContentListToType<T>( response );
+        }
+
+        #endregion Strongly Typed
 
         /// <summary>
         /// Gets a page of data for the given resource with the given filter. Uses the default version of the resource. 
@@ -316,7 +547,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// e.g: <code>?criteria={"names":[{"firstName":"John"}]}</code>.</param>
         /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>
-        public async Task<List<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria )
         {
             return await GetPagesWithCriteriaFilterAsync( resourceName, DEFAULT_VERSION, criteria, DEFAULT_PAGE_SIZE );
         }
@@ -330,7 +561,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// A simple call to namedQueryFilter.BuildNamedQuery() should output the namedQueryFilter filter portion of the request URL.</param>
         /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>
-        public async Task<List<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter )
         {
             return await GetPagesWithNamedQueryFilterAsync( resourceName, DEFAULT_VERSION, namedQueryFilter, DEFAULT_PAGE_SIZE );
         }
@@ -344,7 +575,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="criteria">A previously built Criteria containing the filter criteria used in the request URL.</param>
         /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria )
         {
             return await GetPagesWithCriteriaFilterAsync( resourceName, version, criteria, DEFAULT_PAGE_SIZE );
         }
@@ -358,7 +589,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="namedQueryFilter">A previously built namedQueryFilter containing the filter used in the request URL.</param>
         /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter )
         {
             return await GetPagesWithNamedQueryFilterAsync( resourceName, version, namedQueryFilter, DEFAULT_PAGE_SIZE );
         }
@@ -372,7 +603,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
         /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria, int pageSize )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria, int pageSize )
         {
             return await GetPagesWithCriteriaFilterAsync( resourceName, DEFAULT_VERSION, criteria, pageSize );
         }
@@ -386,7 +617,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
         /// <returns>An <code>EthosResponse</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter, int pageSize )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter, int pageSize )
         {
             return await GetPagesWithNamedQueryFilterAsync( resourceName, DEFAULT_VERSION, namedQueryFilter, pageSize );
         }
@@ -400,7 +631,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria, int pageSize )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria, int pageSize )
         {
             return await GetPagesFromOffsetWithCriteriaFilterAsync( resourceName, version, criteria, pageSize, 0 );
         }
@@ -414,7 +645,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter, int pageSize )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter, int pageSize )
         {
             return await GetPagesFromOffsetWithNamedQueryFilterAsync( resourceName, version, namedQueryFilter, pageSize, 0 );
         }
@@ -429,7 +660,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria, int offset )
         {
             return await GetPagesFromOffsetWithCriteriaFilterAsync( resourceName, DEFAULT_VERSION, criteria, offset );
         }
@@ -444,7 +675,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter, int offset )
         {
             return await GetPagesFromOffsetWithNamedQueryFilterAsync( resourceName, DEFAULT_VERSION, namedQueryFilter, offset );
         }
@@ -460,7 +691,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria, int offset )
         {
             return await GetPagesFromOffsetWithCriteriaFilterAsync( resourceName, version, criteria, DEFAULT_PAGE_SIZE, offset );
         }
@@ -476,7 +707,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter, int offset )
         {
             return await GetPagesFromOffsetWithNamedQueryFilterAsync( resourceName, version, namedQueryFilter, DEFAULT_PAGE_SIZE, offset );
         }
@@ -491,7 +722,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria, int pageSize, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, CriteriaFilter criteria, int pageSize, int offset )
         {
             return await GetPagesFromOffsetWithCriteriaFilterAsync( resourceName, DEFAULT_VERSION, criteria, pageSize, offset );
         }
@@ -506,7 +737,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter, int pageSize, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, NamedQueryFilter namedQueryFilter, int pageSize, int offset )
         {
             return await GetPagesFromOffsetWithNamedQueryFilterAsync( resourceName, DEFAULT_VERSION, namedQueryFilter, pageSize, offset );
         }
@@ -523,7 +754,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
         /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or criteriaFilter is null.</exception>
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria, int pageSize, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync( string resourceName, string version, CriteriaFilter criteria, int pageSize, int offset )
         {
             if ( string.IsNullOrWhiteSpace( resourceName ) )
             {
@@ -569,7 +800,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
         /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or namedQueryFilter is null.</exception>
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter, int pageSize, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync( string resourceName, string version, NamedQueryFilter namedQueryFilter, int pageSize, int offset )
         {
             if ( string.IsNullOrWhiteSpace( resourceName ) )
             {
@@ -613,7 +844,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// e.g: <code>?firstName=John&amp;lastName=Smith</code>.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithFilterMapAsync( string resourceName, string version, FilterMap filterMap )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithFilterMapAsync( string resourceName, string version, FilterMap filterMap )
         {
             return await GetPagesWithFilterMapAsync( resourceName, version, filterMap, DEFAULT_PAGE_SIZE );
         }
@@ -629,7 +860,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesWithFilterMapAsync( string resourceName, string version, FilterMap filterMap, int pageSize )
+        public async Task<IEnumerable<EthosResponse>> GetPagesWithFilterMapAsync( string resourceName, string version, FilterMap filterMap, int pageSize )
         {
             return await GetPagesFromOffsetWithFilterMapAsync( resourceName, version, filterMap, pageSize, 0 );
         }
@@ -647,7 +878,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithFilterMapAsync( string resourceName, string version, FilterMap filterMap, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithFilterMapAsync( string resourceName, string version, FilterMap filterMap, int offset )
         {
             return await GetPagesFromOffsetWithFilterMapAsync( resourceName, version, filterMap, DEFAULT_PAGE_SIZE, offset );
         }
@@ -665,7 +896,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
         /// to the requested version and filter of the resource.</returns>  
-        public async Task<List<EthosResponse>> GetPagesFromOffsetWithFilterMapAsync( string resourceName, string version, FilterMap filterMap, int pageSize, int offset )
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithFilterMapAsync( string resourceName, string version, FilterMap filterMap, int pageSize, int offset )
         {
             if ( string.IsNullOrWhiteSpace( resourceName ) )
             {

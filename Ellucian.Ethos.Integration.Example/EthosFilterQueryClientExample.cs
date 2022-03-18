@@ -1,10 +1,11 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2021 Ellucian Company L.P. and its affiliates.
+ *   Copyright  2021-2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
 using Ellucian.Ethos.Integration.Client;
+using Ellucian.Ethos.Integration.Client.Filter.Extensions;
 using Ellucian.Ethos.Integration.Client.Proxy;
 using Ellucian.Ethos.Integration.Client.Proxy.Filter;
 
@@ -419,7 +420,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             {
                 var criteriaFilter = new CriteriaFilter().WithArray( criteriaSetName, (criteriaKey, criteriaValue) );
                 Console.WriteLine( criteriaFilter.BuildCriteria() );
-                List<EthosResponse> ethosResponseList = await ethosFilterQueryClient.GetPagesWithCriteriaFilterAsync( resource, version, criteriaFilter, pageSize );
+                List<EthosResponse> ethosResponseList = await ethosFilterQueryClient.GetPagesWithCriteriaFilterAsync( resource, version, criteriaFilter, pageSize ) as List<EthosResponse>;
                 Console.WriteLine( $"Number of pages returned: {ethosResponseList.Count}" );
                 foreach ( EthosResponse ethosResponse in ethosResponseList )
                 {
@@ -447,7 +448,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             try
             {
                 var criteriaFilter = new CriteriaFilter().WithArray( criteriaSetName, (criteriaKey, criteriaValue) );
-                List<EthosResponse> ethosResponseList = await ethosFilterQueryClient.GetPagesFromOffsetWithCriteriaFilterAsync( resource, version, criteriaFilter, pageSize, offset );
+                List<EthosResponse> ethosResponseList = await ethosFilterQueryClient.GetPagesFromOffsetWithCriteriaFilterAsync( resource, version, criteriaFilter, pageSize, offset ) as List<EthosResponse>;
                 Console.WriteLine( $"Number of pages returned: {ethosResponseList.Count}" );
                 Console.WriteLine( $"OFFSET: { offset }" );
                 foreach ( EthosResponse ethosResponse in ethosResponseList )
@@ -476,7 +477,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                 FilterMap filterMap = new FilterMap()
                                           .WithParameterPair( filterMapKey, filterMapValue )
                                           .Build();
-                List<EthosResponse> ethosResponseList = await ethosFilterQueryClient.GetPagesWithFilterMapAsync( resource, version, filterMap, pageSize );
+                List<EthosResponse> ethosResponseList = await ethosFilterQueryClient.GetPagesWithFilterMapAsync( resource, version, filterMap, pageSize ) as List<EthosResponse>;
                 Console.WriteLine( $"Number of pages returned: {ethosResponseList.Count}" );
                 foreach ( EthosResponse ethosResponse in ethosResponseList )
                 {

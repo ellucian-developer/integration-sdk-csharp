@@ -4,6 +4,7 @@
  * ******************************************************************************
  */
 
+using Ellucian.Ethos.Integration.Client.Filter.Extensions;
 using Ellucian.Ethos.Integration.Client.Proxy;
 using Ellucian.Ethos.Integration.Client.Proxy.Filter;
 
