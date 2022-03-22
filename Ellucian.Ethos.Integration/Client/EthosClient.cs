@@ -99,7 +99,7 @@ namespace Ellucian.Ethos.Integration.Client
                 throw new ArgumentNullException( $"The '{ nameof( client )}' parameter is required." );
             }
             ApiKey = apiKey;
-            this.HttpProtocolClientBuilder = new HttpProtocolClientBuilder( client );
+            this.HttpProtocolClientBuilder ??= new HttpProtocolClientBuilder( client );
             EthosResponseBuilder ??= new EthosResponseBuilder();
         }
 

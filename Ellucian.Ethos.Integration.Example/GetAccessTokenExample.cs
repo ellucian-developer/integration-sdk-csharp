@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright  2020-2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -29,7 +29,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private static async Task GetTokenAsync()
         {
-            IHttpProtocolClientBuilder builder = new HttpProtocolClientBuilder( null );
             var client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosProxyClient();
             Console.WriteLine( $"Using API Key '{ SAMPLE_API_KEY }'\n" );
             Console.WriteLine( $"The token provider's AWS region is '{ client.Region }'\n" );

@@ -51,6 +51,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             await GetErrorsFromOffsetWithPageSizeAsync();
         }
 
+        private static EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
         private static EthosErrorsClient GetEthosErrorsClient()
         {
             return new EthosClientBuilder( SAMPLE_API_KEY )
@@ -61,7 +62,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorHeadersAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetHeader() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 EthosResponse ethosResponse = await ethosErrorsClient.GetAsync();
@@ -83,7 +83,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorsAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 EthosResponse ethosResponse = await ethosErrorsClient.GetAsync();
@@ -108,7 +107,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorsAsJArrayAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetAsJArrayAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 var errorsNode = await ethosErrorsClient.GetAsJArrayAsync();
@@ -128,7 +126,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetAsEthosErrorsAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetAsEthosErrorsAsync *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 var ethosErrorList = await ethosErrorsClient.GetAsEthosErrorsAsync();
@@ -147,7 +144,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetAllErrorsAsEthosErrorsAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetAllErrorsAsEthosErrorsAsync *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 var ethosErrorList = await ethosErrorsClient.GetAllErrorsAsEthosErrorsAsync();
@@ -166,7 +162,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorsFromOffsetAsEthosErrorsAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetErrorsFromOffsetAsEthosErrorsAsync *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 var ethosErrorList = await ethosErrorsClient.GetErrorsFromOffsetAsEthosErrorsAsync( 5 );
@@ -185,7 +180,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorsAsStringAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetAsStringAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 string errorsStr = await ethosErrorsClient.GetAsStringAsync();
@@ -200,7 +194,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorByIdAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetByIdAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 if ( !string.IsNullOrWhiteSpace( RECORD_GUID ) )
@@ -222,7 +215,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorByIdAsEthosErrorAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetByIdAsEthosErrorAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 if ( !string.IsNullOrWhiteSpace( RECORD_GUID ) )
@@ -244,7 +236,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorByIdAsJObjectAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetByIdAsJObjectAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 if ( !string.IsNullOrWhiteSpace( RECORD_GUID ) )
@@ -266,7 +257,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorByIdAsStringAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetByIdAsStringAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 if ( !string.IsNullOrWhiteSpace( RECORD_GUID ) )
@@ -305,7 +295,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                     "          \"applicationSubtype\": \"EMA\"" +
                     "}";
 
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 EthosError ethosError = ErrorFactory.CreateErrorFromJson( errorStr );
@@ -322,7 +311,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetTotalErrorCountAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetTotalErrorCountAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 int totalErrorCount = await ethosErrorsClient.GetTotalErrorCountAsync();
@@ -344,7 +332,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetAllErrorsAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetAllErrorsAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 List<EthosResponse> ethosResponseList = ( await ethosErrorsClient.GetAllErrorsAsync() ).ToList();
@@ -362,7 +349,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetAllErrorsAsJArrayAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.GetAllErrorsAsJArrayAsync() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 List<JArray> jsonNodePageList = ( await ethosErrorsClient.GetAllErrorsAsJArrayAsync() ).ToList();
@@ -385,7 +371,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetAllErrorsAsStringsAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.getAllErrorsAsStrings() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 List<string> errorsStringList = ( await ethosErrorsClient.GetAllErrorsAsStringsAsync() ).ToList();
@@ -404,7 +389,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         {
             Console.WriteLine( "******* ethosErrorClient.GetAllErrorsWithPageSizeAsJArraysAsync() *******" );
             int pageSize = 15;
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             try
             {
                 var jsonNodePageList = ( await ethosErrorsClient.GetAllErrorsWithPageSizeAsJArraysAsync( pageSize ) ).ToList();
@@ -427,7 +411,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         private static async Task GetErrorsFromOffsetWithPageSizeAsync()
         {
             Console.WriteLine( "******* ethosErrorClient.getErrorsFromOffsetWithPageSize() *******" );
-            EthosErrorsClient ethosErrorsClient = GetEthosErrorsClient();
             EthosResponseConverter ethosResponseConverter = new EthosResponseConverter();
             try
             {

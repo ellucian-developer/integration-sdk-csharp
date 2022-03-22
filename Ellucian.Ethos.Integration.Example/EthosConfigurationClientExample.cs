@@ -42,9 +42,10 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             await GetVersionHeaderAsync_SemVer();
         }
 
+        private static EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
+
         private async static Task FilterAvailableResourcesAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetAllAvailableResourcesAsJsonAsync();
             var filteredResponse = client.FilterAvailableResources( response, "persons" );
             Console.WriteLine( filteredResponse );
@@ -52,14 +53,12 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task GetAllAvailableResourcesAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetAllAvailableResourcesAsync();
             Console.WriteLine( response );
         }
 
         private async static Task GetAllAvailableResourcesJsonAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetAllAvailableResourcesAsJsonAsync();
             var formattedString = response.ToString( formatting: Newtonsoft.Json.Formatting.Indented );
             Console.WriteLine( response );
@@ -67,7 +66,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task GetFiltersAndNamedQueriesAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetFiltersAndNamedQueriesAsync( "persons" );
             var formattedString = response.ToString( formatting: Newtonsoft.Json.Formatting.Indented );
             Console.WriteLine( formattedString );
@@ -75,14 +73,12 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task GetLatestVersionHeaderAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var latestVersion = await client.GetLatestVersionHeaderAsync( "persons" );
             Console.WriteLine( latestVersion );
         }
 
         private async static Task GetFiltersAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var filters = await client.GetFiltersAsync( "sections" );
             filters.ToList().ForEach( i =>
             {
@@ -92,7 +88,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task GetNamedQueriesAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var queries = await client.GetNamedQueriesAsync( "sections" );
             queries.ToList().ForEach( i =>
             {
@@ -106,7 +101,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task GetVersionHeadersForAppAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetVersionHeadersForAppAsync( "persons" );
             response.Distinct().OrderByDescending( v => v ).ToList().ForEach( i =>
               {
@@ -116,7 +110,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task GetVersionsForAppAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetVersionsForAppAsync( "academic-credentials" );
             response.Distinct().OrderByDescending( v => v ).ToList().ForEach( i =>
             {
@@ -126,7 +119,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task GetMajorVersionsOfResourceAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetMajorVersionsOfResourceAsync( "persons" );
             response.Distinct().OrderByDescending( v => v ).ToList().ForEach( i =>
             {
@@ -136,7 +128,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task IsResourceVersionSupported()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             int patchVersion = 0;
             int minorVersion = 3;
             int majorVersion = 12;
@@ -153,7 +144,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task IsResourceVersionSupported_FullHeader()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             string fullHeader = "application/vnd.hedtech.integration.v12.3.0+json";
             var response = await client.IsResourceVersionSupportedAsync( "persons", fullHeader );
             var isOrNot = response ? "is" : "not";
@@ -163,7 +153,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private async static Task IsResourceVersionSupportedAsync_SemVer()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             SemVer semVer = new SemVer() { Major = 12, Minor = 3, Patch = 0 };
             var response = await client.IsResourceVersionSupportedAsync( "persons", semVer );
             var isOrNot = response ? "is" : "not";
@@ -172,7 +161,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         }
         private static async Task GetVersionHeadersOfResourceAsStringsAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetVersionHeadersOfResourceAsStringsAsync( "persons)" );
             foreach ( var item in response )
             {
@@ -182,21 +170,18 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
 
         private static async Task GetVersionHeadersOfResourceAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetVersionHeadersOfResourceAsync( "persons" );
             Console.WriteLine( response.ToString() );
         }
 
         private static async Task GetVersionHeaderAsync()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             var response = await client.GetVersionHeaderAsync( "persons", 12, 3, 0 );
             Console.WriteLine( response );
         }
 
         private static async Task GetVersionHeaderAsync_SemVer()
         {
-            EthosConfigurationClient client = new EthosClientBuilder( SAMPLE_API_KEY ).BuildEthosConfigurationClient();
             SemVer semVer = new SemVer() { Major = 12, Minor = 3, Patch = 0 };
             var response = await client.GetVersionHeaderAsync( "persons", semVer );
             Console.WriteLine( response );

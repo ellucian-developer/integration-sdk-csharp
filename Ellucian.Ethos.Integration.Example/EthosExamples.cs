@@ -30,13 +30,13 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             var RECORD_GUID = ( args != null && args.Count() > 1 ) ? args [ 1 ] : string.Empty;
 
             await RunProxyClientExampleAsync();
-            //await RunMessageClientExampleAsync( apiKey );
-            //await RunFilterQueryClientExampleAsync( apiKey );
-            //await RunGetAccessTokenExampleAsync( apiKey );
-            //await RunEthosErrorsClientExampleAsync( apiKey, recordGuid );
-            //await RunEthosConfigurationClientExampleAsync( apiKey );
-            //await RunEthosChangeNotificationSubscriberExampleAsync( apiKey );
-            //await RunEthosChangeNotificationServiceExampleAsync( apiKey );
+            //await RunMessageClientExampleAsync();
+            //await RunFilterQueryClientExampleAsync();
+            //await RunGetAccessTokenExampleAsync();
+            //await RunEthosErrorsClientExampleAsync();
+            //await RunEthosConfigurationClientExampleAsync();
+            //await RunEthosChangeNotificationSubscriberExampleAsync();
+            //await RunEthosChangeNotificationServiceExampleAsync();
         }
 
         private static async Task RunProxyClientExampleAsync()

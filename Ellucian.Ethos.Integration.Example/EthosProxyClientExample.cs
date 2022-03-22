@@ -64,6 +64,8 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             await DoCrudExample();
         }
 
+        private static EthosProxyClient ethosProxyClient = GetEthosProxyClient();
+
         private static EthosProxyClient GetEthosProxyClient()
         {
             EthosClientBuilder ethosClientBUilder = new EthosClientBuilder( SAMPLE_API_KEY ).WithConnectionTimeout( 120 );
@@ -95,7 +97,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourceByIdExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             string resource = "student-cohorts";
             string id = RECORD_GUID;
             try
@@ -122,7 +123,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourceAsStringByIdExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             string resource = "student-cohorts";
             string id = RECORD_GUID;
 
@@ -150,7 +150,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourceAsJsonByIdExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             string resource = "student-cohorts";
             string id = RECORD_GUID;
             try
@@ -176,7 +175,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourcePageSizeExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             string resource = "student-cohorts";
             try
             {
@@ -197,7 +195,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourceMaxPageSizeExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             string resource = "student-cohorts";
             try
             {
@@ -218,7 +215,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourceExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             EthosResponse ethosResponse = null;
             try
             {
@@ -243,7 +239,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourceAsstringExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -266,7 +261,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetResourceAsJsonExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -288,7 +282,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetAllPagesExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -315,7 +308,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetAllPagesAsstringsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -343,7 +335,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetAllPagesAsJsonsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -371,7 +362,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetAllPagesFromOffsetExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -404,7 +394,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetAllPagesFromOffsetAsStringsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -437,7 +426,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetAllPagesFromOffsetAsJsonsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -470,7 +458,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetPagesExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -498,7 +485,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetPagesAsstringsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -525,7 +511,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetPagesAsJsonsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -553,7 +538,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetPagesFromOffsetExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -586,7 +570,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetPagesFromOffsetAsstringsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -619,7 +602,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetPagesFromOffsetAsJsonsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -652,7 +634,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetRowsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -686,7 +667,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetRowsAsstringsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -710,7 +690,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetRowsAsJsonExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -734,7 +713,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetRowsFromOffsetExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "persons";
@@ -772,7 +750,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetRowsFromOffsetAsstringsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -798,7 +775,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns></returns>
         private static async Task DoGetRowsFromOffsetAsJsonsExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             try
             {
                 string resourceName = "student-cohorts";
@@ -824,11 +800,10 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns>an awaitable task.</returns>
         private static async Task DoCrudExample()
         {
-            EthosProxyClient client = GetEthosProxyClient();
             EthosResponseConverter converter = new EthosResponseConverter();
             try
             {
-                IEnumerable<EthosResponse> responses = await client.GetRowsAsync( "persons", "", 1, 1 );
+                IEnumerable<EthosResponse> responses = await ethosProxyClient.GetRowsAsync( "persons", "", 1, 1 );
                 EthosResponse firstInList = responses.ElementAt( 0 );
                 JToken person = converter.ToJArray( firstInList ).ElementAt( 0 );
                 string personId = person [ "id" ].ToString();
@@ -844,7 +819,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                 categoryForPersonHold [ "category" ] = "financial";
                 personHold [ "type" ] = categoryForPersonHold;
 
-                EthosResponse response = await client.PostAsync( "person-holds", personHold );
+                EthosResponse response = await ethosProxyClient.PostAsync( "person-holds", personHold );
                 Console.WriteLine( "Created a 'person-holds' record:" );
                 Console.WriteLine( response.Content );
                 Console.WriteLine();
@@ -857,17 +832,17 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                 personHold.Remove( "id" );
                 DateTime newHoldEnd = DateTime.Now.AddDays( 1 );
                 personHold [ "startOn" ] = newHoldEnd.ToString( "yyyy-MM-ddThh:mm:ssZ" );
-                response = await client.PutAsync( "person-holds", newId, personHold );
+                response = await ethosProxyClient.PutAsync( "person-holds", newId, personHold );
                 Console.WriteLine( $"Successfully updated person-holds record {newId}" );
 
                 // delete the record
-                await client.DeleteAsync( "person-holds", newId );
+                await ethosProxyClient.DeleteAsync( "person-holds", newId );
                 Console.WriteLine( $"Successfully deleted person-holds record {newId}" );
 
                 // attempt to get the formerly created, now deleted, record, and make sure it is no longer there.
                 try
                 {
-                    await client.GetByIdAsync( "person-holds", newId );
+                    await ethosProxyClient.GetByIdAsync( "person-holds", newId );
                 }
                 catch
                 {
@@ -888,7 +863,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
         /// <returns>Task</returns>
         private static async Task DoSimplePersonsIterationExample()
         {
-            EthosProxyClient ethosProxyClient = GetEthosProxyClient();
             JArray persons = await ethosProxyClient.GetAsJArrayAsync( "persons", string.Empty );
             foreach ( JToken person in persons )
             {

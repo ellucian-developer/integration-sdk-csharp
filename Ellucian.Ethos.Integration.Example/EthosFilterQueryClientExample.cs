@@ -168,6 +168,8 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             Console.WriteLine( $"{exampleNumber}\t: {filter}" );
         }
 
+        private static EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+
         /// <summary>
         /// Build the EthosFilterQueryClient object with builder pattern.
         /// </summary>
@@ -191,7 +193,6 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             string criteriaFilterStr = "?criteria={\"names\":[{\"firstName\":\"John\",\"lastName\":\"Smith\"}]}";
 
             Console.WriteLine( $"Criteria: { criteriaFilterStr }" );
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 EthosResponse ethosResponse = await ethosFilterQueryClient.GetWithCriteriaFilterAsync( resource, version, criteriaFilterStr );
@@ -219,7 +220,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                                                 .BuildCriteria();
             Console.WriteLine( $"Criteria: { criteriaFilterStr }" );
 
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 EthosResponse ethosResponse = await ethosFilterQueryClient.GetWithCriteriaFilterAsync( resource, version, criteriaFilterStr );
@@ -247,7 +248,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                                                 .BuildCriteria();
             Console.WriteLine( $"Criteria: { criteriaFilterStr }" );
 
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 EthosResponse ethosResponse = await ethosFilterQueryClient.GetWithCriteriaFilterAsync( resource, version, criteriaFilterStr );
@@ -277,7 +278,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                                        .BuildCriteria();
             Console.WriteLine( $"Criteria: { criteriaFilterStr }" );
 
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 EthosResponse ethosResponse = await ethosFilterQueryClient.GetWithCriteriaFilterAsync( resource, version, criteriaFilterStr );
@@ -307,7 +308,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                                         .BuildCriteria();
             Console.WriteLine( $"Criteria: { criteriaFilterStr }" );
 
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 EthosResponse ethosResponse = await ethosFilterQueryClient.GetWithCriteriaFilterAsync( resource, version, criteriaFilterStr );
@@ -335,7 +336,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                                         .BuildCriteria();
             Console.WriteLine( $"Criteria: { criteriaFilterStr }" );
 
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 EthosResponse ethosResponse = await ethosFilterQueryClient.GetWithCriteriaFilterAsync( resource, criteriaFilterStr );
@@ -366,7 +367,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                                         .BuildCriteria();
             Console.WriteLine( $"Criteria: { criteriaFilterStr }" );
 
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 EthosResponse ethosResponse = await ethosFilterQueryClient.GetWithCriteriaFilterAsync( resource, criteriaFilterStr );
@@ -387,7 +388,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             string version = "application/vnd.hedtech.integration.v6+json";
             string filterKey = "firstName";
             string filterValue = "John";
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 FilterMap filterMap = new FilterMap()
@@ -415,7 +416,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             string criteriaKey = "firstName";
             string criteriaValue = "John";
             int pageSize = 50;
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 var criteriaFilter = new CriteriaFilter().WithArray( criteriaSetName, (criteriaKey, criteriaValue) );
@@ -444,7 +445,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             string criteriaValue = "John";
             int pageSize = 50;
             int offset = 40;
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 var criteriaFilter = new CriteriaFilter().WithArray( criteriaSetName, (criteriaKey, criteriaValue) );
@@ -471,7 +472,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             string filterMapKey = "firstName";
             string filterMapValue = "John";
             int pageSize = 50;
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
             try
             {
                 FilterMap filterMap = new FilterMap()
@@ -505,7 +506,7 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
             string amount = "2000";
             string balanceOn = "2018-04-01";
             string submittedBy = "11111111-1111-1111-1111-111111111111";
-            EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
+            //EthosFilterQueryClient ethosFilterQueryClient = GetEthosFilterQueryClient();
 
             try
             {
