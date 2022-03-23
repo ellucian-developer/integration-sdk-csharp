@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Ellucian.EthosIntegration.SDK.Sample": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "<<Enter your apiKey here.>>"
     }
   }
 }
