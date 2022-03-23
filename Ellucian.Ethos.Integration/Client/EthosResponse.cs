@@ -19,13 +19,19 @@ namespace Ellucian.Ethos.Integration.Client
     /// </summary>
     public class EthosResponse
     {
-        ///<value>The Http status code of the Http response.</value>
+        /// <summary>
+        /// The Http status code of the Http response.
+        /// </summary>
         public int HttpStatusCode { get; }
 
-        ///<value>The response body content.</value>
+        /// <summary>
+        /// The response body content.
+        /// </summary>
         public string Content { get; internal set; }
 
-        ///<value>The URL that the corresponding request was made for.</value>
+        /// <summary>
+        /// The URL that the corresponding request was made for.
+        /// </summary>
         public string RequestedUrl { get; set; }
 
         /// <summary>
@@ -33,7 +39,10 @@ namespace Ellucian.Ethos.Integration.Client
         /// </summary>
         public dynamic Dto { get; internal set; }
 
-        ///<returns>The response body content as JToken.</returns>
+        /// <summary>
+        /// The response body content as JToken.
+        /// </summary>
+        /// <returns></returns>
         public JToken GetContentAsJson()
         {
             if ( !string.IsNullOrWhiteSpace( Content ) )
@@ -83,7 +92,9 @@ namespace Ellucian.Ethos.Integration.Client
             return count;
         }
 
-        ///<value>The http response headers.</value>
+        /// <summary>
+        /// The http response headers.
+        /// </summary>
         public HttpResponseHeaders HeadersMap { get; internal set; }
 
         /// <summary>

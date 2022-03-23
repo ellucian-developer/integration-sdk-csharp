@@ -11,7 +11,7 @@ using System;
 namespace Ellucian.Ethos.Integration.Client.Extensions
 {
     /// <summary>
-    /// 
+    /// Extends <see cref="EthosResponse"/>.
     /// </summary>
     public static class EthosResponseExtension
     {
