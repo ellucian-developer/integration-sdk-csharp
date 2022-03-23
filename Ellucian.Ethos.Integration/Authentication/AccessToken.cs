@@ -16,47 +16,47 @@ namespace Ellucian.Ethos.Integration.Authentication
     /// to an existing headers map to pass to the EthosClient making the requests.
     /// </summary>
     public class AccessToken
-	{
-		/// <summary>
-		/// An encoded JWT string.
-		/// </summary>
-		/// <value>System.string</value>
-		protected string Token { get; }
+    {
+        /// <summary>
+        /// An encoded JWT string.
+        /// </summary>
+        /// <value>System.string</value>
+        protected string Token { get; }
 
-		/// <summary>
-		/// Gets the time when this access token will expire.
-		/// </summary>		
-		/// <value>System.DateTime</value>
-		public DateTime ExpirationTime { get; }
+        /// <summary>
+        /// Gets the time when this access token will expire.
+        /// </summary>		
+        /// <value>System.DateTime</value>
+        public DateTime ExpirationTime { get; }
 
-		/// <summary>
-		/// Creates an instance of an access token that expires at the given time.
-		/// </summary>
-		/// <param name="token">An encoded JWT string.</param>
-		/// <param name="expirationTime">The time when this token will expire.</param>
-		public AccessToken( string token, DateTime expirationTime )
-		{
-			Token = token;
-			ExpirationTime = expirationTime;
-		}
-
-		/// <summary>
-		/// Determine if the session is still valid.
-		/// </summary>
-		/// <returns>If the token is still valid.</returns>
-		public bool IsValid()
-		{
-			return  DateTime.Now <= ExpirationTime ;
-		}
-		/// <summary>
-		/// Get an HTTP Authorization header containing the access token.
-		/// </summary>
-		/// <returns>Authorization header containing the access token.</returns>
-		public Dictionary<string, string> GetAuthHeader()
+        /// <summary>
+        /// Creates an instance of an access token that expires at the given time.
+        /// </summary>
+        /// <param name="token">An encoded JWT string.</param>
+        /// <param name="expirationTime">The time when this token will expire.</param>
+        public AccessToken( string token, DateTime expirationTime )
         {
-			Dictionary<string, string> dict = new Dictionary<string, string>();
-			dict.Add( "Authorization", $"Bearer { Token }" );
-			return dict;
+            Token = token;
+            ExpirationTime = expirationTime;
         }
-	}
+
+        /// <summary>
+        /// Determine if the session is still valid.
+        /// </summary>
+        /// <returns>If the token is still valid.</returns>
+        public bool IsValid()
+        {
+            return DateTime.Now <= ExpirationTime;
+        }
+        /// <summary>
+        /// Get an HTTP Authorization header containing the access token.
+        /// </summary>
+        /// <returns>Authorization header containing the access token.</returns>
+        public Dictionary<string, string> GetAuthHeader()
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict.Add( "Authorization", $"Bearer { Token }" );
+            return dict;
+        }
+    }
 }
