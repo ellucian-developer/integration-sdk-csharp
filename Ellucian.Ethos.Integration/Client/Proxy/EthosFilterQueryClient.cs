@@ -172,7 +172,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or filterMap is null.</exception>
         public async Task<EthosResponse> GetWithFilterMapAsync<T>( string resourceName, FilterMap filterMap, string version = "" ) where T : class
         {
-            var response = await GetWithFilterMapAsync( resourceName, filterMap.ToString(), version );
+            var response = await GetWithFilterMapAsync( resourceName, version, filterMap.ToString() );
             return ConvertEthosResponseContentToType<T>( response );
         }
 
@@ -224,6 +224,25 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithCriteriaFilterAsync<T>( string resourceName, CriteriaFilter criteria, string version = "", int pageSize = 0, int offset = 0 ) where T : class
         {
             var response = await GetPagesFromOffsetWithCriteriaFilterAsync( resourceName, version, criteria, pageSize, offset );
+            return ConvertEthosResponseContentListToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets all the pages for a given resource beginning at the given offset index, using the specified namedQueryFilter
+        /// and page size for the given version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version header to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="namedQueryFilter">A previously built namedQueryFilter containing the filter used in the request URL.</param>
+        /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
+        /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
+        /// <returns>An <code>List&lt;EthosResponse&gt;</code> containing an initial page (EthosResponse content) of resource data according 
+        /// to the requested version and filter of the resource.</returns>  
+        /// <exception cref="ArgumentNullException">Returns <see cref="ArgumentNullException"/> exception if the resourceName or namedQueryFilter is null.</exception>
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetWithNamedQueryFilterAsync<T>( string resourceName, NamedQueryFilter namedQueryFilter, string version = "", int pageSize = 0, int offset = 0 ) where T : class
+        {
+            var response = await GetPagesFromOffsetWithNamedQueryFilterAsync( resourceName, version, namedQueryFilter, pageSize, offset );
             return ConvertEthosResponseContentListToType<T>( response );
         }
 

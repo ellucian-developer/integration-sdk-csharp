@@ -104,6 +104,11 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         public const string HDR_HEDTECH_ETHOS_INTEGRATION_APPLICATION_NAME = "hedtech-ethos-integration-application-name";
 
         /// <summary>
+        /// Date format.
+        /// </summary>
+        public const string DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ssK";
+
+        /// <summary>
         /// Converts <see cref="EthosResponse"/> to string <see cref="JArray"/> or <see cref="JObject"/>.
         /// </summary>
         private readonly EthosResponseConverter ethosResponseConverter = new EthosResponseConverter();
@@ -457,7 +462,11 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
         public async Task<EthosResponse> PutAsync<T>( string resourceName, T requestBody, string resourceId = "", string version = "" ) where T : class
         {
-            var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody ) :
+            var jsonSerSettings = new JsonSerializerSettings()
+            {
+                DateFormatString = DATE_FORMAT
+            };
+            var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody, jsonSerSettings ) :
                                                      throw new ArgumentNullException( $"Error: Cannot submit a PUT request for a null or blank requestBody parameter." );
             var response = await PutAsync( resourceName, resourceId, version, reqBody );
             return ConvertEthosResponseContentToType<T>( response );
@@ -475,7 +484,11 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
         public async Task<EthosResponse> PostAsync<T>( string resourceName, T requestBody, string version = "" ) where T : class
         {
-            var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody ) :
+            var jsonSerSettings = new JsonSerializerSettings()
+            {
+                DateFormatString = DATE_FORMAT
+            };
+            var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody, jsonSerSettings ) :
                                                     throw new ArgumentNullException( $"Error: Cannot submit a POST request for a null or blank requestBody parameter." );
             var response = await PostAsync( resourceName, version, reqBody );
             return ConvertEthosResponseContentToType<T>( response );
