@@ -469,7 +469,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody, jsonSerSettings ) :
                                                      throw new ArgumentNullException( $"Error: Cannot submit a PUT request for a null or blank requestBody parameter." );
             var response = await PutAsync( resourceName, resourceId, version, reqBody );
-            return ConvertEthosResponseContentToType<T>( response );
+            return response;
         }
 
         /// <summary>
@@ -491,7 +491,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody, jsonSerSettings ) :
                                                     throw new ArgumentNullException( $"Error: Cannot submit a POST request for a null or blank requestBody parameter." );
             var response = await PostAsync( resourceName, version, reqBody );
-            return ConvertEthosResponseContentToType<T>( response );
+            return response;
         }
 
         /// <summary>

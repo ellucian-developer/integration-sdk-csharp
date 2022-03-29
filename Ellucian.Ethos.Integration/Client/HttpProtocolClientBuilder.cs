@@ -68,6 +68,7 @@ namespace Ellucian.Ethos.Integration.Client
                 client.DefaultRequestHeaders.Add( "cache-control", "no-cache" );
                 ProductInfoHeaderValue prodHeaderVal = new ProductInfoHeaderValue( CLIENT_NAME, Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() );
                 client.DefaultRequestHeaders.UserAgent.Add( prodHeaderVal );
+                client.Timeout = TimeSpan.FromMinutes( ( double ) connectionTimeout );
             } )
             .SetHandlerLifetime( TimeSpan.FromSeconds( CONNECTION_TIMEOUT ) )
             .ConfigurePrimaryHttpMessageHandler( () =>
