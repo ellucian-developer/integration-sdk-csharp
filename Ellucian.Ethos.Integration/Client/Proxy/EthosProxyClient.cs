@@ -323,6 +323,23 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         #region GET/PUT/POST Strongly Typed
 
         /// <summary>
+        /// Gets a resource by ID (GUID) for the given resource name and version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="id">The unique ID (GUID) of the resource to get.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <returns>The data for a given resource in an <see cref="EthosResponse" /> according to the requested version of the resource.
+        /// The <see cref="EthosResponse" /> contains the content body of the resource data as well as headers and
+        /// the Http status code.</returns>
+        public async Task<EthosResponse> GetByIdAsync<T>(string resourceName, string id, string version = "") where T : class
+        {
+            EthosResponse ethosResponse = await GetByIdAsync(resourceName, id, version);
+            return ConvertEthosResponseContentToType<T>(ethosResponse);
+        }
+
+
+        /// <summary>
         /// Return a strongly typed object of type T in <see cref="EthosResponse"/>.
         /// </summary>
         /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
