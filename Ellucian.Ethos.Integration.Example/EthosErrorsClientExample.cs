@@ -290,11 +290,11 @@ namespace Ellucian.Ethos.Integration.Sample.CommandLine
                     "          \"correlationId\": \"2468UserMade3242134\"," +
                     "          \"resource\": {" +
                     "            \"id\": \"00000000-0000-0000-0000-000000000000\"," +
-                    "            \"name\": \"persons\"" +
+                    "            \"name\": \"persons\"," +
+                    "            \"version\": \"application/json\"" +
                     "          }," +
                     "          \"applicationSubtype\": \"EMA\"" +
                     "}";
-
             try
             {
                 EthosError ethosError = ErrorFactory.CreateErrorFromJson( errorStr );

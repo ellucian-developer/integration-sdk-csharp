@@ -199,7 +199,7 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// Get original request that caused the error.
         /// </summary>
         /// <return>A request object.</return>
-        [JsonProperty( "request" )]
+        [JsonProperty( "request", NullValueHandling = NullValueHandling.Ignore )]
         public Request Request { get; set; }
 
         /// <summary>
@@ -213,6 +213,6 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// Get the Error object as a JSON string.
         /// </summary>
         /// <returns>JSON string for the error object.</returns>
-        public override string ToString() => JsonConvert.SerializeObject( this );
+        public override string ToString() => JsonConvert.SerializeObject( this, Formatting.Indented );
     }
 }

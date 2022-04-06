@@ -16,11 +16,12 @@ namespace Ellucian.Ethos.Integration.Test
 
     public class ErrorTests
     {
+        static string version = "application/json";
         EthosError error = new EthosError( Guid.NewGuid().ToString(), "Info", ( int ) HttpStatusCode.OK, "Descr 1", "Details 1", "1", "Banner", DateTime.Now.ToString(), "1", "SubType",
-            new Resource( "1", "student-cohorts" ), new Request() { URI = "https://integrate.elluciancloud" } );
+            new Resource( "1", "student-cohorts", version ), new Request() { URI = "https://integrate.elluciancloud" } );
 
         EthosError error2 = new EthosError( Guid.NewGuid().ToString(), "Info", ( int ) HttpStatusCode.OK, "Descr 1", "Details 1", "1", "Banner", DateTime.Now.ToString(), "1", "SubType",
-            new Resource( "1", "student-cohorts" ), new Request() { URI = "https://integrate.elluciancloud" } );
+            new Resource( "1", "student-cohorts", version ), new Request() { URI = "https://integrate.elluciancloud" } );
 
         [Fact]
         public void Error_Equals_False()
@@ -35,7 +36,7 @@ namespace Ellucian.Ethos.Integration.Test
             try
             {
                 EthosError err = new EthosError( Guid.NewGuid().ToString(), "Info", ( int ) HttpStatusCode.OK, "  ", "Details 1", "1", "Banner", DateTime.Now.ToString(), "1", "SubType",
-            new Resource( "1", "student-cohorts" ), new Request() { URI = "https://integrate.elluciancloud" } );
+            new Resource( "1", "student-cohorts", version ), new Request() { URI = "https://integrate.elluciancloud" } );
             }
             catch ( ArgumentNullException e )
             {
@@ -49,7 +50,7 @@ namespace Ellucian.Ethos.Integration.Test
             try
             {
                 EthosError err = new EthosError( Guid.NewGuid().ToString(), "Info", ( int ) HttpStatusCode.OK, null, "Details 1", "1", "Banner", DateTime.Now.ToString(), "1", "SubType",
-            new Resource( "1", "student-cohorts" ), new Request() { URI = "https://integrate.elluciancloud" } );
+            new Resource( "1", "student-cohorts", version ), new Request() { URI = "https://integrate.elluciancloud" } );
             }
             catch ( ArgumentNullException e )
             {
@@ -63,7 +64,7 @@ namespace Ellucian.Ethos.Integration.Test
             try
             {
                 EthosError err = new EthosError( Guid.NewGuid().ToString(), " ", ( int ) HttpStatusCode.OK, "Descr 1", "Details 1", "1", "Banner", DateTime.Now.ToString(), "1", "SubType",
-            new Resource( "1", "student-cohorts" ), new Request() { URI = "https://integrate.elluciancloud" } );
+            new Resource( "1", "student-cohorts", version ), new Request() { URI = "https://integrate.elluciancloud" } );
             }
             catch ( ArgumentNullException e )
             {
@@ -77,7 +78,7 @@ namespace Ellucian.Ethos.Integration.Test
             try
             {
                 EthosError err = new EthosError( Guid.NewGuid().ToString(), null, ( int ) HttpStatusCode.OK, "Descr 1", "Details 1", "1", "Banner", DateTime.Now.ToString(), "1", "SubType",
-            new Resource( "1", "student-cohorts" ), new Request() { URI = "https://integrate.elluciancloud" } );
+            new Resource( "1", "student-cohorts", version ), new Request() { URI = "https://integrate.elluciancloud" } );
             }
             catch ( ArgumentNullException e )
             {

@@ -397,8 +397,8 @@ namespace Ellucian.Ethos.Integration.Client.Errors
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers [ "Accept" ] = errorType;
             string errorRequestBody = JsonConvert.SerializeObject( newError );
-            var httpResult = await base.PostAsync( headers, EthosIntegrationUrls.Errors( Region ), errorRequestBody );
-            return JsonConvert.DeserializeObject<EthosResponse>( httpResult.Content );
+            var response = await base.PostAsync( headers, EthosIntegrationUrls.Errors( Region ), errorRequestBody );
+            return response;
         }
 
         /// <summary>
