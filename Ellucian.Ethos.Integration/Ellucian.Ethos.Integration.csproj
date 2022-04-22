@@ -18,6 +18,16 @@
     <RepositoryType>git</RepositoryType> 
     <!-- generate Nuget on every build to make life easier for everyone. -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description># Ellucian Ethos Integration SDK
+
+Ethos Integration SDK provides utilities and libraries that make it easier for developers to quickly start building Ethos-based integrations.
+
+The Ethos Integration SDK for .NET allows you to easily develop applications in C# that integrate with Ellucian Ethos Integration. The SDK 
+builds and executes HTTP requests and manages the responses. This allows your application to use the C# library methods to communicate 
+with Ethos Integration, without the need to call the REST APIs directly.
+
+The Ethos Integration SDK for .NET simplifies use of Ethos Integration by providing a set of libraries that .NET developers are familiar with. 
+The Ethos Integration SDK makes the application development process less expensive and more efficient.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
