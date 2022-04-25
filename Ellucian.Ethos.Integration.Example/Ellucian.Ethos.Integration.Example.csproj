@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>Ellucian.Ethos.Integration.Example</PackageId>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <Authors>Ellucian Ethos Integration Team</Authors>
     <Company>Ellucian</Company>
     <Title>Ellucian Ethos Integration SDK sample code</Title>
