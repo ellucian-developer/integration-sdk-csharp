@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>Ellucian.Ethos.Integration</PackageId>
-    <Version>0.4.0</Version>
+    <Version>0.4.1</Version>
     <Authors>Ellucian Ethos Integration Team</Authors>
     <Company>Ellucian</Company>
     <Title>Ellucian Ethos Integration SDK</Title>
@@ -28,6 +28,9 @@ with Ethos Integration, without the need to call the REST APIs directly.
 
 The Ethos Integration SDK for .NET simplifies use of Ethos Integration by providing a set of libraries that .NET developers are familiar with. 
 The Ethos Integration SDK makes the application development process less expensive and more efficient.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/ellucian-developer/integration-sdk-csharp</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -45,6 +48,13 @@ The Ethos Integration SDK makes the application development process less expensi
     <None Remove="api\**" />
     <None Remove="Framework\**" />
     <None Remove="_site\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
