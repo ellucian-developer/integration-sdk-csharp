@@ -18,7 +18,7 @@ The Ethos Integration SDK makes the application development process less expensi
 
 # Setup
 
-This SDK is available for download from the nuget repository (<https://www.nuget.org/packages/Ellucian.EthosIntegration.SDK/>).
+This SDK is available for download from the [nuget repository](https://www.nuget.org/packages/Ellucian.Ethos.Integration/).
 
 Before using the SDK, you will need to download and install the following required software:
 
@@ -284,7 +284,7 @@ subscriber, which then receives notifications from the SDK in an automated polli
         /// Here handle any errors that occured.
         /// </summary>
         /// <param name="e"></param>
-  public override void OnChangeNotificationError( Exception e )
+        public override void OnChangeNotificationError( Exception e )
         {
             base.OnChangeNotificationError( e );
         }
