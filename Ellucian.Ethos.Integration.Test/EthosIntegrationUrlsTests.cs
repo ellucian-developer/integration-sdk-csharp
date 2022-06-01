@@ -20,6 +20,15 @@ namespace Ellucian.Ethos.Integration.Test
             Assert.NotNull( actual );
             Assert.Equal( expected, actual );
         }
+        
+        [Fact]
+        public void EthosIntegrationUrls_QAPI()
+        {
+            string expected = "https://integrate.elluciancloud.com/qapi/student-cohorts";
+            var actual = EthosIntegrationUrls.Qapi( SupportedRegions.US, "student-cohorts" );
+            Assert.NotNull( actual );
+            Assert.Equal( expected, actual );
+        }
 
         [Fact]
         public void EthosIntegrationUrls_Errors()

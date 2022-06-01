@@ -192,13 +192,36 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="requestBodyNode"/> is passed as null.</exception>
         public async Task<EthosResponse> PostAsync( string resourceName, string version, JObject requestBodyNode )
         {
-            if ( requestBodyNode == null )
+            ArgumentNullException.ThrowIfNull( requestBodyNode, $"Error: Cannot submit a POST request for resource {resourceName} due to a null or blank {nameof( requestBodyNode )} parameter." );           
+
+            return await PostAsync( resourceName, version, requestBodyNode.ToString() );
+        }
+
+        /// <summary>
+        /// Submits a POST request for the given resourceName with the given requestBody. The requestBody should be a string in JSON format.
+        /// </summary>
+        /// <param name="resourceName">The name of the resource to add an instance of.</param>
+        /// <param name="version">The full version header value of the resource used for this POST request.</param>
+        /// <param name="requestBody">The body of the request to POST for the given resource.</param>
+        /// <returns>An EthosResponse containing the instance of the resource that was added by this POST operation.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
+        public async Task<EthosResponse> PostQapiAsync( string resourceName, string requestBody, string version = "" )
+        {
+            if ( string.IsNullOrWhiteSpace( resourceName ) )
+            {
+                throw new ArgumentNullException( $"Error: Cannot submit a POST request due to a null or blank {nameof( resourceName )} parameter." );
+            }
+
+            if ( string.IsNullOrWhiteSpace( requestBody ) )
             {
                 throw new ArgumentNullException(
-                    $"Error: Cannot submit a POST request for resourceName { resourceName } due to a null or blank requestBody parameter."
+                    $"Error: Cannot submit a POST request for resource {resourceName} due to a null or blank {nameof( requestBody )} parameter."
                 );
             }
-            return await PostAsync( resourceName, version, requestBodyNode.ToString() );
+            var headers = BuildHeadersMap( version );
+            string url = EthosIntegrationUrls.Qapi( Region, resourceName );
+            return await base.PostAsync( headers, url, requestBody );
         }
 
         #endregion

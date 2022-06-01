@@ -1715,16 +1715,64 @@ namespace Ellucian.Ethos.Integration.Test
             _ = Assert.ThrowsAsync<ArgumentException>( async () => await proxyClient.PutAsync( "resourceName", null, "requestBody" ) );
         }
 
-        /// <summary>
-        /// Perform some basic checks on an EthosResponse.  This is done to reuse code and for consistency.
-        /// </summary>
-        /// <param name="response">EthosResponse to check.</param>
-        private void CheckResponse( EthosResponse response )
+        #endregion
+
+        #region POSTS
+
+        [Fact]
+        public void PostAsync_Exceptions()
         {
-            Assert.NotNull( response );
-            Assert.NotNull( response.Content );
-            Assert.Equal( ( int ) HttpStatusCode.OK, response.HttpStatusCode );
+            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostAsync( "", "", "" ) );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostAsync( "resourceName", "", " " ) );
         }
+
+        [Fact]
+        public async void PostAsync_WithVersion()
+        {
+            string requestBody = @"{
+                    a: 'b'
+                }";
+            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
+            EthosResponse response = await proxyClient.PostAsync( resourceName, version, requestBody );
+            CheckResponse( response );
+        }
+
+        [Fact]
+        public void PostAsync_With_Null_JObject_Exceptions()
+        {
+            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostAsync( "resourceName", "", requestBodyNode: null ) );
+        }
+
+        [Fact]
+        public async void PostAsync_With_Null_JObject()
+        {
+            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
+            JObject obj = new JObject();
+            EthosResponse response = await proxyClient.PostAsync( resourceName, obj );
+            CheckResponse( response );
+        }
+
+        [Fact]
+        public void PostQAPITest_Exceptions()
+        {
+            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostQapiAsync( "", "{}", "" ) );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostQapiAsync( "resourceName", " ", "" ) );
+        }
+
+        [Fact]
+        public async void PostQAPITest_WithVersion()
+        {
+            string requestBody = @"{
+                    a: 'b'
+                }";
+            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
+            EthosResponse response = await proxyClient.PostQapiAsync( resourceName, requestBody, version );
+            CheckResponse( response );
+        }
+
         #endregion
 
         #region DELETE tests
@@ -1754,5 +1802,21 @@ namespace Ellucian.Ethos.Integration.Test
             _ = Assert.ThrowsAsync<ArgumentException>( async () => await proxyClient.DeleteAsync( "resourceName", "" ) );
         }
         #endregion
+
+        #region Helper Methos
+
+        /// <summary>
+        /// Perform some basic checks on an EthosResponse.  This is done to reuse code and for consistency.
+        /// </summary>
+        /// <param name="response">EthosResponse to check.</param>
+        private void CheckResponse( EthosResponse response )
+        {
+            Assert.NotNull( response );
+            Assert.NotNull( response.Content );
+            Assert.Equal( ( int ) HttpStatusCode.OK, response.HttpStatusCode );
+        }
+
+        #endregion
+
     }
 }

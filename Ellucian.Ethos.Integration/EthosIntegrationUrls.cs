@@ -87,6 +87,23 @@ namespace Ellucian.Ethos.Integration
         }
 
         /// <summary>
+        /// The base URL for getting QAPI result(s) in Ethos Integration.
+        /// </summary>
+        /// <param name="region">A supported region.</param>
+        /// <param name="resource">The Ethos resource the URL should contain.</param>
+        /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs.</returns>
+        public static string Qapi( SupportedRegions region, string resource )
+        {
+            string url = BuildUrl( region, "/qapi" );
+            if ( !string.IsNullOrWhiteSpace( resource ) )
+            {
+                url = ( $"{url}/{resource}" );
+            }
+            return url;
+        }
+
+
+        /// <summary>
         /// Builds a URL for interacting with the proxy APIs through Ethos Integration supporting paging with filters.
         /// </summary>
         /// <param name="region">A supported region.</param>
