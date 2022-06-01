@@ -1754,25 +1754,6 @@ namespace Ellucian.Ethos.Integration.Test
             CheckResponse( response );
         }
 
-        [Fact]
-        public void PostQAPITest_Exceptions()
-        {
-            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
-            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostQapiAsync( "", "{}", "" ) );
-            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostQapiAsync( "resourceName", " ", "" ) );
-        }
-
-        [Fact]
-        public async void PostQAPITest_WithVersion()
-        {
-            string requestBody = @"{
-                    a: 'b'
-                }";
-            proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
-            EthosResponse response = await proxyClient.PostQapiAsync( resourceName, requestBody, version );
-            CheckResponse( response );
-        }
-
         #endregion
 
         #region DELETE tests

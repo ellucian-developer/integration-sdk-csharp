@@ -4,11 +4,15 @@
  * ******************************************************************************
  */
 
+using Ellucian.Ethos.Integration.Client;
 using Ellucian.Ethos.Integration.Client.Filter.Extensions;
 using Ellucian.Ethos.Integration.Client.Proxy;
 using Ellucian.Ethos.Integration.Client.Proxy.Filter;
 
+using Newtonsoft.Json.Linq;
+
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -488,6 +492,47 @@ namespace Ellucian.Ethos.Integration.Test
             filterClient = new EthosFilterQueryClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosFilterQueryClientWithFilterMap().httpClient );
             var actual = await filterClient.GetTotalCountAsync( criteriaResourceName, version, default( FilterMap ) );
             Assert.Equal( default( int ), actual );
+        }
+
+        [Fact]
+        public void PostQAPITest_Exceptions()
+        {
+            filterClient = new EthosFilterQueryClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosFilterQueryClientWithOK( criteriaFilterStr ).httpClient );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await filterClient.PostQapiAsync( "", "{}", "" ) );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await filterClient.PostQapiAsync( "resourceName", " ", "" ) );
+        }
+
+        [Fact]
+        public async void PostQAPITest_WithVersion()
+        {
+            string requestBody = @"{
+                    a: 'b'
+                }";
+            filterClient = new EthosFilterQueryClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosFilterQueryClientWithOK( criteriaFilterStr ).httpClient );
+            EthosResponse response = await filterClient.PostQapiAsync( criteriaResourceName, requestBody, version );
+            Assert.NotNull( response );
+            Assert.NotNull( response.Content );
+            Assert.Equal( ( int ) HttpStatusCode.OK, response.HttpStatusCode );
+        }
+
+        [Fact]
+        public void PostQAPITest_JObject_Exceptions()
+        {
+            JObject jobj = null;
+            filterClient = new EthosFilterQueryClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosFilterQueryClientWithOK( criteriaFilterStr ).httpClient );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await filterClient.PostQapiAsync( "", JObject.FromObject( new { id = '1' } ), "" ) );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await filterClient.PostQapiAsync( "resourceName", jobj, "" ) );
+        }
+
+        [Fact]
+        public async void PostQAPITest_JObject_WithVersion()
+        {
+            JObject jobj = JObject.FromObject( new { id = '1' } );
+            filterClient = new EthosFilterQueryClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosFilterQueryClientWithOK( criteriaFilterStr ).httpClient );
+            EthosResponse response = await filterClient.PostQapiAsync( criteriaResourceName, jobj, version );
+            Assert.NotNull( response );
+            Assert.NotNull( response.Content );
+            Assert.Equal( ( int ) HttpStatusCode.OK, response.HttpStatusCode );
         }
     }
 }

@@ -7,6 +7,9 @@
 using Ellucian.Ethos.Integration.Client.Filter.Extensions;
 using Ellucian.Ethos.Integration.Client.Proxy.Filter;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -948,6 +951,91 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             }
             return ethosResponseList;
         }
+
+        #region QAPI's
+
+        /// <summary>
+        /// Submits a POST request for the given resourceName with the given requestBody. The requestBody should be a string in JSON format.
+        /// </summary>
+        /// <param name="resourceName">The name of the resource to add an instance of.</param>
+        /// <param name="version">The full version header value of the resource used for this POST request.</param>
+        /// <param name="requestBody">The body of the request to POST for the given resource.</param>
+        /// <returns>An EthosResponse containing the instance of the resource that was added by this POST operation.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
+        public async Task<EthosResponse> PostQapiAsync( string resourceName, string requestBody, string version = "" )
+        {
+            if ( string.IsNullOrWhiteSpace( resourceName ) )
+            {
+                throw new ArgumentNullException( $"Error: Cannot submit a POST request due to a null or blank {nameof( resourceName )} parameter." );
+            }
+
+            if ( string.IsNullOrWhiteSpace( requestBody ) )
+            {
+                throw new ArgumentNullException(
+                    $"Error: Cannot submit a POST request for resource {resourceName} due to a null or blank {nameof( requestBody )} parameter."
+                );
+            }
+            var headers = BuildHeadersMap( version );
+            string url = EthosIntegrationUrls.Qapi( Region, resourceName );
+            return await base.PostAsync( headers, url, requestBody );
+        }
+
+        /// <summary>
+        /// Submits a POST request for the given resourceName with the given requestBodyNode. The requestBodyNode should be a JObject.
+        /// </summary>
+        /// <param name="resourceName">The name of the resource to add an instance of.</param>
+        /// <param name="version">The full version header value of the resource used for this POST request.</param>
+        /// <param name="requestBodyNode">The body of the request to POST for the given resource as a JsonNode.</param> 
+        /// <returns>An EthosResponse containing the instance of the resource that was added by this POST operation.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="requestBodyNode"/> is passed as null.</exception>
+        public async Task<EthosResponse> PostQapiAsync( string resourceName, JObject requestBodyNode, string version = "" )
+        {
+            if ( string.IsNullOrWhiteSpace( resourceName ) )
+            {
+                throw new ArgumentNullException( $"Error: Cannot submit a POST request due to a null or blank {nameof( resourceName )} parameter." );
+            }
+
+            ArgumentNullException.ThrowIfNull( requestBodyNode, $"Error: Cannot submit a POST request for resource {resourceName} due to a null or blank {nameof( requestBodyNode )} parameter." );
+
+            var headers = BuildHeadersMap( version );
+            string url = EthosIntegrationUrls.Qapi( Region, resourceName );
+            return await base.PostAsync( headers, url, requestBodyNode.ToString() );
+        }
+
+        /// <summary>
+        /// Submits a POST request for the given resourceName with the given requestBody. The requestBody should be a Treq type class.
+        /// </summary>
+        /// <typeparam name="T">Request type.</typeparam>
+        /// <param name="resourceName">The name of the resource to add an instance of.</param>
+        /// <param name="version">The full version header value of the resource used for this POST request.</param>
+        /// <param name="requestBody">The body of the request to POST for the given resource.</param>
+        /// <returns>An EthosResponse containing the instance of the resource that was added by this POST operation.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null.</exception>
+        public async Task<EthosResponse> PostQapiAsync<T>( string resourceName, T requestBody, string version = "" ) where T : class
+        {
+            if ( string.IsNullOrWhiteSpace( resourceName ) )
+            {
+                throw new ArgumentNullException( $"Error: Cannot submit a POST request due to a null or blank {nameof( resourceName )} parameter." );
+            }
+
+            ArgumentNullException.ThrowIfNull( requestBody, $"Error: Cannot submit a POST request for resource {resourceName} due to a null {nameof( requestBody )} parameter." );
+
+            var jsonSerSettings = new JsonSerializerSettings()
+            {
+                DateFormatString = DATE_FORMAT
+            };
+
+            var reqBody = JsonConvert.SerializeObject( requestBody, jsonSerSettings );
+
+            var headers = BuildHeadersMap( version );
+            string url = EthosIntegrationUrls.Qapi( Region, resourceName );
+            return await base.PostAsync( headers, url, reqBody );
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets the total count of resources available using the given criteriaFilter.
