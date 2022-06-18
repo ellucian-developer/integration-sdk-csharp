@@ -215,7 +215,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// each <see cref="string"/> in the list is the content body of the given <see cref="EthosResponse"/> in the
         /// ethosResponseList.
         /// The expectation is that each EthosResponse in the given list contains a page 
-        /// of resources, and therefore each String in the returned list contains that same page of resources as a String.
+        /// of resources, and therefore each string in the returned list contains that same page of resources as a string.
         /// </summary>
         /// <param name="ethosResponseList">The list of <see cref="EthosResponse"/> objects to convert to a list of <see cref="string"/>(s).</param>
         /// <returns>a list of <see cref="string"/> where each <see cref="string"/> in the list contains a page of resources from the
