@@ -10,3 +10,4 @@ Date | Version | Description
 03-30-2021 | 0.4.0 | Fixed a bug where paging for num pages or num rows using the EthosFilterQueryClient without a criteria filter, named query, or filter map resulted in null response.
 04-15-2021 | 0.4.0 | Added named query support for additional filter syntax structures.
 09-29-2021 | 0.5.0 | Created EthosExample class to have central entrance point with Main method. The Main method calls other example class Run method by providing api key and in some cases record guid.
+JUN 2022 | 1.0.0 | Added support in the EthosFilterQueryClient for QAPI POST requests.
