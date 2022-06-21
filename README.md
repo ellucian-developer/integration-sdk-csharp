@@ -465,6 +465,7 @@ In this code example, let's assume that I am working with a tenant environment t
 
 Likewise, there will be 3 client applications that are used to get data from the 3 different Banner campuses.
 
+
 ```csharp
 // API keys for my 3 client apps
 string northKey = "11111111-1111-1111-1111-111111111111";
@@ -487,4 +488,55 @@ EthosResponse response = await mainProxyClient.GetAsync("students");
 // messages
 EthosMessagesClient mainMessagesClient = mainClientBuilder.GetEthosMessagesClient();
 IEnumerable<ChangeNotification> changeNotifications = await mainMessagesClient.ConsumeAsync();
+```
+
+### Getting data using strongly typed objects
+
+Data can be retrieved from Ethos APIs and then be returned as a concrete type as illustrated below.  Following example gets list of term-codes and then iterate over the individual *TermCodesV100GetRequest* type where each property can be accessed by using the dot notation making it easy to find and use members of a type.
+
+```csharp
+
+try
+{
+    var response = await proxyClient.GetAsync<IEnumerable<TermCodesV100GetRequest>>( "term-codes" );
+
+    if ( response != null )
+    {
+        Console.WriteLine( "" );
+        foreach ( var item in ( IEnumerable<TermCodesV100GetRequest> ) response.Dto )
+        {
+            Console.WriteLine( $"Activity Date: { item.ActivityDate }, CODE: { item.Code }, DESC: { item.Desc } " );
+        }
+    }
+}
+catch ( Exception ex )
+{
+    Console.WriteLine( ex.Message );
+}
+
+```
+
+### Getting data using QAPI and passing requestBody as strongly typed *TermCodesV100GetRequest* type
+
+Searching by QAPI allows a secure search instead of passing parameters in the URL. Following example illustrate searching term-codes where acyrcode equals 2017. This example is using strongly typed *TermCodesV100GetRequest* type.
+
+```csharp
+
+string resource = "term-codes";
+string version = "application/vnd.hedtech.integration.v1.0.0+json";
+TermCodesV100GetRequest requestBody = new TermCodesV100GetRequest() { AcyrCode = "2017" };
+try
+{
+    var ethosResponses = await filterClient.GetPagesFromOffsetWithQAPIAsync<TermCodesV100GetRequest>( resource, requestBody, version, 40, 0 );
+    foreach ( var ethosResponse in ethosResponses )
+    {
+        Console.WriteLine( $"Total records retrieved: {ethosResponse.GetContentCount()}." );
+        Console.WriteLine( $"Json content: {ethosResponse.Content}" );
+    }
+}
+catch ( Exception e )
+{
+    Console.WriteLine( e.Message );
+}
+
 ```
