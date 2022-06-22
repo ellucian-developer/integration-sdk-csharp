@@ -490,7 +490,7 @@ EthosMessagesClient mainMessagesClient = mainClientBuilder.GetEthosMessagesClien
 IEnumerable<ChangeNotification> changeNotifications = await mainMessagesClient.ConsumeAsync();
 ```
 
-### Getting data using strongly typed objects
+### Using EISDK generated strongly typed objects Object Library
 
 Data can be retrieved from Ethos APIs and then be returned as a concrete type as illustrated below.  Following example gets list of term-codes and then iterate over the individual *TermCodesV100GetRequest* type where each property can be accessed by using the dot notation making it easy to find and use members of a type.
 
@@ -516,7 +516,11 @@ catch ( Exception ex )
 
 ```
 
-### Getting data using QAPI and passing requestBody as strongly typed *TermCodesV100GetRequest* type
+See the [EISDK C# object library](https://github.com/ellucian-developer/integration-sdk-csharp-objects) for more info.
+
+See the [EISDK C# object library C# Doc](https://github.com/ellucian-developer/integration-sdk-objects-csharp-doc) to access the C# doc pages.
+
+### QAPI Support in the EISDK for C#
 
 Searching by QAPI allows a secure search instead of passing parameters in the URL. Following example illustrate searching term-codes where acyrcode equals 2017. This example is using strongly typed *TermCodesV100GetRequest* type.
 
@@ -540,3 +544,5 @@ catch ( Exception e )
 }
 
 ```
+
+# https://github.com/ellucian-developer/integration-sdk-csharp-examples
