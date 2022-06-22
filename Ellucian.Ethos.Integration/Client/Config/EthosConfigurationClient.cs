@@ -147,7 +147,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// Get application's configuration info from Ethos Integration. This returns the config
         /// data for the application that this client's access token belongs to.
         /// </summary>
-        /// <returns>The config info for your app in string format</returns>
+        /// <returns>The config info for your app in string format.</returns>
         public async Task<string> GetAppConfigAsync()
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
@@ -167,7 +167,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// <summary>
         /// Get the details about all the available resources in the tenant associated with this client's access token.
         /// </summary>
-        /// <returns>The available resources details in string format</returns>
+        /// <returns>The available resources details in string format.</returns>
         public async Task<string> GetAllAvailableResourcesAsync()
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
@@ -203,7 +203,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// client's access token. The results will be filtered based on the 'ownerOverrides' array from the access token application's
         /// config data.
         /// </summary>
-        /// <returns>The available resources details in a string format</returns>
+        /// <returns>The available resources details in a string format.</returns>
         public async Task<string> GetAvailableResourcesForAppAsync()
         {
             return ( await GetAvailableResourcesForAppAsJsonAsync() ).ToString();
@@ -218,9 +218,9 @@ namespace Ellucian.Ethos.Integration.Config
         /// </description></item>
         /// </list>
         /// </summary>
-        /// <param name="availableResources">The entire list of available resources from Ethos Integration</param>
-        /// <param name="desiredResources">The target list of specific app resources that you want returned</param>
-        /// <returns>A filtered list of available resources</returns>
+        /// <param name="availableResources">The entire list of available resources from Ethos Integration.</param>
+        /// <param name="desiredResources">The target list of specific app resources that you want returned.</param>
+        /// <returns>A filtered list of available resources.</returns>
         public JArray FilterAvailableResources( JArray availableResources, JArray desiredResources )
         {
             JArray resourceList = new JArray();
@@ -249,12 +249,12 @@ namespace Ellucian.Ethos.Integration.Config
         /// <list type="bullet">
         /// <item><description>appId - the ID of an owning application</description></item>
         /// <item><description>appName - the name of an owning application</description></item>
-        /// <item><description>resource - the details of the resource</description></item>
+        /// <item><description>resource - the details of the resource.</description></item>
         /// </list>
         /// </para>
         /// </summary>
         /// <param name="resourceName">The name of the resource for which you want details.</param>
-        /// <returns>The resource details in string format</returns>
+        /// <returns>The resource details in string format.</returns>
         public async Task<string> GetResourceDetailsAsync( string resourceName )
         {
             return ( await GetResourceDetailsAsJsonAsync( resourceName ) ).ToString();
@@ -266,14 +266,14 @@ namespace Ellucian.Ethos.Integration.Config
         /// <para>
         /// The format of the response will be a JSON array with each object containing the following properties:
         /// <list type="bullet">
-        /// <item><description>appId - the ID of an owning application</description></item>
-        /// <item><description>appName - the name of an owning application</description></item>
-        /// <item><description>resource - the details of the resource</description></item>
+        /// <item><description>appId - the ID of an owning application.</description></item>
+        /// <item><description>appName - the name of an owning application.</description></item>
+        /// <item><description>resource - the details of the resource.</description></item>
         /// </list>
         /// </para>
         /// </summary>
         /// <param name="resourceName">The name of the resource for which you want details.</param>
-        /// <returns>The resource details in a JSON array</returns>
+        /// <returns>The resource details in a JSON array.</returns>
         public async Task<JArray> GetResourceDetailsAsJsonAsync( string resourceName )
         {
             JArray allResources = await GetAllAvailableResourcesAsJsonAsync();
@@ -293,7 +293,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// </summary>
         /// <param name="availableResources">The entire list of available resources from Ethos Integration</param>
         /// <param name="resourceName">The name of the resource for which you want details</param>
-        /// <returns>A filtered list of available resources</returns>
+        /// <returns>A filtered list of available resources.</returns>
         public JArray FilterAvailableResources( JArray availableResources, string resourceName )
         {
             var response = availableResources
@@ -511,7 +511,7 @@ namespace Ellucian.Ethos.Integration.Config
 
         /// <summary>
         /// Indicates if the given resource supports the given full version header. The full version header should be in the following
-        /// format:  application/vnd.hedtech.integration.vSEMVER+json, where SEMVER is the semantic version of the requested resource.
+        /// format: application/vnd.hedtech.integration.vSEMVER+json, where SEMVER is the semantic version of the requested resource.
         /// <p>
         /// Also throws an ArgumentNullException( Runtime) if the given resourceName or fullVersionHeader is null or empty.</p>
         /// </summary>
@@ -551,7 +551,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// not be used when trying to determine if version 12.2 is supported because the given SemVer will translate 12.2
         /// into 12.2.0 which is different.
         /// <p>
-        /// Also throws an ArgumentNullException( Runtime) if the given resourceName is null or empty or the given semVer is null.</p>
+        /// Also throws an ArgumentNullException (Runtime) if the given resourceName is null or empty or the given semVer is null.</p>
         /// </summary>
         /// <param name="resourceName">The resource name for which to get a list of supported version headers.</param>
         /// <param name="semVer">The SemVer object containing the full semantic version to check for the resource.</param>
@@ -585,7 +585,7 @@ namespace Ellucian.Ethos.Integration.Config
         }
 
         /// <summary>
-        /// Gets a list of version header string values from the /versions json property of the ArrayNode 
+        /// Gets a list of version header string values from the versions json property of the ArrayNode 
         /// returned from {@link #getVersionHeadersOfResource(string) getVersionHeadersOfResource()}.
         /// </summary>
         /// <param name="resourceName">The resource name for which to get a list of supported version headers.</param>
@@ -645,7 +645,7 @@ namespace Ellucian.Ethos.Integration.Config
 
         /// <summary>
         /// Gets the full version header string for the given resource, major, minor, and patch version if the resource supports the given
-        /// major.minor.patch version.If the resource does not support the major.minor.patch version, an UnsupportedVersionException is thrown,
+        /// major.minor.patch version. If the resource does not support the major.minor.patch version, an UnsupportedVersionException is thrown,
         /// which is a RuntimeException.
         /// <p>
         /// Also throws an IllegalArgumentException (Runtime) if the given resourceName is null or empty.</p>
@@ -673,7 +673,7 @@ namespace Ellucian.Ethos.Integration.Config
 
         /// <summary>
         /// Gets the full version header string for the given resource and SemVer if the resource supports the given
-        /// version contained within the SemVer.If the resource does not support the SemVer version, an UnsupportedVersionException is thrown,
+        /// version contained within the SemVer. If the resource does not support the SemVer version, an UnsupportedVersionException is thrown,
         /// which is a RuntimeException.
         /// <p>
         /// Also throws an IllegalArgumentException (Runtime) if the given resourceName is null or empty or the given semVer is null.</p>
@@ -683,7 +683,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// </summary>
         /// <param name="resourceName">The resource name for which to get a list of supported version headers.</param>
         /// <param name="semVer">The SemVer containing the requested version of the resource.</param>
-        /// <returns></returns>
+        /// <returns>Gets the full version header string for the given resource and SemVer.</returns>
         /// <exception cref="ArgumentNullException">Throws an ArgumentNullException with the given errorMessage if the resourceName is null or empty.</exception>
         public async Task<string> GetVersionHeaderAsync( string resourceName, SemVer semVer )
         {
@@ -869,7 +869,7 @@ namespace Ellucian.Ethos.Integration.Config
 
         /// <summary>
         /// Gets the latest version of the given resource. Could return either a Semantic version (e.g. 12.0.0), or a
-        /// non-semantic version( e.g. 12), as a string value.
+        /// non-semantic version (e.g. 12), as a string value.
         /// </summary>
         /// <param name="resourceName">The name of the resource to get the latest version of.</param>
         /// <returns>The latest version of the given resource, either a semantic version, or a non-semantic whole number value, as a string.</returns>
@@ -945,7 +945,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// </summary>
         /// <param name="arrayNode">The arrayNode containing application/resource info with a list of versions per resource.</param>
         /// <param name="representationType">The JSON property to use, expected to be "/versions" when the array node contains both version
-        /// values (v2, v3.0.4, etc. ) and version header strings.
+        /// values (v2, v3.0.4, etc.) and version header strings.
         /// </param>
         /// <returns>A list of the versions as strings.</returns>
         protected IEnumerable<string> GetVersionList( JArray arrayNode, string representationType )
@@ -1034,7 +1034,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// <returns>
         /// A list of supported version values for the given resource according to the given representationType. If the
         /// representationType is 'X-Media-Type' a list of full version headers will be returned. If the representationType
-        /// is '/version' a list of version values where each version value is prefixed with the 'v' char will be returned.
+        /// is 'version' a list of version values where each version value is prefixed with the 'v' char will be returned.
         /// </returns>
         /// <exception cref="ArgumentNullException">If resource name is not provided.</exception>
         /// <exception cref="ArgumentNullException">If representationType name is not provided.</exception>        
@@ -1103,7 +1103,7 @@ namespace Ellucian.Ethos.Integration.Config
         /// </p>
         /// </summary>
         /// <param name="resourceName">The name of the resource for which you want details.</param>
-        /// <returns>The resource details in a JSON array</returns>
+        /// <returns>The resource details in a JSON array.</returns>
         public async Task<JArray> GetResourceDetailsJsonAsync( string resourceName )
         {
             JArray allResources = await GetAllAvailableResourcesAsJsonAsync();
@@ -1113,13 +1113,13 @@ namespace Ellucian.Ethos.Integration.Config
         /// <summary>
         /// <b>Used internally by the SDK.</b>
         /// <p>
-        /// The given versionList could contain both semantic and non-semantic version values.Splits the versionList
-        /// into 2 lists:  1 with SemVer values, and 1 with non-semantic Integer version values.</p>
+        /// The given versionList could contain both semantic and non-semantic version values. Splits the versionList
+        /// into 2 lists: 1 with SemVer values, and 1 with non-semantic Integer version values.</p>
         /// <p>
         /// Any null or blank version values in the versionList will be filtered out and not processed.</p>
         /// </summary>
         /// <param name="versionList"></param>
-        /// <returns></returns>
+        /// <returns>Dictionary containing splits versionList into two.</returns>
         private Dictionary<string, IEnumerable<object>> SplitVersionList( IEnumerable<string> versionList )
         {
             Dictionary<string, IEnumerable<object>> resultMap = new Dictionary<string, IEnumerable<object>>();
@@ -1162,8 +1162,8 @@ namespace Ellucian.Ethos.Integration.Config
         /// Validates the given resourceName to ensure it is not null or empty( blank).
         /// Throws an ArgumentNullException with the given errorMessage if the resourceName is null or empty.</p>
         /// </summary>
-        /// <param name="resourceName"></param>
-        /// <param name="errorMessage"></param>
+        /// <param name="resourceName">The name of the resource for which you want details.</param>
+        /// <param name="errorMessage">The error message.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
         private static void ValidateResourceNameNotNull( string resourceName, string errorMessage )
         {

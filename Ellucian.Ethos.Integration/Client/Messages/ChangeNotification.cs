@@ -12,7 +12,7 @@ using System;
 namespace Ellucian.Ethos.Integration.Client.Messages
 {
     /// <summary>
-    /// An object representation of a change-notification.  A change-notification is the resource
+    /// An object representation of a change-notification. A change-notification is the resource
     /// that is published and consumed via subscriptions through the Ethos Integration messages service.
     /// </summary>
     public class ChangeNotification

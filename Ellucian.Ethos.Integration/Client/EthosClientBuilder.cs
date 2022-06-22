@@ -48,7 +48,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// seconds.
         /// </summary>
         /// <param name="connectionTimeout">The connection timeout in seconds.</param>
-        /// <returns></returns>
+        /// <returns>Ethos client builder.</returns>
         public EthosClientBuilder WithConnectionTimeout( int connectionTimeout )
         {
             this.ConnectionTimeout = connectionTimeout;

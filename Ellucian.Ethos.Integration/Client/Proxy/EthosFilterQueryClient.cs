@@ -159,7 +159,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <summary>
         /// Submits a GET request for the given resource and version using the given filterMap. The filterMap
         /// is intended to support the filter syntax for resources versions 7 and older. A FilterMap contains a map of
-        /// one or many filter parameter pair(s).  An example of a filterMap string indicating the contents of the map is:
+        /// one or many filter parameter pair(s). An example of a filterMap string indicating the contents of the map is:
         /// <code>?firstName=James</code>.
         /// <p>This is NOT intended to be used for resource versions after version 7 and/or for criteria filters.</p>
         /// </summary>
@@ -997,7 +997,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         }
 
         /// <summary>
-        /// Submits a POST request for the given resourceName with the given qapiRequestBody. The qapiRequestBody should be a Treq type class.
+        /// Submits a POST request for the given resourceName with the given qapiRequestBody. The qapiRequestBody should be a T type class.
         /// </summary>
         /// <typeparam name="T">Request type.</typeparam>
         /// <param name="resourceName">The name of the resource to add an instance of.</param>
@@ -1010,7 +1010,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
             ArgumentNullException.ThrowIfNull( qapiRequestBody, $"Error: Cannot submit a POST request for resource {resourceName} due to a null {nameof( qapiRequestBody )} parameter." );
 
-            JsonSerializerSettings jsonSerSettings = GetJsonSerializerSettingsWithDateFormat();
+            JsonSerializerSettings jsonSerSettings = GetJsonSerializerSettings();
             var reqBody = JsonConvert.SerializeObject( qapiRequestBody, jsonSerSettings );
             return await GetWithQapiAsync( resourceName, reqBody, version );
         }
@@ -1084,7 +1084,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         }
 
         /// <summary>
-        /// Gets the total count of resources available using the given criteriaFilter. 
+        /// Gets the total count of resources available using the given type T. 
         /// Gets the pages for a given resource beginning at the given offset index, using the specified QAPI request body and page size for the given version.
         /// </summary>
         /// <typeparam name="T">Request type.</typeparam>
@@ -1101,7 +1101,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
             ArgumentNullException.ThrowIfNull( qapiRequestBody, $"Error: Cannot submit a POST request for resource {resourceName} due to a null {nameof( qapiRequestBody )} parameter." );
 
-            var jsonSerSettings = GetJsonSerializerSettingsWithDateFormat();
+            var jsonSerSettings = GetJsonSerializerSettings();
             var reqBody = JsonConvert.SerializeObject( qapiRequestBody, jsonSerSettings );
             return await GetPagesFromOffsetWithQAPIAsync( resourceName, reqBody, version, pageSize, offset );
         }
@@ -1155,7 +1155,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
             ArgumentNullException.ThrowIfNull( qapiRequestBody, $"Error: Cannot submit a POST request for resource {resourceName} due to a null {nameof( qapiRequestBody )} parameter." );
 
-            var jsonSerSettings = GetJsonSerializerSettingsWithDateFormat();
+            var jsonSerSettings = GetJsonSerializerSettings();
             var reqBody = JsonConvert.SerializeObject( qapiRequestBody, jsonSerSettings );
             return await GetPagesWithQAPIAsync( resourceName, reqBody, version, pageSize );
         }
@@ -1237,7 +1237,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="totalCount">The total count of rows for the given resource.</param>
         /// <param name="pageSize">The size (number of rows) of each page returned in the list.</param>
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
-        /// <returns></returns>
+        /// <returns>Collection of EthosResponse with content.</returns>
         protected async Task<List<EthosResponse>> DoPagingFromOffsetForQAPIAsync( string resourceName, string version, string qapiRequestBody, int totalCount, int pageSize, int offset )
         {
             List<EthosResponse> ethosResponseList = new();
@@ -1517,8 +1517,8 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <summary>
         /// Gets JsonSerializerSettings with date format.
         /// </summary>
-        /// <returns></returns>
-        private static JsonSerializerSettings GetJsonSerializerSettingsWithDateFormat()
+        /// <returns>Returns JsonSerializerSettings with yyyy'-'MM'-'dd'T'HH':'mm':'ssK date format and ignores null values.</returns>
+        private static JsonSerializerSettings GetJsonSerializerSettings()
         {
             return new JsonSerializerSettings()
             {

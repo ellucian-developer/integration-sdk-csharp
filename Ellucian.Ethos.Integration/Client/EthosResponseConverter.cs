@@ -304,7 +304,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// in the <see cref="EthosResponseBuilder"/> class to copy headers into the returned headers map.
         /// </summary>
         /// <param name="sourceResponse"></param>
-        /// <returns></returns>
+        /// <returns>Returns Http Response Header values.</returns>
         private HttpResponseHeaders CopyHeaders( EthosResponse sourceResponse )
         {
             return sourceResponse.HeadersMap;
@@ -318,7 +318,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// An EthosError from the content of the given ethosResponse, or null if the ethosResponse is
         /// null or its content is null or blank.
         /// </param>
-        /// <returns></returns>
+        /// <returns>EthosError with error content.</returns>
         public EthosError ToSingleEthosError( EthosResponse ethosResponse )
         {
             EthosError ethosError = null;

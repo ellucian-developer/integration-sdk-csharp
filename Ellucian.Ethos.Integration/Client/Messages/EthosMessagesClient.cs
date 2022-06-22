@@ -15,7 +15,7 @@ namespace Ellucian.Ethos.Integration.Client.Messages
     ///  An EthosClient used to publish and consume messages using the Ethos Integration messages service.
     ///  
     ///  <p>
-    ///  This client accepts an API key that belongs to an ethos application.All requests made from this client are done
+    ///  This client accepts an API key that belongs to an ethos application. All requests made from this client are done
     ///  on behalf of the application to which that API key belongs. That means that calling the consume methods
     ///  will try to retrieve change-notifications from the subscription queue of that specific application.It is assumed that
     ///  the application is configured in Ethos Integration to subscribe to some resource changes.</p>
@@ -51,7 +51,7 @@ namespace Ellucian.Ethos.Integration.Client.Messages
 
         /// <summary>
         /// Gets a list of messages from the subscription queue of the application. This will return the number of messages specified
-        /// by the limit parameter, if there are that many available.The messages will be returned in the format of a       
+        /// by the limit parameter, if there are that many available. The messages will be returned in the format of a       
         /// change-notification.
         /// <p>
         /// The limit can be up to 1000, but the total size of the response payload from Ethos Integration
@@ -59,7 +59,7 @@ namespace Ellucian.Ethos.Integration.Client.Messages
         /// are more messages remaining in the queue.</p>
         /// <p>
         /// The lastProcessedID parameter can be used to indicate the ID of the last message that was successfully processed.
-        /// This parameter can be used to retrieve messages that have already been retrieved.The messages in the queue have sequential ID's, and the
+        /// This parameter can be used to retrieve messages that have already been retrieved. The messages in the queue have sequential ID's, and the
         /// lastProcessedID parameter corresponds to the ID of a message in the queue.</p>
         /// <p>
         /// Here is an example of how lastProcessedID  can be used. If the application consuming the messages retrieves messages 1-10, but

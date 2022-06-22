@@ -32,7 +32,7 @@ namespace Ellucian.Ethos.Integration.Client.Filter.Extensions
         /// <param name="criteria"><see cref="CriteriaFilter"/>.</param>
         /// <param name="key">key for the json object.</param>
         /// <param name="value">value for the json object.</param>
-        /// <returns><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</returns>
+        /// <returns><see cref="CriteriaFilter"/> represents an object whose members can be dynamically added and removed at run time.</returns>
         public static CriteriaFilter WithSimpleCriteria( this CriteriaFilter criteria, string key, object value )
         {
             if ( value is CriteriaFilter crt )
@@ -85,7 +85,7 @@ namespace Ellucian.Ethos.Integration.Client.Filter.Extensions
         /// <param name="criteria"><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</param>
         /// <param name="label">The label for the json object.</param>
         /// <param name="tuples">Array of <see cref="Tuple{T1, T2}"/> object with key and the value.</param>
-        /// <returns><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</returns>
+        /// <returns><see cref="CriteriaFilter"/> represents an object whose members can be dynamically added and removed at run time.</returns>
         public static CriteriaFilter WithSimpleCriteria( this CriteriaFilter criteria, string label, params (string key, object value) [] tuples )
         {
             ExpandoObject eo = new ExpandoObject();
@@ -115,7 +115,7 @@ namespace Ellucian.Ethos.Integration.Client.Filter.Extensions
         /// </summary>
         /// <param name="criteria"><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</param>
         /// <param name="label">The label for the json object.</param>
-        /// <returns><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</returns>
+        /// <returns><see cref="CriteriaFilter"/> represents an object whose members can be dynamically added and removed at run time.</returns>
         public static CriteriaFilter WithSimpleCriteria( this CriteriaFilter criteria, string label )
         {
             ExpandoObject eo = new ExpandoObject();
@@ -148,7 +148,7 @@ namespace Ellucian.Ethos.Integration.Client.Filter.Extensions
         /// <param name="criteria"><see cref="CriteriaFilter"/>.</param>
         /// <param name="label">Root label.</param>
         /// <param name="values">params <see cref="object"/>[].</param>
-        /// <returns><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</returns>
+        /// <returns><see cref="CriteriaFilter"/> represents an object whose members can be dynamically added and removed at run time.</returns>
         public static CriteriaFilter WithArray( this CriteriaFilter criteria, string label, params object [] values )
         {
             List<object> criterias = new List<object>();
@@ -182,7 +182,7 @@ namespace Ellucian.Ethos.Integration.Client.Filter.Extensions
         /// <param name="criteria"><see cref="CriteriaFilter"/>.</param>
         /// <param name="label">Root label.</param>
         /// <param name="values">A <see cref="Dictionary{TKey, TValue}"/>with key value pairs.</param>
-        /// <returns><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</returns>
+        /// <returns><see cref="CriteriaFilter"/> represents an object whose members can be dynamically added and removed at run time.</returns>
         public static CriteriaFilter WithArray( this CriteriaFilter criteria, string label, Dictionary<string, object> values )
         {
             List<ExpandoObject> eoList = new List<ExpandoObject>();
@@ -209,7 +209,7 @@ namespace Ellucian.Ethos.Integration.Client.Filter.Extensions
         /// <param name="criteria"><see cref="CriteriaFilter"/>.</param>
         /// <param name="label">Root label.</param>
         /// <param name="values"><see cref="Tuple{T1, T2}"/>[]</param>
-        /// <returns><see cref="CriteriaFilter"/> Represents an object whose members can be dynamically added and removed at run time.</returns>
+        /// <returns><see cref="CriteriaFilter"/> represents an object whose members can be dynamically added and removed at run time.</returns>
         public static CriteriaFilter WithArray( this CriteriaFilter criteria, string label, params (string key, object value) [] values )
         {
             List<ExpandoObject> eoList = new List<ExpandoObject>();

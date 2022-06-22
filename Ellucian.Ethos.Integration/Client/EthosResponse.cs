@@ -42,7 +42,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// <summary>
         /// The response body content as JToken.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns content as JToken.</returns>
         public JToken GetContentAsJson()
         {
             if ( !string.IsNullOrWhiteSpace( Content ) )

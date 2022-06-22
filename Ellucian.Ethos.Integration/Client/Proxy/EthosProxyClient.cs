@@ -513,7 +513,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// </summary>
         /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
         /// <param name="response"></param>
-        /// <returns></returns>
+        /// <returns>Ethos response with content converted to type specified by 'T' and stored in Dto property and setting Content property to empty string.</returns>
         internal EthosResponse ConvertEthosResponseContentToType<T>( EthosResponse response ) where T : class
         {
             response.Dto = response.Deserialize<T>();
@@ -526,7 +526,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// </summary>
         /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
         /// <param name="ethosResponseList"></param>
-        /// <returns></returns>
+        /// <returns>Collection of Ethos responses with content converted to type specified by 'T' and stored in Dto property and setting Content property to empty string.</returns>
         internal IEnumerable<EthosResponse> ConvertEthosResponseContentListToType<T>( IEnumerable<EthosResponse> ethosResponseList ) where T : class
         {
             ethosResponseList.ToList().ForEach( ethosResponse =>
@@ -1699,7 +1699,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <param name="numRows">The overall number of rows to page for.</param>
-        /// <returns></returns>
+        /// <returns>Returns collection of EthosResponses.</returns>
         private async Task<List<EthosResponse>> DoPagingFromOffsetForNumRowsAsync( string resourceName, string version, int totalCount, int pageSize, int offset, int numRows )
         {
             List<EthosResponse> ethosResponseList = new List<EthosResponse>();

@@ -12,7 +12,7 @@ namespace Ellucian.Ethos.Integration.Authentication
     /// <summary>
     /// An access token that can be used for authentication to make calls to Ethos Integration.
     /// To get an Authorization header that can be used to make HTTP requests, use the <see cref="GetAuthHeader()"/> method. This will
-    /// return a Dictionary&lt;string, string&gt; containing a single entry of the Authorization header key/value pair.That can be used as-is or added
+    /// return a Dictionary&lt;string, string&gt; containing a single entry of the Authorization header key/value pair. That can be used as-is or added
     /// to an existing headers map to pass to the EthosClient making the requests.
     /// </summary>
     public class AccessToken
