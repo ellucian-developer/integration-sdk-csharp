@@ -545,4 +545,6 @@ catch ( Exception e )
 
 ```
 
-# https://github.com/ellucian-developer/integration-sdk-csharp-examples
+### Examples project
+
+More examples can be found in the [EISDK C# examples project](https://github.com/ellucian-developer/integration-sdk-csharp-examples).
