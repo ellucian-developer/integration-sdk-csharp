@@ -1,6 +1,6 @@
 /*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -16,7 +16,6 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// <summary>
         /// URI for the error.
         /// </summary>
-        /// <value></value>
         [JsonProperty( PropertyName = "uri" )]
         public string URI { get; set; }
 
@@ -24,14 +23,12 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// Headers for the error. This is an array of strings but would typically contain values like this:
         /// "Accept:application/json"
         /// </summary>
-        /// <value></value>
         [JsonProperty( "headers" )]
         public string [] Headers { get; set; }
 
         /// <summary>
         /// Error request payload.
         /// </summary>
-        /// <value></value>
         [JsonProperty( "payload" )]
         public string Payload { get; set; }
     }

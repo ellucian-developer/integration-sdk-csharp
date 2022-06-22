@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -40,6 +40,7 @@ namespace Ellucian.Ethos.Integration.Client
         public EthosClientBuilder( string apiKey )
         {
             this.apiKey = apiKey;
+            builder ??= new HttpProtocolClientBuilder( null, ConnectionTimeout );
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// seconds.
         /// </summary>
         /// <param name="connectionTimeout">The connection timeout in seconds.</param>
-        /// <returns></returns>
+        /// <returns>Ethos client builder.</returns>
         public EthosClientBuilder WithConnectionTimeout( int connectionTimeout )
         {
             this.ConnectionTimeout = connectionTimeout;
@@ -60,7 +61,6 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>A new <see cref="EthosProxyClient"/> using the given apiKey, or null if the apiKey is null.</returns>
         public EthosProxyClient BuildEthosProxyClient()
         {
-            builder = builder ?? new HttpProtocolClientBuilder( null, ConnectionTimeout );
             return new EthosProxyClient( apiKey, builder.Client );
         }
 
@@ -70,7 +70,6 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>A new <see cref="EthosErrorsClient"/> using the given apiKey, or null if the apiKey is null.</returns>
         public EthosErrorsClient BuildEthosErrorsClient()
         {
-            builder = builder ?? new HttpProtocolClientBuilder( null, ConnectionTimeout );
             return new EthosErrorsClient( apiKey, builder.Client );
         }
 
@@ -80,7 +79,6 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>A new <see cref="EthosConfigurationClient"/> using the given apiKey, or null if the apiKey is null.</returns>
         public EthosConfigurationClient BuildEthosConfigurationClient()
         {
-            builder = builder ?? new HttpProtocolClientBuilder( null, ConnectionTimeout );
             return new EthosConfigurationClient( apiKey, builder.Client );
         }
 
@@ -90,7 +88,6 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>A new <see cref="EthosMessagesClient"/> using the given apiKey, or null if the apiKey is null.</returns>
         public EthosMessagesClient BuildEthosMessagesClient()
         {
-            builder = builder ?? new HttpProtocolClientBuilder( null, ConnectionTimeout );
             return new EthosMessagesClient( apiKey, builder.Client );
         }
 
@@ -100,7 +97,6 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>An EthosFilterQueryClient using the given apiKey and timeout values.</returns>
         public EthosFilterQueryClient BuildEthosFilterQueryClient()
         {
-            builder = builder ?? new HttpProtocolClientBuilder( null, ConnectionTimeout );
             return new EthosFilterQueryClient( apiKey, builder.Client );
         }
     }

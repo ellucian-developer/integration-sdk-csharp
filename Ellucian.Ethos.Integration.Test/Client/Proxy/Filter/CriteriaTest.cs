@@ -1,15 +1,14 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2021 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
+using Ellucian.Ethos.Integration.Client.Filter.Extensions;
 using Ellucian.Ethos.Integration.Client.Proxy.Filter;
 
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Text;
 
 using Xunit;
 

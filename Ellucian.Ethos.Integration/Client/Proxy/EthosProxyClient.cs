@@ -1,14 +1,17 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
+
+using Ellucian.Ethos.Integration.Client.Extensions;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -101,6 +104,11 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         public const string HDR_HEDTECH_ETHOS_INTEGRATION_APPLICATION_NAME = "hedtech-ethos-integration-application-name";
 
         /// <summary>
+        /// Date format.
+        /// </summary>
+        public const string DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ssK";
+
+        /// <summary>
         /// Converts <see cref="EthosResponse"/> to string <see cref="JArray"/> or <see cref="JObject"/>.
         /// </summary>
         private readonly EthosResponseConverter ethosResponseConverter = new EthosResponseConverter();
@@ -184,15 +192,12 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="requestBodyNode"/> is passed as null.</exception>
         public async Task<EthosResponse> PostAsync( string resourceName, string version, JObject requestBodyNode )
         {
-            if ( requestBodyNode == null )
-            {
-                throw new ArgumentNullException(
-                    $"Error: Cannot submit a POST request for resourceName { resourceName } due to a null or blank requestBody parameter."
-                );
-            }
+            ArgumentNullException.ThrowIfNull( requestBodyNode, $"Error: Cannot submit a POST request for resource {resourceName} due to a null or blank {nameof( requestBodyNode )} parameter." );           
+
             return await PostAsync( resourceName, version, requestBodyNode.ToString() );
         }
 
+        
         #endregion
 
         #region PUT
@@ -231,16 +236,14 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             {
                 throw new ArgumentNullException( "Error: Cannot submit a PUT request due to a null or blank resourceName parameter." );
             }
-            if ( string.IsNullOrWhiteSpace( resourceId ) )
-            {
-                throw new ArgumentNullException( "Error: Cannot submit a PUT request due to a null or blank resourceId parameter." );
-            }
+
             if ( string.IsNullOrWhiteSpace( requestBody ) )
             {
                 throw new ArgumentNullException(
                     $"Error: Cannot submit a PUT request for resourceName { resourceName } due to a null or blank requestBody parameter."
                 );
             }
+
             var headers = BuildHeadersMap( version );
             string url = EthosIntegrationUrls.Api( Region, resourceName, resourceId );
             return await base.PutAsync( headers, url, requestBody );
@@ -286,6 +289,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         }
 
         #endregion
+
         #region DELETE
         /// <summary>
         /// Deletes an instance of the given resource by the given id.
@@ -313,7 +317,246 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
 
         #endregion
 
+        #region GET/PUT/POST Strongly Typed
+
+        /// <summary>
+        /// Gets a resource by ID (GUID) for the given resource name and version.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="id">The unique ID (GUID) of the resource to get.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <returns>The data for a given resource in an <see cref="EthosResponse" /> according to the requested version of the resource.
+        /// The <see cref="EthosResponse" /> contains the content body of the resource data as well as headers and
+        /// the Http status code.</returns>
+        public async Task<EthosResponse> GetByIdAsync<T>(string resourceName, string id, string version = "") where T : class
+        {
+            EthosResponse ethosResponse = await GetByIdAsync(resourceName, id, version);
+            return ConvertEthosResponseContentToType<T>(ethosResponse);
+        }
+
+
+        /// <summary>
+        /// Return a strongly typed object of type T in <see cref="EthosResponse"/>.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="offset">The 0 based index from which to get a page of data for the given resource.</param>
+        /// <param name="pageSize">The number of rows to include in the returned page (EthosResponse).</param>
+        /// <returns>A strongly typed object.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or as a white space.</exception>
+        public async Task<EthosResponse> GetAsync<T>( string resourceName, string version = "", int offset = 0, int pageSize = 0 ) where T : class
+        {
+            EthosResponse response = await GetAsync( resourceName, version, offset, pageSize );
+            return ConvertEthosResponseContentToType<T>( response );
+        }
+
+        /// <summary>
+        /// Gets all pages for the given resource, version, and page size.
+        /// <para><b>NOTE: This method could result in a long running process and return a large volume of data. It is possible that
+        /// an<see cref="OutOfMemoryException" /> could occur if trying to get a large quantity of data. This is NOT intended to be
+        /// used for any kind of resource bulk loading of data. The Ethos bulk loading solution should be used for loading
+        /// data in Ethos data model format in bulk.</b></para>
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
+        /// <returns>Returns collection of <see cref="EthosResponse"/>s with each including strongly typed obect collection.</returns>
+        public async Task<IEnumerable<EthosResponse>> GetAllPagesAsync<T>( string resourceName, string version = "", int pageSize = 0 ) where T : class
+        {
+            var ethosResponseList = await GetAllPagesAsync( resourceName, version, pageSize );
+            return ConvertEthosResponseContentListToType<T>( ethosResponseList );
+        }
+
+        /// <summary>
+        /// Gets some number of pages for the given resource, version, and page size. If numPages is negative, all pages 
+        /// will be returned.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
+        /// <param name="numPages">The number of pages of the given resource to return.</param>
+        /// <returns>A page of data for the given resource from the given offset with the given page size.</returns>
+        public async Task<IEnumerable<EthosResponse>> GetPagesAsync<T>( string resourceName, string version = "", int pageSize = 0, int numPages = 0 ) where T : class
+        {
+            var ethosResponseList = await GetPagesAsync( resourceName, version, pageSize, numPages );
+            ethosResponseList.ToList().ForEach( ethosResponse =>
+            {
+                ethosResponse.Dto = ethosResponse.Deserialize<T>();
+                ethosResponse.Content = string.Empty;
+            } );
+            return ethosResponseList;
+        }
+
+        /// <summary>
+        /// Gets all pages for the given resource, version, and page size, from the offset. If the offset is negative, all pages
+        /// will be returned.
+        /// <para><b>NOTE: This method could result in a long running process and return a large volume of data. It is possible that
+        /// an<see cref="OutOfMemoryException" /> could occur if trying to get a large quantity of data. This is NOT intended to be
+        /// used for any kind of resource bulk loading of data. The Ethos bulk loading solution should be used for loading
+        /// data in Ethos data model format in bulk.</b></para>
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="offset">The 0 based index from which to get a page of data for the given resource.</param>
+        /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
+        /// <returns>A page of data for the given resource from the given offset with the given page size.</returns>
+        public async Task<IEnumerable<EthosResponse>> GetAllPagesFromOffsetAsync<T>( string resourceName, string version = "", int offset = 0, int pageSize = 0 ) where T : class
+        {
+            var ethosResponseList = await GetAllPagesFromOffsetAsync( resourceName, version, offset, pageSize );
+            return ConvertEthosResponseContentListToType<T>( ethosResponseList );
+        }
+
+        /// <summary>
+        /// Gets some number of pages for the given resource, version, and page size, from the given offset. If both the offset
+        /// and numPages are negative, all pages will be returned.If the offset is negative, pages up to the numPages will
+        /// be returned. If numPages is negative, all pages from the offset will be returned.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
+        /// <param name="offset">The 0 based index from which to get a page of data for the given resource.</param>
+        /// <param name="numPages">The number of pages of the given resource to return.</param>
+        /// <returns>A page of data for the given resource from the given offset with the given page size.</returns>
+        public async Task<IEnumerable<EthosResponse>> GetPagesFromOffsetAsync<T>( string resourceName, string version = "", int pageSize = 0, int offset = 0, int numPages = 0 ) where T : class
+        {
+            var ethosResponseList = await GetPagesFromOffsetAsync( resourceName, version, pageSize, offset, numPages );
+            return ConvertEthosResponseContentListToType<T>( ethosResponseList );
+        }
+
+        /// <summary>
+        /// Gets some number of rows for the given resource, version, and page size. The number of rows is returned in a list of
+        /// pages altogether containing the number of rows.If numRows is negative, all pages will be returned.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
+        /// <param name="numRows">The number of rows of the given resource to return.</param>
+        /// <returns>A page of data for the given resource from the given offset with the given page size.</returns>
+        public async Task<IEnumerable<EthosResponse>> GetRowsAsync<T>( string resourceName, string version = "", int pageSize = 0, int numRows = 0 ) where T : class
+        {
+            var ethosResponseList = await GetRowsAsync( resourceName, version, pageSize, numRows );
+            return ConvertEthosResponseContentListToType<T>( ethosResponseList );
+        }
+
+        /// <summary>
+        /// Gets some number of rows for the given resource, version, and page size, from the given offset. The number of rows is returned in a list of
+        /// pages altogether containing the number of rows. If both the offset and numRows are negative, all pages will be returned.
+        /// If the offset is negative, pages up to the numRows will be returned. If numRows is negative, all pages from the offset will be returned.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
+        /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
+        /// <param name="offset">The 0 based index from which to get a page of data for the given resource.</param>
+        /// <param name="numRows">The number of rows of the given resource to return.</param>
+        /// <returns>A page of data for the given resource from the given offset with the given page size.</returns>
+        public async Task<IEnumerable<EthosResponse>> GetRowsFromOffsetAsync<T>( string resourceName, string version = "", int pageSize = 0, int offset = 0, int numRows = 0 ) where T : class
+        {
+            var ethosResponseList = await GetRowsFromOffsetAsync( resourceName, version, pageSize, offset, numRows );
+            return ConvertEthosResponseContentListToType<T>( ethosResponseList );
+        }
+
+        /// <summary>
+        /// Submits a PUT/update request for the given resourceName with the given requestBody of strongly typed object. The requestBody should be a strstrongly typed object.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to add an instance of.</param>
+        /// <param name="resourceId">The unique ID for the given resource, as required when making a PUT/update request.</param>
+        /// <param name="version">The full version header value of the resource used for this PUT/update request.</param>
+        /// <param name="requestBody">The body of the request to PUT/update for the given resource.</param>
+        /// <returns>An EthosResponse containing the instance of the resource that was added by this PUT operation including type specified by the caller.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
+        public async Task<EthosResponse> PutAsync<T>( string resourceName, T requestBody, string resourceId = "", string version = "" ) where T : class
+        {
+            var jsonSerSettings = new JsonSerializerSettings()
+            {
+                DateFormatString = DATE_FORMAT
+            };
+            var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody, jsonSerSettings ) :
+                                                     throw new ArgumentNullException( $"Error: Cannot submit a PUT request for a null or blank requestBody parameter." );
+            var response = await PutAsync( resourceName, resourceId, version, reqBody );
+            return response;
+        }
+
+        /// <summary>
+        /// Submits a POST request for the given resourceName with the given requestBody of strongly typed object. The requestBody should be a strstrongly typed object.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="resourceName">The name of the resource to add an instance of.</param>
+        /// <param name="version">The full version header value of the resource used for this PUT/update request.</param>
+        /// <param name="requestBody">The body of the request to POST for the given resource.</param>
+        /// <returns>An EthosResponse containing the instance of the resource that was added by this POST operation including type specified by the caller.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
+        public async Task<EthosResponse> PostAsync<T>( string resourceName, T requestBody, string version = "" ) where T : class
+        {
+            var jsonSerSettings = new JsonSerializerSettings()
+            {
+                DateFormatString = DATE_FORMAT
+            };
+            var reqBody = requestBody is not null ? JsonConvert.SerializeObject( requestBody, jsonSerSettings ) :
+                                                    throw new ArgumentNullException( $"Error: Cannot submit a POST request for a null or blank requestBody parameter." );
+            var response = await PostAsync( resourceName, version, reqBody );
+            return response;
+        }
+
+        /// <summary>
+        /// Converts <see cref="EthosResponse"/> content to a strongly typed object of type T.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="response"></param>
+        /// <returns>Ethos response with content converted to type specified by 'T' and stored in Dto property and setting Content property to empty string.</returns>
+        internal EthosResponse ConvertEthosResponseContentToType<T>( EthosResponse response ) where T : class
+        {
+            response.Dto = response.Deserialize<T>();
+            response.Content = string.Empty;
+            return response;
+        }
+
+        /// <summary>
+        /// Converts <see cref="EthosResponse"/> content in the list to a strongly typed object of type T.
+        /// </summary>
+        /// <typeparam name="T">Type to be included in the <see cref="EthosResponse"/> returned specified by caller.</typeparam>
+        /// <param name="ethosResponseList"></param>
+        /// <returns>Collection of Ethos responses with content converted to type specified by 'T' and stored in Dto property and setting Content property to empty string.</returns>
+        internal IEnumerable<EthosResponse> ConvertEthosResponseContentListToType<T>( IEnumerable<EthosResponse> ethosResponseList ) where T : class
+        {
+            ethosResponseList.ToList().ForEach( ethosResponse =>
+            {
+                ethosResponse.Dto = ethosResponse.Deserialize<T>();
+                ethosResponse.Content = string.Empty;
+            } );
+            return ethosResponseList;
+        }
+
+        #endregion
+
         #region GET        
+
+        /// <summary>
+        /// Gets a page of data for the given resource by name.
+        /// </summary>        
+        /// <param name="resourceName">The name of the resource to get data for.</param>
+        /// <returns>An <see cref="EthosResponse" /> containing an initial page (EthosResponse content) of resource data according
+        /// to the requested version of the resource.</returns>
+        public new async Task<EthosResponse> GetAsync( string resourceName )
+        {
+            if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
+
+            var version = DEFAULT_VERSION;
+            Dictionary<string, string> headers = BuildHeadersMap( version );
+            string url = $"{ EthosIntegrationUrls.Api( Region, resourceName ) }";
+            EthosResponse response = await GetAsync( headers, url );
+            return response;
+        }
 
         /// <summary>
         /// Gets a page of data for the given resource by name and version.
@@ -1161,7 +1404,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 version = DEFAULT_VERSION;
             }
             headers.Add( "Accept", version );
-            headers.Add( "Content-Type", version );
+            //headers.Add( "Content-Type", version );
             return headers;
         }
 
@@ -1456,7 +1699,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The number of rows to include in each page (EthosResponse) of the list returned.</param>
         /// <param name="offset">The 0 based index from which to begin paging for the given resource.</param>
         /// <param name="numRows">The overall number of rows to page for.</param>
-        /// <returns></returns>
+        /// <returns>Returns collection of EthosResponses.</returns>
         private async Task<List<EthosResponse>> DoPagingFromOffsetForNumRowsAsync( string resourceName, string version, int totalCount, int pageSize, int offset, int numRows )
         {
             List<EthosResponse> ethosResponseList = new List<EthosResponse>();

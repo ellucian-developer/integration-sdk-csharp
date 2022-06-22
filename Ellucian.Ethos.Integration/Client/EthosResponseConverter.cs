@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -215,7 +215,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// each <see cref="string"/> in the list is the content body of the given <see cref="EthosResponse"/> in the
         /// ethosResponseList.
         /// The expectation is that each EthosResponse in the given list contains a page 
-        /// of resources, and therefore each String in the returned list contains that same page of resources as a String.
+        /// of resources, and therefore each string in the returned list contains that same page of resources as a string.
         /// </summary>
         /// <param name="ethosResponseList">The list of <see cref="EthosResponse"/> objects to convert to a list of <see cref="string"/>(s).</param>
         /// <returns>a list of <see cref="string"/> where each <see cref="string"/> in the list contains a page of resources from the
@@ -304,7 +304,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// in the <see cref="EthosResponseBuilder"/> class to copy headers into the returned headers map.
         /// </summary>
         /// <param name="sourceResponse"></param>
-        /// <returns></returns>
+        /// <returns>Returns Http Response Header values.</returns>
         private HttpResponseHeaders CopyHeaders( EthosResponse sourceResponse )
         {
             return sourceResponse.HeadersMap;
@@ -318,7 +318,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// An EthosError from the content of the given ethosResponse, or null if the ethosResponse is
         /// null or its content is null or blank.
         /// </param>
-        /// <returns></returns>
+        /// <returns>EthosError with error content.</returns>
         public EthosError ToSingleEthosError( EthosResponse ethosResponse )
         {
             EthosError ethosError = null;

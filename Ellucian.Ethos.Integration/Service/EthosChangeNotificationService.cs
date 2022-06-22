@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright 2021 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -127,7 +127,7 @@ namespace Ellucian.Ethos.Integration.Service
         }
 
         /// <summary>
-        /// Gets a list of resources to be overridden in change notifications.  These are the resources added to the resource version override
+        /// Gets a list of resources to be overridden in change notifications. These are the resources added to the resource version override
         /// capability of this class.
         /// </summary>
         /// <returns>A list of resource names configured to override change notification content for the specified version. 
@@ -236,7 +236,7 @@ namespace Ellucian.Ethos.Integration.Service
         /// <summary>
         /// <b>Used internally by the SDK.</b> 
         /// <p>
-        /// Updates the given changeNotification with the data from the EthosResponse.Specifically, updates the contentType,
+        /// Updates the given changeNotification with the data from the EthosResponse. Specifically, updates the contentType,
         /// content, and version of the changeNotification.</p>
         /// </summary>
         /// <param name="cn">The ChangeNotification to update/override.</param>

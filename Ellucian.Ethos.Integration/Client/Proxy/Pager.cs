@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -96,6 +96,11 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         public string FilterMap { get; internal set; }
 
         /// <summary>
+        /// The optional QAPI request body used when making filter QAPI POST request.
+        /// </summary>
+        public string QapiRequestBody { get; internal set; }
+
+        /// <summary>
         /// Assigns the given resourceName to the resourceName of Pager.
         /// </summary>
         /// <param name="resourceName">Name of the resource e.g. student-cohorts</param>
@@ -110,7 +115,9 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         public Pager ForVersion( string version ) { Version = version; return this; }
 
         /// <summary>
-        /// Assigns the specified request URL criteria filter and returns this builder for fluent API functionality.
+        ///  Assigns the specified request URL criteria filter and returns this builder for fluent API functionality. 
+        ///  Nulls out the namedQueryFilter and filterMap because there can only be one filter approach used at a time.
+        ///  Nulls out the namedQueryFilter, filterMap, and qapiRequestBody because there can only be one filter approach used at a time.
         /// </summary>
         /// <param name="criteriaFilter">The request URL criteria-based filter which can also be used when paging.</param>
         /// <returns>The Builder with the criteria filter assigned.</returns>
@@ -119,11 +126,13 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             NamedQueryFilter = null;
             FilterMap = null;
             CriteriaFilter = criteriaFilter;
+            QapiRequestBody = null;
             return this;
         }
 
         /// <summary>
-        /// Assigns the specified request URL criteria filter and returns this builder for fluent API functionality.
+        /// Assigns the specified request URL named query filter and returns this builder for fluent API functionality. 
+        /// Nulls out the criteriaFilter, filterMap, and qapiRequestBody because there can only be one filter approach used at a time.
         /// </summary>
         /// <param name="namedQuery">The request URL Named Query filter which can also be used when paging.</param>
         /// <returns>The Builder with the criteria filter assigned.</returns>
@@ -132,11 +141,13 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             FilterMap = null;
             CriteriaFilter = null;
             NamedQueryFilter = namedQuery;
+            QapiRequestBody = null;
             return this;
         }
 
         /// <summary>
         /// Assigns the specified request URL filter map and returns this builder for fluent API functionality.
+        /// Nulls out the criteriaFilter, namedQueryFilter, and qapiRequestBody because there can only be one filter approach used at a time.
         /// </summary>
         /// <param name="filterMap">The request URL filter map which can also be used when paging.</param>
         /// <returns>The Builder with the filter map assigned.</returns>
@@ -145,6 +156,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             CriteriaFilter = null;
             NamedQueryFilter = null;
             FilterMap = filterMap;
+            QapiRequestBody = null;
             return this;
         }
 
@@ -154,6 +166,19 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="pageSize">The pageSize (number of rows in each response) to page with.</param>
         /// <returns>Pager object.</returns>
         public Pager WithPageSize( int pageSize ) { PageSize = pageSize; return this; }
+
+        /// <summary>
+        /// Assigns the specified QAPI request request body and returns this builder for fluent API functionality. 
+        /// Nulls out the criteriaFilter, namedQueryFilter and filterMap because there can only be one filter approach used at a time.
+        /// </summary>
+        /// <param name="qapiRequestBody">The QAPI request body which can also be used when paging.</param>
+        public void WithQAPIRequestBodyFilter( string qapiRequestBody )
+        {
+            CriteriaFilter = null;
+            NamedQueryFilter = null;
+            FilterMap = null;
+            QapiRequestBody = qapiRequestBody;
+        }
 
         /// <summary>
         /// Sets number of pages.

@@ -7,7 +7,7 @@
             "**.csproj"
           ],
           "exclude": [ "**/bin/**", "**/obj/**", "_site/**" ],
-          "src": "../Ellucian.EthosIntegration.SDK"
+          "src": "../Ellucian.Ethos.Integration"
         }
       ],
       "dest": "api",

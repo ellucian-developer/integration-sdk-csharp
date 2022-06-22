@@ -1,6 +1,6 @@
 /*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -19,10 +19,12 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// </summary>
         /// <param name="id">The id of the resource.</param>
         /// <param name="name">The name of the resource.</param>
-        public Resource( string id, string name )
+        /// <param name="version">The version of the resource.</param>
+        public Resource( string id, string name, string version )
         {
             this.Id = id;
             this.Name = name;
+            this.Version = version;
         }
 
         /// <summary>
@@ -38,6 +40,13 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// <value>resource name</value>
         [JsonProperty( "name" )]
         public string Name { get; }
+
+        /// <summary>
+        /// Get the version of the resource.
+        /// </summary>
+        /// <value>resource version</value>
+        [JsonProperty( "version" )]
+        public string Version { get; }
 
     }
 }

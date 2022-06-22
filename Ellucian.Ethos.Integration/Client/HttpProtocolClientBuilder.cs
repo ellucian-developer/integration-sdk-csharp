@@ -1,8 +1,10 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
+
+using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Net.Http;
@@ -25,6 +27,8 @@ namespace Ellucian.Ethos.Integration.Client
         private static int CONNECTION_TIMEOUT = 300;
 
         private const SslProtocols PROTOCOL = SslProtocols.Tls13 | SslProtocols.Tls12 | SslProtocols.Tls11;
+
+        private const string CLIENT_NAME = "EllucianEthosIntegrationSdk-dotnet";
 
         /// <summary>
         /// <see cref="HttpClient"/>.
@@ -55,24 +59,31 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>Returns instance of HttpClient.</returns>
         public HttpClient BuildHttpClient( int? connectionTimeout )
         {
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.ClientCertificateOptions = ClientCertificateOption.Automatic;
-            handler.SslProtocols = PROTOCOL;
+            var serviceCollection = new ServiceCollection();
 
-            HttpClient client = new HttpClient( handler );
-            client.DefaultRequestHeaders.Add( "pragma", "no-cache" );
-            client.DefaultRequestHeaders.Add( "cache-control", "no-cache" );
-            ProductInfoHeaderValue prodHeaderVal = new ProductInfoHeaderValue( "EllucianEthosIntegrationSdk-dotnet", Assembly.GetExecutingAssembly().GetName().Version.ToString() );
-            client.DefaultRequestHeaders.UserAgent.Add( prodHeaderVal );
-            // default to the default connection timeout value.
-            int timeoutLength = CONNECTION_TIMEOUT;
-            // unless the param passed in HAS a value.
-            if ( connectionTimeout.HasValue )
+            serviceCollection.AddHttpClient( CLIENT_NAME, client =>
             {
-                timeoutLength = connectionTimeout.GetValueOrDefault();
-            }
-            client.Timeout = new TimeSpan( 0, 0, 0, timeoutLength, 0 );
-            Client = client;
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add( "pragma", "no-cache" );
+                client.DefaultRequestHeaders.Add( "cache-control", "no-cache" );
+                ProductInfoHeaderValue prodHeaderVal = new ProductInfoHeaderValue( CLIENT_NAME, Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() );
+                client.DefaultRequestHeaders.UserAgent.Add( prodHeaderVal );
+                client.Timeout = TimeSpan.FromMinutes( ( double ) connectionTimeout );
+            } )
+            .SetHandlerLifetime( TimeSpan.FromSeconds( CONNECTION_TIMEOUT ) )
+            .ConfigurePrimaryHttpMessageHandler( () =>
+            {
+                return new HttpClientHandler()
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Automatic,
+                    SslProtocols = PROTOCOL
+                };
+            } );
+            
+            var services = serviceCollection.BuildServiceProvider();
+            var httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
+            var httpClient = httpClientFactory.CreateClient( CLIENT_NAME );
+            Client = httpClient;
             return Client;
         }
 

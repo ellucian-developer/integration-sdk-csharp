@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -17,6 +17,15 @@ namespace Ellucian.Ethos.Integration.Test
         {
             string expected = "https://integrate.elluciancloud.com/api/student-cohorts?offset=10&limit=5";
             var actual = EthosIntegrationUrls.ApiPaging( SupportedRegions.US, "student-cohorts", 10, 5 );
+            Assert.NotNull( actual );
+            Assert.Equal( expected, actual );
+        }
+        
+        [Fact]
+        public void EthosIntegrationUrls_QAPI()
+        {
+            string expected = "https://integrate.elluciancloud.com/qapi/student-cohorts";
+            var actual = EthosIntegrationUrls.Qapi( SupportedRegions.US, "student-cohorts" );
             Assert.NotNull( actual );
             Assert.Equal( expected, actual );
         }

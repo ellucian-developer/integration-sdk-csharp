@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2021 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -19,15 +19,30 @@ namespace Ellucian.Ethos.Integration.Client
     /// </summary>
     public class EthosResponse
     {
-        ///<value>The Http status code of the Http response.</value>
+        /// <summary>
+        /// The Http status code of the Http response.
+        /// </summary>
         public int HttpStatusCode { get; }
-        ///<value>The response body content.</value>
-        public string Content { get; }
 
-        ///<value>The URL that the corresponding request was made for.</value>
+        /// <summary>
+        /// The response body content.
+        /// </summary>
+        public string Content { get; internal set; }
+
+        /// <summary>
+        /// The URL that the corresponding request was made for.
+        /// </summary>
         public string RequestedUrl { get; set; }
 
-        ///<returns>The response body content as JToken.</returns>
+        /// <summary>
+        /// Content of a strongly typed object.
+        /// </summary>
+        public dynamic Dto { get; internal set; }
+
+        /// <summary>
+        /// The response body content as JToken.
+        /// </summary>
+        /// <returns>Returns content as JToken.</returns>
         public JToken GetContentAsJson()
         {
             if ( !string.IsNullOrWhiteSpace( Content ) )
@@ -59,7 +74,7 @@ namespace Ellucian.Ethos.Integration.Client
                 if ( token is JArray )
                 {
                     JArray array = token.ToObject<JArray>();
-                    if ( array.HasValues )
+                    if ( array.HasValues && array.Any() )
                     {
                         count = array.Count;
                     }
@@ -77,7 +92,9 @@ namespace Ellucian.Ethos.Integration.Client
             return count;
         }
 
-        ///<value>The http response headers.</value>
+        /// <summary>
+        /// The http response headers.
+        /// </summary>
         public HttpResponseHeaders HeadersMap { get; internal set; }
 
         /// <summary>

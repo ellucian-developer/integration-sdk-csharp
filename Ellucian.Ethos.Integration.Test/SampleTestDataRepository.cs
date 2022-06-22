@@ -1,6 +1,6 @@
 ﻿/*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -60,6 +60,16 @@ namespace Ellucian.Ethos.Integration.Test
                        'description':'IPEDS-Baseball','id':'d80c51cf-d83f-42bf-8caa-0eb3d3bf1332'},{'code':'TRCK','title':'IPEDS-Track/CrossCountry','description':'IPEDS-Track/CrossCountry',
                        'id':'839fb6c0-f476-4182-a2d3-e3e621a8d8f4'}]";
             return JsonConvert.DeserializeObject<JArray>( json );
+        }
+        public static string GetArrayJsonRecordQAPI()
+        {
+            return @"[{'code':'ATHL','title':'Athletes','description':'Athletes','id':'f43aa813-efaf-427c-afc6-d8daf352fb3b'},{'code':'FRAT','title':'Fraternity','description':'Fraternity',
+                       'id':'d6dcbad9-dd1c-41ee-93cb-26749449070e'},{'code':'SORO','title':'Sorority','description':'Sorority','id':'362e8bb3-c822-4ce8-843b-0f3f66499c0c'},{'code':'ROTC','title':'ROTC Participants',
+                       'description':'ROTC Participants','id':'d43fd919-8a05-4483-8d39-fd794d578beb'},{'code':'VETS','title':'Military Veterans','description':'Military Veterans','id':'1a19225a-508e-4bdc-84b8-92485c74cfe3'},
+                      {'code':'APPR','title':'Apprentices','description':'Apprentices','id':'4ccb1f44-758c-4733-ac90-f3204a0d5230'},{'code':'FTBL','title':'IPEDS-Football','description':'IPEDS-Football',
+                       'id':'3d58b4be-fd87-45c3-a864-3fc7e0969c86'},{'code':'BSKT','title':'IPEDS-Basketball','description':'IPEDS-Basketball','id':'b66e3138-6e85-4c4b-b1d6-70becb615473'},{'code':'BSBL','title':'IPEDS-Baseball',
+                       'description':'IPEDS-Baseball','id':'d80c51cf-d83f-42bf-8caa-0eb3d3bf1332'},{'code':'TRCK','title':'IPEDS-Track/CrossCountry','description':'IPEDS-Track/CrossCountry',
+                       'id':'839fb6c0-f476-4182-a2d3-e3e621a8d8f4'}]";
         }
 
         public static string GetErrorMessage()
@@ -164,14 +174,51 @@ namespace Ellucian.Ethos.Integration.Test
                       'metadata':{'createdBy':'bmcfarland@ellucian.me','createdOn':'2020-07-21T17:58:59.88Z','modifiedBy':'bmcfarland@ellucian.me','modifiedOn':'2020-10-27T16:28:34.979Z','version':'4.9.2'}}";
         }
 
+        public static string GetSingleForStronglyTyped()
+        {
+            return @"{'id':'eef6b098-17fe-4d9e-b8f8-5d949420ffa6','description':'SomeDescription'}";
+        }
+        public static string GetArrayForStronglyTyped()
+        {
+            return @"[{'id':'eef6b098-17fe-4d9e-b8f8-5d949420ffa6','description':'SomeDescription'}]";
+        }
+
         #endregion
 
         #region Mocks
+        public static HttpClient GetMockHttpClientWithSingleRecordForStronglyTyped()
+        {
+            HttpResponseMessage responseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent( GetSingleForStronglyTyped() ),
+                RequestMessage = new HttpRequestMessage() { RequestUri = new Uri( "https://integrate.elluciancloud.com/api/student-cohorts" ) }
+            };
+            //setup mock
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+            //Setup sequence
+            mockHttpMessageHandler.Protected()
+               .SetupSequence<Task<HttpResponseMessage>>(
+               "SendAsync",
+               ItExpr.IsAny<HttpRequestMessage>(),
+               ItExpr.IsAny<CancellationToken>() )
+               .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetToken() ) } )
+               .ReturnsAsync( responseMessage );
+
+            HttpClient httpClient;
+            httpClient = new HttpClient( mockHttpMessageHandler.Object );
+            httpClient.DefaultRequestHeaders.Add( "pragma", "no-cache" );
+            httpClient.DefaultRequestHeaders.Add( "cache-control", "no-cache" );
+            httpClient.DefaultRequestHeaders.Add( "User-Agent", "EllucianEthosIntegrationSdk" );
+            httpClient.Timeout = new TimeSpan( 0, 0, 0, 60000, 0 );
+
+            return httpClient;
+        }
 
         public static HttpClient GetMockHttpClient()
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
-            HttpClient client;
+            HttpClient httpClient;
             dict.Add( "Authorization", "Bearer 1234" );
             //setup mock
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
@@ -182,13 +229,13 @@ namespace Ellucian.Ethos.Integration.Test
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>() )
                 .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetToken() ) } );
-            client = new HttpClient( mockHttpMessageHandler.Object );
-            client.DefaultRequestHeaders.Add( "pragma", "no-cache" );
-            client.DefaultRequestHeaders.Add( "cache-control", "no-cache" );
-            client.DefaultRequestHeaders.Add( "User-Agent", "EllucianEthosIntegrationSdk" );
-            client.Timeout = new TimeSpan( 0, 0, 0, 60000, 0 );
+            httpClient = new HttpClient( mockHttpMessageHandler.Object );
+            httpClient.DefaultRequestHeaders.Add( "pragma", "no-cache" );
+            httpClient.DefaultRequestHeaders.Add( "cache-control", "no-cache" );
+            httpClient.DefaultRequestHeaders.Add( "User-Agent", "EllucianEthosIntegrationSdk" );
+            httpClient.Timeout = new TimeSpan( 0, 0, 0, 60000, 0 );
 
-            return client;
+            return httpClient;
         }
 
         public static HttpClient GetMockHttpClientForEthosChangeNotificationService()
@@ -244,8 +291,6 @@ namespace Ellucian.Ethos.Integration.Test
 
             return httpClient;
         }
-
-
 
         public static EthosChangeNotificationService GetMockEthosChangeNotificationService()
         {
@@ -384,6 +429,33 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( responseMessage );
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
             return (dict, httpClient);
+        }
+
+        public static HttpClient GetMockSequenceForEthosQAPIClientWithOK( string filter )
+        {
+            HttpClient httpClient;
+            //setup mock
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+            HttpResponseMessage responseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent( GetArrayJsonRecordQAPI() ),
+                RequestMessage = new HttpRequestMessage() { RequestUri = new Uri( $"https://integrate.elluciancloud.com/api/student-cohorts{filter}" ) }
+            };
+            responseMessage.Headers.Add( "x-total-count", "10" );
+
+            //Setup sequence
+            mockHttpMessageHandler.Protected()
+                .SetupSequence<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>() )
+                .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetToken() ) } )
+                .ReturnsAsync( responseMessage )
+                .ReturnsAsync( responseMessage )
+                .ReturnsAsync( responseMessage );
+            httpClient = new HttpClient( mockHttpMessageHandler.Object );
+            return httpClient;
         }
 
         public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockSequenceForEthosFilterQueryClientWithFilterMap()

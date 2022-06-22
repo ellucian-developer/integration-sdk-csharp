@@ -1,6 +1,6 @@
 /*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -85,6 +85,37 @@ namespace Ellucian.Ethos.Integration
             }
             return sb.ToString();
         }
+
+        /// <summary>
+        /// The base URL for getting QAPI result(s) in Ethos Integration.
+        /// </summary>
+        /// <param name="region">A supported region.</param>
+        /// <param name="resource">The Ethos resource the URL should contain.</param>
+        /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs.</returns>
+        public static string Qapi( SupportedRegions region, string resource )
+        {
+            string url = BuildUrl( region, "/qapi" );
+            if ( !string.IsNullOrWhiteSpace( resource ) )
+            {
+                url = ( $"{url}/{resource}" );
+            }
+            return url;
+        }
+
+        /// <summary>
+        /// Builds a URL for interacting with the proxy APIs through Ethos Integration supporting paging for QAPI POST requests
+        /// </summary>
+        /// <param name="region">A supported region.</param>
+        /// <param name="resource">The Ethos resource the URL should contain.</param>
+        /// <param name="offset">The row index from which to begin paging for data for the given resource.</param>
+        /// <param name="pageSize">The number of rows each response can contain.</param>
+        /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs.</returns>
+        public static string QapiPaging( SupportedRegions region, string resource, int offset, int pageSize )
+        {
+            string url = Qapi( region, resource );
+            return AddPaging( url, offset, pageSize );
+        }
+
 
         /// <summary>
         /// Builds a URL for interacting with the proxy APIs through Ethos Integration supporting paging with filters.

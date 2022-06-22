@@ -1,6 +1,6 @@
 /*
  * ******************************************************************************
- *   Copyright  2020 Ellucian Company L.P. and its affiliates.
+ *   Copyright 2022 Ellucian Company L.P. and its affiliates.
  * ******************************************************************************
  */
 
@@ -81,7 +81,7 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// <summary>
         /// Gets an initial array (page) of Errors from the tenant associated with the access token, as a string.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns content as string.</returns>
         public async Task<string> GetAsStringAsync()
         {
             return ethosResponseConverter.ToContentString( await GetAsync() );
@@ -397,8 +397,8 @@ namespace Ellucian.Ethos.Integration.Client.Errors
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers [ "Accept" ] = errorType;
             string errorRequestBody = JsonConvert.SerializeObject( newError );
-            var httpResult = await base.PostAsync( headers, EthosIntegrationUrls.Errors( Region ), errorRequestBody );
-            return JsonConvert.DeserializeObject<EthosResponse>( httpResult.Content );
+            var response = await base.PostAsync( headers, EthosIntegrationUrls.Errors( Region ), errorRequestBody );
+            return response;
         }
 
         /// <summary>

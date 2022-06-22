@@ -2,11 +2,11 @@
 
 Ethos Integration SDK provides utilities and libraries that make it easier for developers to quickly start building Ethos-based integrations.
 
-The Ethos Integration SDK for .NET allows you to easily develop applications in C# that integrate with Ellucian Ethos Integration. The SDK 
-builds and executes HTTP requests and manages the responses. This allows your application to use the C# library methods to communicate 
+The Ethos Integration SDK for .NET allows you to easily develop applications in C# that integrate with Ellucian Ethos Integration. The SDK
+builds and executes HTTP requests and manages the responses. This allows your application to use the C# library methods to communicate
 with Ethos Integration, without the need to call the REST APIs directly.
 
-The Ethos Integration SDK for .NET simplifies use of Ethos Integration by providing a set of libraries that .NET developers are familiar with. 
+The Ethos Integration SDK for .NET simplifies use of Ethos Integration by providing a set of libraries that .NET developers are familiar with.
 The Ethos Integration SDK makes the application development process less expensive and more efficient.
 
 ## Table of contents
@@ -16,33 +16,36 @@ The Ethos Integration SDK makes the application development process less expensi
 1. [Full API Doc](#full-api-documentation)
 1. [Examples](#examples)
 
-
 # Setup
-This SDK is available for download from the nuget repository (https://www.nuget.org/packages/Ellucian.EthosIntegration.SDK/).
+
+This SDK is available for download from the [nuget repository](https://www.nuget.org/packages/Ellucian.Ethos.Integration/).
 
 Before using the SDK, you will need to download and install the following required software:
 
 * A .NET runtime. The SDK was built in .NET Core 3.1
 * nuget
 
-You will need an API key from an Ethos Integration application.  It is expected that the application that the API key belongs
-to is already configured properly in Ethos Integration.  Please refer to Ellucian documentation for more information about how to get
-an API key and configure Ethos Integration applications.
+You will need an API key from an Ethos Integration application. It is expected that the application that the API key belongs to is already
+configured properly in Ethos Integration.  Please refer to Ellucian documentation for more information about how to get an API key and configure
+Ethos Integration applications.
 
 We also recommend:
+
 * A C# IDE such as
-    * [Visual Studio](https://visualstudio.microsoft.com/)
-    * [Visual Studio Code](https://code.visualstudio.com/docs/languages/csharp)
-    * [JetBrains Rider](https://www.jetbrains.com/rider//)
+  * [Visual Studio](https://visualstudio.microsoft.com/)
+  * [Visual Studio Code](https://code.visualstudio.com/docs/languages/csharp)
+  * [JetBrains Rider](https://www.jetbrains.com/rider//)
 * [.NET Core](https://dotnet.microsoft.com/learn/dotnet/hello-world-tutorial/install) - if you're on Mac or Linux or just really like the commandline on Windows.
 
 In general your choice of C# IDE will work fine as long as you can do manage nuget with it.
 
 # Quick Start
+
 To make API requests against the Ethos Integration services, you will first need to create a client object.  To create a client
 object, use the **EthosClientBuilder**, found in the `Ellucian.Ethos.Integration.Client` namespace.
 
 The types of clients that you can create are as follows:
+
 * `EthosConfigurationClient` - make requests for getting config data, such as /appConfig and /available-resources
 * `EthosErrorsClient` - perform create, read, and delete operations against the EI errors service
 * `EthosMessagesClient` - get messages from a subscriber queue
@@ -81,6 +84,7 @@ string response = await proxyClient.GetAsStringAsync​("persons", string.Empty)
 // get as JArray.  string.Empty tells the SDK to get the latest version.
 JArray response = await proxyClient.GetAsJArrayAsync("persons", string.Empty);
 ```
+
 The [Json.NET](https://www.newtonsoft.com/json) is heavily used in this SDK to manage serializing and parsing
 JSON objects.  The `JObject`, `JToken` and `JArray` objects make it easy to read the JSON properties of the responses.  It provides a way to generically
 manage all the Ethos Data Models and other resource types that could be returned from Ethos Integration without having to create and
@@ -98,6 +102,7 @@ Here is an example of getting properties from a list of persons, then printing o
         Console.WriteLine($"{fullName} has a person ID of {id}");
     }
 ```
+
 The proxy client is different than the other clients because the response objects could be in any JSON format that the authoritative
 applications return.  This is why it is necessary to handle the responses as strings or generic JSON nodes.
 
@@ -105,26 +110,34 @@ The other clients, such as `EthosMessagesClient` and `EthosErrorsClient`, return
 have defined JSON schemas.  They return `EthosError` and `ChangeNotification` objects.  See the full API doc for more details.
 
 # Full API Documentation
-The full SDK API for the C# SDK is hosted on our Github Pages site, located at (https://ellucianethos.github.io/integrationSDKDoc/csharp).  This site uses the DocFX tool to generate API documentation.
+
+The full SDK API for the C# SDK is hosted on our [Github Pages site](https://ellucian-developer.github.io/integrationSDKDoc/csharp/). This site uses the DocFX tool to generate API documentation.
 
 # Examples
-To view more examples, clone this repo and view the `Ellucian.EthosIntegration.SDK.Sample` project.  Each of the
-classes in that package has a static `main` method and can be run from the command line or with an IDE run command.  When
-running these classes, an API key is required as a program argument.
+
+The following are the code-snippet examples of how to use the Ethos Integration SDK for C#. For more in-depth examples
+please refer to the [integration SDK C# example project](https://github.com/ellucian-developer/devexp-eijsdk-examples) in Github.
 
 For example:
-`dotnet run --project ./Ellucian.EthosIntegration.SDK.Sample/ "11111111-1111-1111-1111-111111111111"`
+To start the project, run following command from the command prompt
 
-That will run the examples specified in the `Program.cs` file.
+`dotnet run "11111111-1111-1111-1111-111111111111"`
+
+or alternatively you can run it from Visual Studio menu Debug --> Start Debugging (F5 command key)/Start Without Debugging (Ctrl+F5) or
+
+That will run the examples specified in the `SDKExamples.cs` file.
 
 ### Making Requests to the Proxy API
+
 Get a page of 'courses' resources using a specific version.
+
 ```csharp
 EthosProxyClient proxyClient = new EthosClientBuilder(apiKey).BuildEthosProxyClient();
 EthosResponse response = await proxyClient.GetAsync("courses", "application/vnd.hedtech.integration.v16.1.0+json");
 ```
 
 Get a page of 'persons' resources for a major version.
+
 ```csharp
 // get the full version header for v12 of 'persons'
 EthosConfigurationClient configClient = new EthosClientBuilder(apiKey).BuildEthosConfigurationClient();
@@ -134,28 +147,33 @@ EthosResponse response = await proxyClient.GetAsync("persons", version);
 ```
 
 Get a single 'employees' row using an ID.
+
 ```csharp
 EthosResponse response = await proxyClient.GetByIdAsync("employees", "11111111-1111-1111-1111-111111111111");
 ```
 
 Create a new record with a POST request.
+
 ```csharp
 EthosResponse response = await proxyClient.PostAsync("colors", "{ \"id\":\"00000000-0000-0000-0000-000000000000\", \"name\": \"green\" }");
 ```
 
 Update a record with a PUT request.
+
 ```csharp
 EthosResponse response = await proxyClient.PutAsync("colors", "11111111-1111-1111-1111-111111111111", "{ \"name\": \"forest green\" }");
 ```
 
 Delete a record with a DELETE request.
+
 ```csharp
 await proxyClient.DeleteAsync("colors", "11111111-1111-1111-1111-111111111111");
 ```
 
 Make requests that use paging.  This will handle sending multiple HTTP requests to get multiple pages of data with a single operation.  
-**Use caution when trying to get all pages of a resource in a single request.  Depending on the resource, this could cause a long 
+**Use caution when trying to get all pages of a resource in a single request.  Depending on the resource, this could cause a long
 running operation that will cause a timeout, or it could return a huge amount of data that could cause an out of memory error.**
+
 ```csharp
 // get all the pages of data for the 'buildings' resource using the default page size
 var ethosResponseList = await proxyClient.GetAllPagesAsync( "buildings");
@@ -173,10 +191,11 @@ var stringList = await proxyClient.GetPagesFromOffsetAsStringsAsync( "courses", 
 ```
 
 ### Making Criteria Filter Requests to the Proxy API
-Requests using criteria filters can be made using the EthosFilterQueryClient. SimpleCriteria can be built using the CriteriaFilter WithSimpleCriteria or WithArray methods. Once built, you call BuildCriteria or BuildNamedQuery method to get a string representation 
-of the filter. You can also directly pass CriteriaFilter or NamedQueryFilter to methods in EthosFilterQueryClient.
-This is covered in the documentation and example code. Some knowledge of the desired criteria filter syntax is needed for use with the given Ethos resource. 
-The following is a brief example code snippet.
+
+Requests using criteria filters can be made using the EthosFilterQueryClient. SimpleCriteria can be built using the CriteriaFilter
+WithSimpleCriteria or WithArray methods. Once built, you call BuildCriteria or BuildNamedQuery method to get a string representation of the filter.
+You can also directly pass CriteriaFilter or NamedQueryFilter to methods in EthosFilterQueryClient. This is covered in the documentation and example code.
+Some knowledge of the desired criteria filter syntax is needed for use with the given Ethos resource. The following is a brief example code snippet.
 
 ```csharp
 //Creates ?criteria={"names":{"firstName":"John","lastName":"Smith"}}
@@ -199,18 +218,21 @@ catch ( Exception e )
     Console.WriteLine( e.Message );
 }
 ```
+
 Examples of using a named query filter and/or filter map are also available in the example code.
 
 ### Consuming Subscriber Messages
 
 Call the consume endpoint to get the default number of new messages from your application's subscriber queue.  The messages are
 returned as ChangeNotification objects.
+
 ```csharp
 EthosMessagesClient messagesClient = new EthosClientBuilder(apiKey).GetEthosMessagesClient();
 IEnumerable<ChangeNotification> changeNotifications = await messagesClient.ConsumeAsync();
 ```
 
 Call the consume endpoint to get available messages from your application's subscriber queue, starting after message ID of '10'.
+
 ```csharp
 IEnumerable<ChangeNotification> changeNotifications = await messagesClient.Consume(10, 10);
 ```
@@ -224,13 +246,14 @@ but only successfully processes messages 1-5, it can set the lastProcessedID par
 the application messages 6-10 again.
 
 Check to see how many messages are available in your application's subscriber queue.
+
 ```csharp
 int numMessages = await messagesClient.GetNumAvailableMessagesAsync();
 ```
 
 ### Automated Polling for Subscriber Messages
 
-Setup automated polling for subscribing to ChangeNotification messages.  The SDK can automatically provide ChangeNotification 
+Setup automated polling for subscribing to ChangeNotification messages.  The SDK can automatically provide ChangeNotification
 messages to a client application when the client application configures a notification poll service to subscribe to a client implementation
 of the appropriate abstract subscriber.  As an example, the following shows a client application implementation of an abstract
 subscriber, which then receives notifications from the SDK in an automated polling fashion:
@@ -261,12 +284,13 @@ subscriber, which then receives notifications from the SDK in an automated polli
         /// Here handle any errors that occured.
         /// </summary>
         /// <param name="e"></param>
-		public override void OnChangeNotificationError( Exception e )
+        public override void OnChangeNotificationError( Exception e )
         {
             base.OnChangeNotificationError( e );
         }
     }
 ```
+
 ```csharp
     // Client implementation of a change notification list subscriber...
     public class ClientAppChangeNotificationListSubscriber: AbstractEthosChangeNotificationSubscriber<IEnumerable<ChangeNotification>>
@@ -301,8 +325,10 @@ subscriber, which then receives notifications from the SDK in an automated polli
         }
     }
 ```
+
 Example of using the client application subscriber implementation above, to have it receive notifications.
 This code would reside in a client application that uses the SDK.
+
 ```csharp
         /// <summary>
         /// Change notification polling example.
@@ -325,6 +351,7 @@ This code would reside in a client application that uses the SDK.
             await service.SubscribeAsync();
         }
 ```
+
 ```csharp
         /// <summary>
         /// Change notification list polling example.
@@ -352,6 +379,7 @@ This code would reside in a client application that uses the SDK.
 ### Getting Configuration Info
 
 Get the configuration information for the application to which the API key belongs.
+
 ```csharp
 EthosConfigurationClient configClient = new EthosClientBuilder(apiKey).BuildEthosConfigurationClient();
 
@@ -364,6 +392,7 @@ JArray appConfig = await configClient.GetAppConfigJsonAsync();
 
 Get the list of available resources from the authoritative applications in your tenant.  This calls the /available-resources
 endpoint of Ethos Integration, and returns that data in a string or JArray format.
+
 ```csharp
 // get as string
 string availableResources = await configClient.GetAllAvailableResourcesAsync();
@@ -371,11 +400,13 @@ string availableResources = await configClient.GetAllAvailableResourcesAsync();
 // get as JArray
 JArray availableResources = await configClient.GetAllAvailableResourcesAsJsonAsync();
 ```
+
 There is also an option to get the available resources data that only pertains to your application.  If your application has
 credentials configured to call one or more authoritative application API's, then it will have an `ownerOverrides` array defined in the
 app config.  This ownerOverrides array determines which authoritative app will serve requests for different resources.  When you get
 the available resource data specific to your application, the response will be limited to resources and authoritative apps in your application's
 ownerOverrides config.
+
 ```csharp
 // get as string
 string availableResources = await configClient.GetAvailableResourcesForAppAsync();
@@ -387,6 +418,7 @@ JArray availableResources = await configClient.GetAvailableResourcesForAppAsJson
 ### Managing Ethos Errors
 
 Create an error in the Ethos Integration errors service.
+
 ```csharp
 EthosErrorsClient errorsClient = new EthosClientBuilder(apiKey).BuildEthosErrorsClient();
 // create an EthosError object from a JSON string
@@ -412,25 +444,28 @@ EthosResponse response = await errorsClient.PostAsync(error);
 ```
 
 Get a single page of errors for your tenant from the errors service.
+
 ```csharp
 EthosResponse errorResponse = await errorsClient.GetAsync();
 ```
 
 ### Getting Data in a Banner MEP Tenant Environment
 
-An overview of Banner MEP and instructions on how to configure an Ethos tenant for Banner MEP is outside of the scope of this documentation.  This will outline how to use API keys 
+An overview of Banner MEP and instructions on how to configure an Ethos tenant for Banner MEP is outside of the scope of this documentation.  This will outline how to use API keys
 from the different applications to pull data for the different VPDI codes.
 
-When an Ethos tenant environment is configured for a Banner MEP institution, it will have multiple Banner applications setup that point to the same 
-Banner implementation, but with different URI's to pull data for different VPDI codes.  There will also be separate client or subscribing applications 
+When an Ethos tenant environment is configured for a Banner MEP institution, it will have multiple Banner applications setup that point to the same
+Banner implementation, but with different URI's to pull data for different VPDI codes.  There will also be separate client or subscribing applications
 setup to make proxy requests and receive change-notifications from the different Banner apps.
 
 In this code example, let's assume that I am working with a tenant environment that has Banner applications setup for 3 VPDI codes representing 3 different campuses of an institution:
-- NORTH
-- SOUTH
-- MAIN
+* NORTH
+* SOUTH
+* MAINP
 
 Likewise, there will be 3 client applications that are used to get data from the 3 different Banner campuses.
+
+
 ```csharp
 // API keys for my 3 client apps
 string northKey = "11111111-1111-1111-1111-111111111111";
@@ -454,3 +489,62 @@ EthosResponse response = await mainProxyClient.GetAsync("students");
 EthosMessagesClient mainMessagesClient = mainClientBuilder.GetEthosMessagesClient();
 IEnumerable<ChangeNotification> changeNotifications = await mainMessagesClient.ConsumeAsync();
 ```
+
+### Using EISDK generated strongly typed objects Object Library
+
+Data can be retrieved from Ethos APIs and then be returned as a concrete type as illustrated below.  Following example gets list of term-codes and then iterate over the individual *TermCodesV100GetRequest* type where each property can be accessed by using the dot notation making it easy to find and use members of a type.
+
+```csharp
+
+try
+{
+    var response = await proxyClient.GetAsync<IEnumerable<TermCodesV100GetRequest>>( "term-codes" );
+
+    if ( response != null )
+    {
+        Console.WriteLine( "" );
+        foreach ( var item in ( IEnumerable<TermCodesV100GetRequest> ) response.Dto )
+        {
+            Console.WriteLine( $"Activity Date: { item.ActivityDate }, CODE: { item.Code }, DESC: { item.Desc } " );
+        }
+    }
+}
+catch ( Exception ex )
+{
+    Console.WriteLine( ex.Message );
+}
+
+```
+
+See the [EISDK C# object library](https://github.com/ellucian-developer/integration-sdk-csharp-objects) for more info.
+
+See the [EISDK C# object library C# Doc](https://github.com/ellucian-developer/integration-sdk-objects-csharp-doc) to access the C# doc pages.
+
+### QAPI Support in the EISDK for C#
+
+Searching by QAPI allows a secure search instead of passing parameters in the URL. Following example illustrate searching term-codes where acyrcode equals 2017. This example is using strongly typed *TermCodesV100GetRequest* type.
+
+```csharp
+
+string resource = "term-codes";
+string version = "application/vnd.hedtech.integration.v1.0.0+json";
+TermCodesV100GetRequest requestBody = new TermCodesV100GetRequest() { AcyrCode = "2017" };
+try
+{
+    var ethosResponses = await filterClient.GetPagesFromOffsetWithQAPIAsync<TermCodesV100GetRequest>( resource, requestBody, version, 40, 0 );
+    foreach ( var ethosResponse in ethosResponses )
+    {
+        Console.WriteLine( $"Total records retrieved: {ethosResponse.GetContentCount()}." );
+        Console.WriteLine( $"Json content: {ethosResponse.Content}" );
+    }
+}
+catch ( Exception e )
+{
+    Console.WriteLine( e.Message );
+}
+
+```
+
+### Examples project
+
+More examples can be found in the [EISDK C# examples project](https://github.com/ellucian-developer/integration-sdk-csharp-examples).
