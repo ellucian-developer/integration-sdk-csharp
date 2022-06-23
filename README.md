@@ -111,12 +111,12 @@ have defined JSON schemas.  They return `EthosError` and `ChangeNotification` ob
 
 # Full API Documentation
 
-The full SDK API for the C# SDK is hosted on our [Github Pages site](https://ellucian-developer.github.io/integrationSDKDoc/csharp/). This site uses the DocFX tool to generate API documentation.
+The full SDK API for the C# SDK is hosted on our [Github Pages site](https://ellucian-developer.github.io/integration-sdk-doc/csharp/api/Ellucian.Ethos.Integration.html). This site uses the DocFX tool to generate API documentation.
 
 # Examples
 
 The following are the code-snippet examples of how to use the Ethos Integration SDK for C#. For more in-depth examples
-please refer to the [integration SDK C# example project](https://github.com/ellucian-developer/devexp-eijsdk-examples) in Github.
+please refer to the [integration SDK C# example project](https://github.com/ellucian-developer/integration-sdk-csharp-examples) in Github.
 
 For example:
 To start the project, run following command from the command prompt
