@@ -22,7 +22,7 @@ This SDK is available for download from the [nuget repository](https://www.nuget
 
 Before using the SDK, you will need to download and install the following required software:
 
-* A .NET runtime. The SDK was built in .NET Core 3.1
+* A .NET runtime. The SDK was built in .NET Core 6.0.301
 * nuget
 
 You will need an API key from an Ethos Integration application. It is expected that the application that the API key belongs to is already
