@@ -21,7 +21,7 @@ namespace Ellucian.Ethos.Integration.Test.Client.Messages
         [Fact]
         public void ChangeNotificationTests_SingleRecord()
         {
-            var data = SampleTestDataRepository.GetChangeNotificationSingleJson();
+            var data = SampleTestData.GetChangeNotificationSingleJson();
             var o = JObject.Parse( data );
             var actual = o.ToObject<ChangeNotification>();
 
@@ -37,7 +37,7 @@ namespace Ellucian.Ethos.Integration.Test.Client.Messages
         [Fact]
         public void ChangeNotificationTests_ArrayRecord()
         {
-            var data = SampleTestDataRepository.GetChangeNotificationArrayJson();
+            var data = SampleTestData.GetChangeNotificationArrayJson();
             JArray parsedCN = JArray.Parse( data );
             var actuals = parsedCN.ToObject<IEnumerable<ChangeNotification>>();
 

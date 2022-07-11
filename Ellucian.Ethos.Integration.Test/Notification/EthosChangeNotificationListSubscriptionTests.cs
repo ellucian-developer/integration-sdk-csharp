@@ -21,7 +21,7 @@ namespace Ellucian.Ethos.Integration.Notification.Test
 
         public EthosChangeNotificationListSubscriptionTests()
         {
-            service = SampleTestDataRepository.GetMockEthosChangeNotificationService();
+            service = SampleTestData.GetMockEthosChangeNotificationService();
         }
 
         [Fact]

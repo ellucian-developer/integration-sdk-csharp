@@ -19,33 +19,33 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void ApiTokensVerification()
         {
-            AccessToken sessionToken = new AccessToken( SampleTestDataRepository.API_KEY, DateTime.Now.AddDays( 1 ) );
+            AccessToken sessionToken = new AccessToken( SampleTestData.API_KEY, DateTime.Now.AddDays( 1 ) );
             Assert.NotNull( sessionToken );
         }
 
         [Fact]
         public void ApiTokensVerification_IsValid()
         {
-            AccessToken sessionToken = new AccessToken( SampleTestDataRepository.API_KEY, DateTime.Now.AddDays( 1 ) );
+            AccessToken sessionToken = new AccessToken( SampleTestData.API_KEY, DateTime.Now.AddDays( 1 ) );
             Assert.True( sessionToken.IsValid() );
         }
 
         [Fact]
         public void ApiTokensVerification_Is_Not_Valid()
         {
-            AccessToken sessionToken = new AccessToken( SampleTestDataRepository.API_KEY, DateTime.Now.AddDays( -1 ) );
+            AccessToken sessionToken = new AccessToken( SampleTestData.API_KEY, DateTime.Now.AddDays( -1 ) );
             Assert.False( sessionToken.IsValid() );
         }
 
         [Fact]
         public void ApiTokensVerification_GetAuthHeader()
         {
-            AccessToken sessionToken = new AccessToken( SampleTestDataRepository.API_KEY, DateTime.Now.AddDays( -1 ) );
+            AccessToken sessionToken = new AccessToken( SampleTestData.API_KEY, DateTime.Now.AddDays( -1 ) );
             var dict = sessionToken.GetAuthHeader();
             var key = dict [ "Authorization" ];
             Assert.NotNull( sessionToken );
             Assert.NotNull( dict );
-            Assert.Equal( $"Bearer { SampleTestDataRepository.API_KEY }", key );
+            Assert.Equal( $"Bearer { SampleTestData.API_KEY }", key );
         }
     }
 }

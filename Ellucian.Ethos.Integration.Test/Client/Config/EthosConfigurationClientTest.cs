@@ -25,8 +25,8 @@ namespace Ellucian.Ethos.Integration.Config.Test
 
         public EthosConfigurationClientTest()
         {
-            resources = SampleTestDataRepository.GetAvailableResourcesData();
-            resWithFiltersAndNamedQueries = SampleTestDataRepository.GetAvailableResourcesWithFiltersAndNamedQueriesData();
+            resources = SampleTestData.GetAvailableResourcesData();
+            resWithFiltersAndNamedQueries = SampleTestData.GetAvailableResourcesWithFiltersAndNamedQueriesData();
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
 				}
 			]" );
 
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             JArray response = client.FilterAvailableResources( availableResources, desiredResources );
             Assert.Equal( 2, response.Count );
         }
@@ -64,7 +64,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
 				}
 			]" );
 
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             JArray response = client.FilterAvailableResources( availableResources, desiredResources );
             Assert.Single( response );
         }
@@ -84,7 +84,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
 				}
 			]" );
 
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             JArray response = client.FilterAvailableResources( availableResources, desiredResources );
             Assert.Single( response );
         }
@@ -104,7 +104,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
 				}
 			]" );
 
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             JArray response = client.FilterAvailableResources( availableResources, desiredResources );
             Assert.Empty( response );
         }
@@ -112,9 +112,9 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void FilterAvailableResource_ByName()
         {
-            JArray availableResources = JArray.Parse( SampleTestDataRepository.GetResourceForPersons() );
+            JArray availableResources = JArray.Parse( SampleTestData.GetResourceForPersons() );
 
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesForFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesForFilterAvailableResources() );
             JArray response = client.FilterAvailableResources( availableResources, "persons" );
             Assert.Single( response );
         }
@@ -122,9 +122,9 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void FilterAvailableResource_ByName_NoResults()
         {
-            JArray availableResources = JArray.Parse( SampleTestDataRepository.GetResourceForPersons() );
+            JArray availableResources = JArray.Parse( SampleTestData.GetResourceForPersons() );
 
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesForFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesForFilterAvailableResources() );
             JArray response = client.FilterAvailableResources( availableResources, "BAD_RESOURCE_NAME" );
             Assert.Empty( response );
         }
@@ -134,14 +134,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void GetFiltersAndNamedQueriesAsync_ResourceName_Null_Excpection()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.GetFiltersAndNamedQueriesAsync( "", "" ) );
         }
 
         [Fact]
         public async Task GetFiltersAndNamedQueriesAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetFiltersAndNamedQueriesAsync( "persons" );
             Assert.NotNull( actual );
@@ -158,7 +158,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetResourceDetailsAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetResourceDetailsAsync( "persons" );
             Assert.NotNull( actual );
@@ -167,7 +167,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetResourceDetailsAsJsonAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetResourceDetailsAsJsonAsync( "persons" );
             Assert.NotNull( actual );
@@ -182,7 +182,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetResourceDetailsJsonAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetResourceDetailsJsonAsync( "persons" );
             Assert.NotNull( actual );
@@ -197,7 +197,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetVersionsOfResourceAsStringsAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetVersionsOfResourceAsStringsAsync( "persons" );
             Assert.NotNull( actual );
@@ -207,7 +207,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetFiltersAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetFiltersAsync( "persons" );
             Assert.NotNull( actual );
@@ -217,7 +217,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         public async Task GetLatestVersionHeaderAsync()
         {
             string expected = "application/vnd.hedtech.integration.v12.3.0+json";
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetLatestVersionHeaderAsync( "persons" );
             Assert.NotNull( actual );
@@ -227,7 +227,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetFiltersAsyncWith_Version()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetFiltersAsync( "persons", "application/vnd.hedtech.integration.v12.1.0+json" );
             Assert.NotNull( actual );
@@ -237,7 +237,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetNamedQueriesAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetNamedQueriesAsync( "persons" );
             Assert.NotNull( actual );
@@ -247,7 +247,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetNamedQueriesAsync_Version()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResourcesWithFiltersAndNamedQueriesData() );
 
             var actual = await client.GetNamedQueriesAsync( "persons", "application/vnd.hedtech.integration.v12.1.0+json" );
             Assert.NotNull( actual );
@@ -257,14 +257,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void GetVersionHeadersForAppAsync_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.GetVersionHeadersForAppAsync( "" ) );
         }
 
         [Fact]
         public async Task GetVersionHeadersForAppAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             var actual = await client.GetVersionHeadersForAppAsync( "address-types" );
             Assert.NotNull( actual );
         }
@@ -272,14 +272,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void GetVersionsForAppAsync_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.GetVersionsForAppAsync( "" ) );
         }
 
         [Fact]
         public async Task GetVersionsForAppAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             var actual = await client.GetVersionsForAppAsync( "address-types" );
             Assert.NotNull( actual );
         }
@@ -287,14 +287,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void GetMajorVersionsOfResourceAsync_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.GetMajorVersionsOfResourceAsync( "" ) );
         }
 
         [Fact]
         public async Task GetMajorVersionsOfResourceAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.GetMajorVersionsOfResourceAsync( "address-types" );
             Assert.NotNull( actual );
         }
@@ -302,14 +302,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void IsResourceVersionSupportedAsync_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.IsResourceVersionSupportedAsync( "" ) );
         }
 
         [Fact]
         public async Task IsResourceVersionSupportedAsync_True()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", 6, null, null );
             Assert.True( actual );
         }
@@ -317,7 +317,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task IsResourceVersionSupportedAsync_With_All_Zeros_False()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", 0, 0, 0 );
             Assert.False( actual );
         }
@@ -325,7 +325,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task IsResourceVersionSupportedAsync_With_Major_Zero_False()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", 0, null, null );
             Assert.False( actual );
         }
@@ -333,7 +333,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task IsResourceVersionSupportedAsync_With_Minor_Zero_False()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", null, 0, null );
             Assert.False( actual );
         }
@@ -341,7 +341,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task IsResourceVersionSupportedAsync_With_Patch_Zero_False()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", null, null, 0 );
             Assert.False( actual );
         }
@@ -349,7 +349,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task IsResourceVersionSupportedAsync_With_All_Nulls_False()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", null, null, null );
             Assert.False( actual );
         }
@@ -357,7 +357,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task IsResourceVersionSupportedAsync_FullHeader_True()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", "application/vnd.hedtech.integration.v6+json" );
             Assert.True( actual );
         }
@@ -365,7 +365,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task IsResourceVersionSupportedAsync_FullHeader_False()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", "application/vnd.hedtech.integration.vBad+json" );
             Assert.False( actual );
         }
@@ -373,14 +373,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void IsResourceVersionSupportedAsync_FullHeader_EmptyResourceName_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.IsResourceVersionSupportedAsync( "", "application/vnd.hedtech.integration.v6+json" ) );
         }
 
         [Fact]
         public void IsResourceVersionSupportedAsync_FullHeader_EmptyFullVersioHeader_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.IsResourceVersionSupportedAsync( "address-types", " " ) );
         }
 
@@ -388,7 +388,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         public async Task IsResourceVersionSupportedAsync_SemVer_True()
         {
             SemVer semVer = new SemVer() { Major = 6, Minor = 1, Patch = 0 };
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", semVer );
             Assert.True( actual );
         }
@@ -397,7 +397,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         public async Task IsResourceVersionSupportedAsync_SemVer_BadMinor_False()
         {
             SemVer semVer = new SemVer() { Major = 6, Minor = -1, Patch = 0 };
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.IsResourceVersionSupportedAsync( "address-types", semVer );
             Assert.False( actual );
         }
@@ -405,14 +405,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void GetVersionHeadersOfResourceAsStringsAsync_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.GetVersionHeadersOfResourceAsStringsAsync( "      " ) );
         }
 
         [Fact]
         public async Task GetVersionHeadersOfResourceAsStringsAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.GetVersionHeadersOfResourceAsStringsAsync( "address-types" );
             Assert.NotNull( actual );
             Assert.IsAssignableFrom<IEnumerable<string>>( actual );
@@ -421,14 +421,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void GetVersionHeadersOfResourceAsync_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.GetVersionHeadersOfResourceAsync( "      " ) );
         }
 
         [Fact]
         public async Task GetVersionHeadersOfResourceAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.GetVersionHeadersOfResourceAsync( "address-types" );
             Assert.NotNull( actual );
             Assert.IsType<JArray>( actual );
@@ -437,7 +437,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public void GetVersionHeaderAsync_ArgumentNullException()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await client.GetVersionHeaderAsync( "      " ) );
         }
 
@@ -445,7 +445,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         public async Task GetVersionHeaderAsync_Match_True()
         {
             SemVer semVer = new SemVer() { Major = 6, Minor = 1, Patch = 0 };
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.GetVersionHeaderAsync( "address-types", semVer );
             Assert.NotNull( actual );
             Assert.Equal( "application/vnd.hedtech.integration.v6.1.0+json", actual );
@@ -455,14 +455,14 @@ namespace Ellucian.Ethos.Integration.Config.Test
         public void GetVersionHeaderAsync_Match_UnsupportedVersionException()
         {
             SemVer semVer = new SemVer() { Major = 6, Minor = -1, Patch = -2 };
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             _ = Assert.ThrowsAsync<UnsupportedVersionException>( async () => await client.GetVersionHeaderAsync( "address-types", semVer ) );
         }
 
         [Fact]
         public async Task GetAppConfigAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             var actual = await client.GetAppConfigAsync();
             Assert.NotNull( actual );
             Assert.IsType<string>( actual );
@@ -471,7 +471,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetAppConfigJsonAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             var actual = await client.GetAppConfigJsonAsync();
             Assert.NotNull( actual );
             Assert.IsType<JObject>( actual );
@@ -480,7 +480,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetAllAvailableResourcesAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             var actual = await client.GetAllAvailableResourcesAsync();
             Assert.NotNull( actual );
             Assert.IsType<string>( actual );
@@ -489,7 +489,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetAllAvailableResourcesAsJsonAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAvailableResources() );
             var actual = await client.GetAllAvailableResourcesAsJsonAsync();
             Assert.NotNull( actual );
             Assert.IsType<JArray>( actual );
@@ -498,7 +498,7 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetAvailableResourcesForAppAsJsonAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             var actual = await client.GetAvailableResourcesForAppAsJsonAsync();
             Assert.NotNull( actual );
             Assert.IsType<JArray>( actual );
@@ -507,12 +507,11 @@ namespace Ellucian.Ethos.Integration.Config.Test
         [Fact]
         public async Task GetAvailableResourcesForAppAsync()
         {
-            client = new EthosConfigurationClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockAppConfigFilterAvailableResources() );
+            client = new EthosConfigurationClient( SampleTestData.API_KEY, SampleTestData.GetMockAppConfigFilterAvailableResources() );
             var actual = await client.GetAvailableResourcesForAppAsync();
             Assert.NotNull( actual );
             Assert.IsType<string>( actual );
         }
-
 
         #endregion
     }

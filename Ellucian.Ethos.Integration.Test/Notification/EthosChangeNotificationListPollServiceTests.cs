@@ -22,7 +22,7 @@ namespace Ellucian.Ethos.Integration.Notification.Test
         [Fact]
         public async Task SubscribeAsync()
         {
-            EthosChangeNotificationService ethosChangeNotificationService = SampleTestDataRepository.GetMockEthosChangeNotificationService();
+            EthosChangeNotificationService ethosChangeNotificationService = SampleTestData.GetMockEthosChangeNotificationService();
 
             UnitTestChangeNotificationListSubscriber subscriber = new UnitTestChangeNotificationListSubscriber();
             EthosChangeNotificationListPollService service = new EthosChangeNotificationListPollService( ethosChangeNotificationService, 2, 2 )
@@ -36,7 +36,7 @@ namespace Ellucian.Ethos.Integration.Notification.Test
         [Fact]
         public void GetNumberOfSubscribers_Tests()
         {
-            EthosChangeNotificationService ethosChangeNotificationService = SampleTestDataRepository.GetMockEthosChangeNotificationService();
+            EthosChangeNotificationService ethosChangeNotificationService = SampleTestData.GetMockEthosChangeNotificationService();
 
             UnitTestChangeNotificationListSubscriber subscriber = new UnitTestChangeNotificationListSubscriber();
             UnitTestChangeNotificationListSubscriber subscriber1 = new UnitTestChangeNotificationListSubscriber();
@@ -50,7 +50,7 @@ namespace Ellucian.Ethos.Integration.Notification.Test
         [Fact]
         public void GetSubscribers_Test()
         {
-            EthosChangeNotificationService ethosChangeNotificationService = SampleTestDataRepository.GetMockEthosChangeNotificationService();
+            EthosChangeNotificationService ethosChangeNotificationService = SampleTestData.GetMockEthosChangeNotificationService();
 
             UnitTestChangeNotificationListSubscriber subscriber = new UnitTestChangeNotificationListSubscriber();
             UnitTestChangeNotificationListSubscriber subscriber1 = new UnitTestChangeNotificationListSubscriber();
@@ -67,7 +67,7 @@ namespace Ellucian.Ethos.Integration.Notification.Test
         [Fact]
         public void Unsubscribe_Test()
         {
-            EthosChangeNotificationService ethosChangeNotificationService = SampleTestDataRepository.GetMockEthosChangeNotificationService();
+            EthosChangeNotificationService ethosChangeNotificationService = SampleTestData.GetMockEthosChangeNotificationService();
 
             UnitTestChangeNotificationListSubscriber subscriber = new UnitTestChangeNotificationListSubscriber();
             UnitTestChangeNotificationListSubscriber subscriber1 = new UnitTestChangeNotificationListSubscriber();

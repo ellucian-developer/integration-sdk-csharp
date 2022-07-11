@@ -26,9 +26,9 @@ namespace Ellucian.Ethos.Integration.Test
         {
             string resourceName = "student-cohorts";
             string url = $"{EthosIntegrationUrls.Api( Ethos.Integration.Authentication.SupportedRegions.US, resourceName )}";
-            (Dictionary<string, string> dict, HttpClient client) data = SampleTestDataRepository.GetMockClientWithOK();
-            EthosClient ethosClient = new EthosClient( SampleTestDataRepository.API_KEY, data.client );
-            var result = await ethosClient.GetAsync( data.dict, url );
+            (Dictionary<string, string> dict, HttpClient client) data = SampleTestData.GetMockClientWithOK();
+            EthosClient ethosClient = new EthosClient(SampleTestData.API_KEY, data.client);
+            var result = await ethosClient.GetAsync(data.dict, url);
             var content = JsonConvert.SerializeObject( result.Content );
             Assert.NotNull( result );
             Assert.Equal( ( int ) HttpStatusCode.OK, result.HttpStatusCode );
@@ -40,9 +40,9 @@ namespace Ellucian.Ethos.Integration.Test
         {
             string resourceName = "student-cohorts";
             string url = $"{EthosIntegrationUrls.Api( Ethos.Integration.Authentication.SupportedRegions.US, resourceName )}";
-            (Dictionary<string, string> dict, HttpClient client) data = SampleTestDataRepository.GetMockClientWithNotFound();
-            EthosClient ethosClient = new EthosClient( SampleTestDataRepository.API_KEY, data.client );
-            _ = Assert.ThrowsAsync<HttpRequestException>( async () => await ethosClient.GetAsync( data.dict, url ) );
+            HttpClient data = SampleTestData.GetMockClientWithNotFound();
+            EthosClient ethosClient = new EthosClient( SampleTestData.API_KEY, data );
+            _ = Assert.ThrowsAsync<HttpRequestException>( async () => await ethosClient.GetAsync( url ) );
         }
 
         #endregion
@@ -53,14 +53,14 @@ namespace Ellucian.Ethos.Integration.Test
         public async Task EthosClient_PostAsync()
         {
             string resourceName = "student-cohorts";
-            string url = $"{EthosIntegrationUrls.Api( Ethos.Integration.Authentication.SupportedRegions.US, resourceName )}";
-            (Dictionary<string, string> dict, HttpClient client) data = SampleTestDataRepository.GetMockClientWithOK();
-            EthosClient ethosClient = new EthosClient( SampleTestDataRepository.API_KEY, data.client );
-            var result = await ethosClient.PostAsync( data.dict, url );
-            var content = JsonConvert.SerializeObject( result.Content );
-            Assert.NotNull( result );
-            Assert.Equal( ( int ) HttpStatusCode.OK, result.HttpStatusCode );
-            Assert.True( !string.IsNullOrWhiteSpace( content ) );
+            string url = $"{EthosIntegrationUrls.Api(Ethos.Integration.Authentication.SupportedRegions.US, resourceName)}";
+            (Dictionary<string, string> dict, HttpClient client) data = SampleTestData.GetMockClientWithOK();
+            EthosClient ethosClient = new EthosClient(SampleTestData.API_KEY, data.client);
+            var result = await ethosClient.PostAsync(data.dict, url);
+            var content = JsonConvert.SerializeObject(result.Content);
+            Assert.NotNull(result);
+            Assert.Equal((int)HttpStatusCode.OK, result.HttpStatusCode);
+            Assert.True(!string.IsNullOrWhiteSpace(content));
         }
 
         #endregion
@@ -70,14 +70,14 @@ namespace Ellucian.Ethos.Integration.Test
         public async Task EthosClient_PutAsync()
         {
             string resourceName = "student-cohorts";
-            string url = $"{EthosIntegrationUrls.Api( Ethos.Integration.Authentication.SupportedRegions.US, resourceName )}";
-            (Dictionary<string, string> dict, HttpClient client) data = SampleTestDataRepository.GetMockClientWithOK();
-            EthosClient ethosClient = new EthosClient( SampleTestDataRepository.API_KEY, data.client );
-            var result = await ethosClient.PutAsync( data.dict, url );
-            var content = JsonConvert.SerializeObject( result.Content );
-            Assert.NotNull( result );
-            Assert.Equal( ( int ) HttpStatusCode.OK, result.HttpStatusCode );
-            Assert.True( !string.IsNullOrWhiteSpace( content ) );
+            string url = $"{EthosIntegrationUrls.Api(Ethos.Integration.Authentication.SupportedRegions.US, resourceName)}";
+            (Dictionary<string, string> dict, HttpClient client) data = SampleTestData.GetMockClientWithOK();
+            EthosClient ethosClient = new EthosClient(SampleTestData.API_KEY, data.client);
+            var result = await ethosClient.PutAsync(data.dict, url);
+            var content = JsonConvert.SerializeObject(result.Content);
+            Assert.NotNull(result);
+            Assert.Equal((int)HttpStatusCode.OK, result.HttpStatusCode);
+            Assert.True(!string.IsNullOrWhiteSpace(content));
         }
         #endregion
 
@@ -87,14 +87,14 @@ namespace Ellucian.Ethos.Integration.Test
         public async Task EthosClient_DeleteAsync()
         {
             string resourceName = "student-cohorts";
-            string url = $"{EthosIntegrationUrls.Api( Ethos.Integration.Authentication.SupportedRegions.US, resourceName )}";
-            (Dictionary<string, string> dict, HttpClient client) data = SampleTestDataRepository.GetMockClientWithOK();
-            EthosClient ethosClient = new EthosClient( SampleTestDataRepository.API_KEY, data.client );
-            var result = await ethosClient.PostAsync( data.dict, url );
-            var content = JsonConvert.SerializeObject( result.Content );
-            Assert.NotNull( result );
-            Assert.Equal( ( int ) HttpStatusCode.OK, result.HttpStatusCode );
-            Assert.True( !string.IsNullOrWhiteSpace( content ) );
+            string url = $"{EthosIntegrationUrls.Api(Ethos.Integration.Authentication.SupportedRegions.US, resourceName)}";
+            (Dictionary<string, string> dict, HttpClient client) data = SampleTestData.GetMockClientWithOK();
+            EthosClient ethosClient = new EthosClient(SampleTestData.API_KEY, data.client);
+            var result = await ethosClient.PostAsync(data.dict, url);
+            var content = JsonConvert.SerializeObject(result.Content);
+            Assert.NotNull(result);
+            Assert.Equal((int)HttpStatusCode.OK, result.HttpStatusCode);
+            Assert.True(!string.IsNullOrWhiteSpace(content));
         }
 
         #endregion

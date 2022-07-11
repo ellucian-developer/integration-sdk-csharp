@@ -26,7 +26,7 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void EthosClientFactory_GetEthosProxyClient_With_SessionToken()
         {
-            var client = new EthosClientBuilder( SampleTestDataRepository.API_KEY ).WithConnectionTimeout( 30 ).BuildEthosProxyClient();
+            var client = new EthosClientBuilder( SampleTestData.API_KEY ).WithConnectionTimeout( 30 ).BuildEthosProxyClient();
             Assert.NotNull( client );
             Assert.IsType<EthosProxyClient>( client );
         }
@@ -40,7 +40,7 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void EthosClientFactory_GetEthosErrorsClient_With_SessionToken()
         {
-            var client = new EthosClientBuilder( SampleTestDataRepository.API_KEY ).WithConnectionTimeout( 30 ).BuildEthosErrorsClient();
+            var client = new EthosClientBuilder( SampleTestData.API_KEY ).WithConnectionTimeout( 30 ).BuildEthosErrorsClient();
             Assert.NotNull( client );
             Assert.IsType<EthosErrorsClient>( client );
         }
@@ -54,7 +54,7 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void EthosClientFactory_EthosConfigurationClient_With_SessionToken()
         {
-            var client = new EthosClientBuilder( SampleTestDataRepository.API_KEY ).BuildEthosConfigurationClient();
+            var client = new EthosClientBuilder( SampleTestData.API_KEY ).BuildEthosConfigurationClient();
             Assert.NotNull( client );
             Assert.IsType<EthosConfigurationClient>( client );
         }

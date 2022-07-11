@@ -16,7 +16,7 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void HttpProtocolClientBuilder()
         {
-            var expected = SampleTestDataRepository.GetMockHttpClient();
+            var expected = SampleTestData.GetMockHttpClient();
 
             Assert.NotNull( expected );
             Assert.Equal( 3, expected.DefaultRequestHeaders.Count() );

@@ -26,7 +26,7 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void ErrorsClientExpiredToken()
         {
-            AccessToken sessionToken = new AccessToken( SampleTestDataRepository.API_KEY, DateTime.Now.AddDays( -1 ) );
+            AccessToken sessionToken = new AccessToken( SampleTestData.API_KEY, DateTime.Now.AddDays( -1 ) );
             Assert.False( sessionToken.IsValid() );
         }
 
@@ -52,8 +52,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_GetAllErrorsAsJArrayAsync()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
 
             var errorsJArray = await client.GetAllErrorsAsJArrayAsync();
             CheckListState( errorsJArray );
@@ -62,8 +62,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_GetAllErrorsAsStringsAsyncGetAllErrorsAsStringsAsync()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
 
             var errorsArray = await client.GetAllErrorsAsStringsAsync();
             CheckListState( errorsArray );
@@ -72,8 +72,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_GetAllErrorsAsync()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks);
 
             var allErrorsArray = await client.GetAllErrorsAsync();
             CheckListState( allErrorsArray );
@@ -82,8 +82,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_GetAsEthosErrorsAsync()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
 
             var allErrorsArray = await client.GetAsEthosErrorsAsync();
             CheckListState( allErrorsArray );
@@ -92,8 +92,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_GetAllErrorsAsEthosErrorsAsync()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
 
             var allErrorsArray = await client.GetAllErrorsAsEthosErrorsAsync();
             CheckListState( allErrorsArray );
@@ -102,8 +102,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_GetErrorsFromOffsetAsEthosErrorsAsync()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
 
             var allErrorsArray = await client.GetErrorsFromOffsetAsEthosErrorsAsync( 5 );
             CheckListState( allErrorsArray );
@@ -112,8 +112,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_GetAllErrorsWithPageSizeAsJArraysAsync()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
 
             var pageSizeJarray = await client.GetAllErrorsWithPageSizeAsJArraysAsync( 5 );
             CheckListState( pageSizeJarray );
@@ -122,8 +122,8 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public async Task ErrorsClient_CheckPages()
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( true );
-            EthosErrorsClient client = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( true );
+            EthosErrorsClient client = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
 
             IEnumerable<EthosResponse> pagedResponse = await client.GetErrorsFromOffsetWithPageSizeAsync( 2, 2 );
             // this is broken up to be intentionally small to test functionality. Mocked response contains 10 entries so
@@ -143,7 +143,7 @@ namespace Ellucian.Ethos.Integration.Test
             EthosErrorsClient singleRecordMockClient = CreateTestClient( false );
             string errorsStr = await singleRecordMockClient.GetByIdAsStringAsync( SingleErrorId );
             Assert.False( string.IsNullOrEmpty( errorsStr ) );
-            Assert.Equal( errorsStr, SampleTestDataRepository.GetOneJsonRecordString() );
+            Assert.Equal( errorsStr, SampleTestData.GetOneJsonRecordString() );
             EthosError errorFromString = ErrorFactory.CreateErrorFromJson( errorsStr );
             Assert.NotEmpty( errorFromString.Id );
 
@@ -166,10 +166,10 @@ namespace Ellucian.Ethos.Integration.Test
 
         private EthosErrorsClient CreateTestClient( bool multiple )
         {
-            var mocks = SampleTestDataRepository.GetMockErrorMessageClientWithOK( multiple );
-            AccessToken sessionToken = new AccessToken( SampleTestDataRepository.API_KEY, DateTime.Now.AddDays( 1 ) );
+            var mocks = SampleTestData.GetMockErrorMessageClientWithOK( multiple );
+            AccessToken sessionToken = new AccessToken( SampleTestData.API_KEY, DateTime.Now.AddDays( 1 ) );
             Assert.True( sessionToken.IsValid() );
-            EthosErrorsClient errorsClient = new EthosErrorsClient( SampleTestDataRepository.API_KEY, mocks.httpClient );
+            EthosErrorsClient errorsClient = new EthosErrorsClient( SampleTestData.API_KEY, mocks );
             return errorsClient;
         }
     }

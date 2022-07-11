@@ -19,7 +19,7 @@ namespace Ellucian.Ethos.Integration.Test.Client.Messages
         [Fact]
         public void EthosMessagesClient_ConsumeAsync_Limit_Zero_InvalidOperationException()
         {
-            EthosMessagesClient client = new EthosMessagesClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockEthosMessagesClientWithArrayWithOKStatus().httpClient );
+            EthosMessagesClient client = new EthosMessagesClient( SampleTestData.API_KEY, SampleTestData.GetMockEthosMessagesClientWithArrayWithOKStatus() );
             try
             {
                 _ = client.ConsumeAsync( 0, null );
@@ -33,7 +33,7 @@ namespace Ellucian.Ethos.Integration.Test.Client.Messages
         [Fact]
         public void EthosMessagesClient_ConsumeAsync_Limit_Over_Thousand_InvalidOperationException()
         {
-            EthosMessagesClient client = new EthosMessagesClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockEthosMessagesClientWithArrayWithOKStatus().httpClient );
+            EthosMessagesClient client = new EthosMessagesClient( SampleTestData.API_KEY, SampleTestData.GetMockEthosMessagesClientWithArrayWithOKStatus() );
             try
             {
                 _ = client.ConsumeAsync( 1001, null );
@@ -47,7 +47,7 @@ namespace Ellucian.Ethos.Integration.Test.Client.Messages
         [Fact]
         public void EthosMessagesClient_ConsumeAsync()
         {
-            EthosMessagesClient client = new EthosMessagesClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockEthosMessagesClientWithArrayWithOKStatus().httpClient );
+            EthosMessagesClient client = new EthosMessagesClient( SampleTestData.API_KEY, SampleTestData.GetMockEthosMessagesClientWithArrayWithOKStatus() );
             var actuals = client.ConsumeAsync( 1, 0 );
             Assert.NotNull( actuals );
 

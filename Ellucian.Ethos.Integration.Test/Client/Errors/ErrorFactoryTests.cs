@@ -32,7 +32,7 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void ErrorFactory_CreateErrorFromJson_OneRecord_Type_Error()
         {
-            var json = SampleTestDataRepository.GetOneJsonRecordString();
+            var json = SampleTestData.GetOneJsonRecordString();
             var result = ErrorFactory.CreateErrorFromJson( json );
 
             Assert.NotNull( result );
@@ -42,7 +42,7 @@ namespace Ellucian.Ethos.Integration.Test
         [Fact]
         public void ErrorFactory_CreateErrorArrayFromJson_OneRecord_Type_Error()
         {
-            var json = SampleTestDataRepository.GetErrorMessage();
+            var json = SampleTestData.GetErrorMessage();
             var result = ErrorFactory.CreateErrorListFromJson( json );
 
             Assert.IsType<List<EthosError>>( result );

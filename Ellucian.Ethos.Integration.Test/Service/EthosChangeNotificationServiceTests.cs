@@ -20,7 +20,7 @@ namespace Ellucian.Ethos.Integration.Test.Service
 {
     public class EthosChangeNotificationServiceTests
     {
-        string apiKey = SampleTestDataRepository.API_KEY;
+        string apiKey = SampleTestData.API_KEY;
         string resourceName = "accounting-string-component-values";
         string versionShort = "V8";
         string versionLong = "application/vnd.hedtech.integration.v8+json";
@@ -32,7 +32,7 @@ namespace Ellucian.Ethos.Integration.Test.Service
         [Fact]
         public async Task GetChangeNotificationsAsync()
         {
-            EthosChangeNotificationService service = SampleTestDataRepository.GetMockEthosChangeNotificationService();
+            EthosChangeNotificationService service = SampleTestData.GetMockEthosChangeNotificationService();
 
             var actual = await service.GetChangeNotificationsAsync( null );
             Assert.NotNull( actual );

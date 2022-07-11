@@ -21,7 +21,7 @@ namespace Ellucian.Ethos.Integration.Test.Client.Messages
         [Fact]
         public void ChangeNotificationFactory_SingleRecord()
         {
-            var data = SampleTestDataRepository.GetChangeNotificationSingleJson();
+            var data = SampleTestData.GetChangeNotificationSingleJson();
             var actual = ChangeNotificationFactory.CreateCNFromJson( data );
 
             Assert.IsType<ChangeNotification>( actual );
@@ -36,7 +36,7 @@ namespace Ellucian.Ethos.Integration.Test.Client.Messages
         [Fact]
         public void ChangeNotificationFactory_ArrayRecord()
         {
-            var data = SampleTestDataRepository.GetChangeNotificationArrayJson();
+            var data = SampleTestData.GetChangeNotificationArrayJson();
             var actuals = ChangeNotificationFactory.CreateCNListFromJson( data );
 
             Assert.Equal( 2, actuals.Count() );

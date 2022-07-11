@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Ellucian.Ethos.Integration.Test
 {
-    public class SampleTestDataRepository
+    public class SampleTestData
     {
         #region Data for tests
 
@@ -183,9 +183,20 @@ namespace Ellucian.Ethos.Integration.Test
             return @"[{'id':'eef6b098-17fe-4d9e-b8f8-5d949420ffa6','description':'SomeDescription'}]";
         }
 
-        #endregion
+        public static string GetMockSingleForStronglyTyped()
+        {
+            return @"{'description':'Eleanors Music Project','id':'f15a95e1-d12f-4833-8cfa-6cbe7995d1bb'}";
+        }
+
+        public static string GetMockArrayForStronglyTyped()
+        {
+            return @"[{'id':'f15a95e1-d12f-4833-8cfa-6cbe7995d1bb', 'description':'Eleanors Music Project'}, {'id':'8dhg95e1-d12f-4833-8cfa-6cbe7995d1bb', 'description':'Eleanors Music Project II'}]";
+        }
+
+        #endregion Data for tests
 
         #region Mocks
+
         public static HttpClient GetMockHttpClientWithSingleRecordForStronglyTyped()
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage
@@ -207,8 +218,8 @@ namespace Ellucian.Ethos.Integration.Test
 
             HttpClient httpClient;
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            httpClient.DefaultRequestHeaders.Add( "pragma", "no-cache" );
-            httpClient.DefaultRequestHeaders.Add( "cache-control", "no-cache" );
+            httpClient.DefaultRequestHeaders.Add("pragma", "no-cache");
+            httpClient.DefaultRequestHeaders.Add("cache-control", "no-cache");
             httpClient.DefaultRequestHeaders.Add( "User-Agent", "EllucianEthosIntegrationSdk" );
             httpClient.Timeout = new TimeSpan( 0, 0, 0, 60000, 0 );
 
@@ -311,46 +322,16 @@ namespace Ellucian.Ethos.Integration.Test
             }, API_KEY );
         }
 
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockSequenceForErrorClientWithOK()
+        public static HttpClient GetMockClientWithArrayWithOKStatus()
         {
-            Mock<IHttpProtocolClientBuilder> builder = new Mock<IHttpProtocolClientBuilder>();
-            builder.Object.BuildHttpClient( null );
-
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
-            //setup mock
-            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-            //Setup sequence
-            mockHttpMessageHandler.Protected()
-                .SetupSequence<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>() )
-                .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetToken() ) } )
-                .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetErrorMessage() ) } );
-            httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
-        }
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockClientWithArrayWithOKStatus()
-        {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             HttpResponseMessage responseMessage = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent( GetArrayJsonRecordString() ),
                 RequestMessage = new HttpRequestMessage() { RequestUri = new Uri( "https://integrate.elluciancloud.com/api/student-cohorts" ) }
             };
-            responseMessage.Headers.Add( "Date", DateTimeOffset.Now.ToString( "ddd, dd MMM yyyy HH:mm:ss 'GMT'" ) );
-            responseMessage.Headers.Add( "x-total-count", "10" );
-            responseMessage.Headers.Add( "x-application-context", "application:production:8092" );
-            responseMessage.Headers.Add( "x-max-page-size", "500" );
-            responseMessage.Headers.Add( "x-media-type", VERSION );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-id", "15f97b04-d893-4428-a5b9-81bc997e6493" );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-name", "Banner Student API" );
-
+            AddHeaders(responseMessage);
 
             //setup mock
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
@@ -362,14 +343,12 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( responseMessage );
 
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
 
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockSequenceForEthosProxyClientWithOK()
+        public static HttpClient GetMockSequenceForEthosProxyClientWithOK()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             //setup mock
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             HttpResponseMessage responseMessage = new HttpResponseMessage
@@ -378,13 +357,8 @@ namespace Ellucian.Ethos.Integration.Test
                 Content = new StringContent( GetArrayJsonRecordString() ),
                 RequestMessage = new HttpRequestMessage() { RequestUri = new Uri( "https://integrate.elluciancloud.com/api/student-cohorts" ) }
             };
-            responseMessage.Headers.Add( "Date", DateTimeOffset.Now.ToString( "ddd, dd MMM yyyy HH:mm:ss 'GMT'" ) );
-            responseMessage.Headers.Add( "x-total-count", "10" );
-            responseMessage.Headers.Add( "x-application-context", "application:production:8092" );
-            responseMessage.Headers.Add( "x-max-page-size", "500" );
-            responseMessage.Headers.Add( "x-media-type", VERSION );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-id", "15f97b04-d893-4428-a5b9-81bc997e6493" );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-name", "Banner Student API" );
+            AddHeaders(responseMessage);
+         
             //Setup sequence
             mockHttpMessageHandler.Protected()
                 .SetupSequence<Task<HttpResponseMessage>>(
@@ -394,14 +368,12 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetToken() ) } )
                 .ReturnsAsync( responseMessage );
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
 
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockSequenceForEthosFilterQueryClientWithOK( string filter )
+        public static HttpClient GetMockSequenceForEthosFilterQueryClientWithOK( string filter )
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             //setup mock
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             HttpResponseMessage responseMessage = new HttpResponseMessage
@@ -410,13 +382,8 @@ namespace Ellucian.Ethos.Integration.Test
                 Content = new StringContent( GetArrayJsonRecordString() ),
                 RequestMessage = new HttpRequestMessage() { RequestUri = new Uri( $"https://integrate.elluciancloud.com/api/student-cohorts{filter}" ) }
             };
-            responseMessage.Headers.Add( "Date", DateTimeOffset.Now.ToString( "ddd, dd MMM yyyy HH:mm:ss 'GMT'" ) );
-            responseMessage.Headers.Add( "x-total-count", "10" );
-            responseMessage.Headers.Add( "x-application-context", "application:production:8092" );
-            responseMessage.Headers.Add( "x-max-page-size", "500" );
-            responseMessage.Headers.Add( "x-media-type", VERSION );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-id", "15f97b04-d893-4428-a5b9-81bc997e6493" );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-name", "Banner Student API" );
+            AddHeaders(responseMessage);
+            
             //Setup sequence
             mockHttpMessageHandler.Protected()
                 .SetupSequence<Task<HttpResponseMessage>>(
@@ -428,7 +395,7 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( responseMessage )
                 .ReturnsAsync( responseMessage );
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
 
         public static HttpClient GetMockSequenceForEthosQAPIClientWithOK( string filter )
@@ -458,11 +425,9 @@ namespace Ellucian.Ethos.Integration.Test
             return httpClient;
         }
 
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockSequenceForEthosFilterQueryClientWithFilterMap()
+        public static HttpClient GetMockSequenceForEthosFilterQueryClientWithFilterMap()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             //setup mock
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             HttpResponseMessage responseMessage = new HttpResponseMessage
@@ -474,13 +439,8 @@ namespace Ellucian.Ethos.Integration.Test
                     RequestUri = new Uri( $"https://integrate.elluciancloud.com/api/student-cohorts?firstName=FIRST_NAME" )
                 }
             };
-            responseMessage.Headers.Add( "Date", DateTimeOffset.Now.ToString( "ddd, dd MMM yyyy HH:mm:ss 'GMT'" ) );
-            responseMessage.Headers.Add( "x-total-count", "10" );
-            responseMessage.Headers.Add( "x-application-context", "application:production:8092" );
-            responseMessage.Headers.Add( "x-max-page-size", "500" );
-            responseMessage.Headers.Add( "x-media-type", VERSION );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-id", "15f97b04-d893-4428-a5b9-81bc997e6493" );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-name", "Banner Student API" );
+            AddHeaders(responseMessage);
+            
             //Setup sequence
             mockHttpMessageHandler.Protected()
                 .SetupSequence<Task<HttpResponseMessage>>(
@@ -490,14 +450,12 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetToken() ) } )
                 .ReturnsAsync( responseMessage );
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
 
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockSequenceForEthosProxyClientWithOKForPaging()
+        public static HttpClient GetMockSequenceForEthosProxyClientWithOKForPaging()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             //setup mock
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             HttpResponseMessage responseMessage = new HttpResponseMessage
@@ -506,13 +464,8 @@ namespace Ellucian.Ethos.Integration.Test
                 Content = new StringContent( GetArrayJsonRecordString() ),
                 RequestMessage = new HttpRequestMessage() { RequestUri = new Uri( "https://integrate.elluciancloud.com/api/student-cohorts" ) }
             };
-            responseMessage.Headers.Add( "Date", DateTimeOffset.Now.ToString( "ddd, dd MMM yyyy HH:mm:ss 'GMT'" ) );
-            responseMessage.Headers.Add( "x-total-count", "10" );
-            responseMessage.Headers.Add( "x-application-context", "application:production:8092" );
-            responseMessage.Headers.Add( "x-max-page-size", "500" );
-            responseMessage.Headers.Add( "x-media-type", VERSION );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-id", "15f97b04-d893-4428-a5b9-81bc997e6493" );
-            responseMessage.Headers.Add( "hedtech-ethos-integration-application-name", "Banner Student API" );
+            AddHeaders(responseMessage);
+           
             //Setup sequence
             mockHttpMessageHandler.Protected()
                 .SetupSequence<Task<HttpResponseMessage>>(
@@ -527,13 +480,12 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( responseMessage )
                 .ReturnsAsync( responseMessage );
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockClientWithOKSingleRecordWithAccessToken()
+
+        public static HttpClient GetMockClientWithOKSingleRecordWithAccessToken()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             HttpResponseMessage responseMessage = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
@@ -555,8 +507,9 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( responseMessage );
 
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
+
         public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockClientWithOK()
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
@@ -580,11 +533,10 @@ namespace Ellucian.Ethos.Integration.Test
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
             return (dict, httpClient);
         }
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockErrorMessageClientWithOK( bool multiple )
+
+        public static HttpClient GetMockErrorMessageClientWithOK( bool multiple )
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             HttpResponseMessage response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
@@ -612,14 +564,13 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( response );
 
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockClientWithNotFound()
+
+        public static HttpClient GetMockClientWithNotFound()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", $"Bearer { API_KEY }" );
-            //setup mock
+           //setup mock
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             mockHttpMessageHandler.Protected()
                 .SetupSequence<Task<HttpResponseMessage>>(
@@ -630,13 +581,12 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound, Content = new StringContent( "{'errors':[{'code':'Global.SchemaValidation.Error','description':'Errors parsing input JSON.','message':'Student Cohort not found'}]}" ) } );
 
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
-        public static (Dictionary<string, string> dict, HttpClient httpClient) GetMockEthosMessagesClientWithArrayWithOKStatus()
+
+        public static HttpClient GetMockEthosMessagesClientWithArrayWithOKStatus()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", GetToken() );
             HttpResponseMessage responseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent( GetChangeNotificationArrayJson() ) };
             responseMessage.Headers.Add( "x-remaining", "2" );
 
@@ -651,13 +601,12 @@ namespace Ellucian.Ethos.Integration.Test
                 .ReturnsAsync( responseMessage );
 
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
-            return (dict, httpClient);
+            return httpClient;
         }
+
         public static HttpClient GetMockAvailableResources()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             HttpResponseMessage responseMessage = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
@@ -678,11 +627,10 @@ namespace Ellucian.Ethos.Integration.Test
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
             return httpClient;
         }
+
         public static HttpClient GetMockAvailableResourcesWithFiltersAndNamedQueriesData()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             HttpResponseMessage personData = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
@@ -712,11 +660,10 @@ namespace Ellucian.Ethos.Integration.Test
             httpClient = new HttpClient( mockHttpMessageHandler.Object );
             return httpClient;
         }
+
         public static HttpClient GetMockAvailableResourcesForFilterAvailableResources()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             HttpResponseMessage personData = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
@@ -739,9 +686,7 @@ namespace Ellucian.Ethos.Integration.Test
 
         public static HttpClient GetMockAppConfigFilterAvailableResources()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             HttpClient httpClient;
-            dict.Add( "Authorization", "Bearer 1234" );
             HttpResponseMessage configData = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
@@ -772,5 +717,88 @@ namespace Ellucian.Ethos.Integration.Test
         }
 
         #endregion
+
+
+        #region Strongly Typed
+
+        public static HttpClient GetResponseWithSingleForStronglyTyped(string criteriaFilterStronglyTyped)
+        {
+            HttpResponseMessage responseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(GetMockSingleForStronglyTyped()),
+                RequestMessage = new HttpRequestMessage()
+                {
+                    RequestUri = new Uri($"https://integrate.elluciancloud.com/api/student-cohorts{criteriaFilterStronglyTyped}")
+                }
+            };
+            responseMessage.Headers.Add("x-remaining", "2");
+
+            //setup mock
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+            mockHttpMessageHandler.Protected()
+                .SetupSequence<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(GetToken()) })
+                .ReturnsAsync(responseMessage);
+
+            HttpClient httpClient = new HttpClient(mockHttpMessageHandler.Object);
+            httpClient.DefaultRequestHeaders.Add("pragma", "no-cache");
+            httpClient.DefaultRequestHeaders.Add("cache-control", "no-cache");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "EllucianEthosIntegrationSdk");
+            httpClient.Timeout = new TimeSpan(0, 0, 0, 60000, 0);
+
+            return httpClient;
+        }
+
+        public static HttpClient GetResponseWithArrayForStronglyTyped(string criteriaFilterStronglyTyped)
+        {
+            HttpClient httpClient;
+            //setup mock
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+            HttpResponseMessage responseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(GetMockArrayForStronglyTyped()),
+                RequestMessage = new HttpRequestMessage() { RequestUri = new Uri($"https://integrate.elluciancloud.com/api/student-cohorts{criteriaFilterStronglyTyped}") }
+            };
+            AddHeaders(responseMessage);
+          
+            //Setup sequence
+            mockHttpMessageHandler.Protected()
+                .SetupSequence<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(GetToken()) })
+                .ReturnsAsync(responseMessage)
+                .ReturnsAsync(responseMessage)
+                .ReturnsAsync(responseMessage)
+                .ReturnsAsync(responseMessage)
+                .ReturnsAsync(responseMessage)
+                .ReturnsAsync(responseMessage);
+            httpClient = new HttpClient(mockHttpMessageHandler.Object);
+            return httpClient;
+        }
+
+        #endregion Strongly Typed
+
+        #region Helper Methods
+
+        public static HttpResponseMessage AddHeaders(HttpResponseMessage responseMessage)
+        {
+            responseMessage.Headers.Add("Date", DateTimeOffset.Now.ToString("ddd, dd MMM yyyy HH:mm:ss 'GMT'"));
+            responseMessage.Headers.Add("x-total-count", "10");
+            responseMessage.Headers.Add("x-application-context", "application:production:8092");
+            responseMessage.Headers.Add("x-max-page-size", "500");
+            responseMessage.Headers.Add("x-media-type", VERSION);
+            responseMessage.Headers.Add("hedtech-ethos-integration-application-id", "15f97b04-d893-4428-a5b9-81bc997e6493");
+            responseMessage.Headers.Add("hedtech-ethos-integration-application-name", "Banner Student API");
+            return responseMessage;
+        }
+
+        #endregion Helper Methods
     }
 }
