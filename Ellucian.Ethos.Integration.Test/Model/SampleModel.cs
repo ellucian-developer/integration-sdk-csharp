@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 namespace Ellucian.Ethos.Integration.Test
 {
     [DataContract]
-    public class Test
+    public class SampleModel
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Id { get; set; }

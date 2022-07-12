@@ -776,11 +776,11 @@ namespace Ellucian.Ethos.Integration.Test
         public async void GetWithCriteriaFilterAsync_ConvertEthosResponseContentToType_Success(string criteriaResourceName, string criterFilter, string version)
         {
             filterClient = new EthosFilterQueryClient(SampleTestData.API_KEY, SampleTestData.GetResponseWithSingleForStronglyTyped(criterFilter));
-            EthosResponse response = await filterClient.GetWithCriteriaFilterAsync<Test>(criteriaResourceName, criterFilter, version);
+            EthosResponse response = await filterClient.GetWithCriteriaFilterAsync<SampleModel>(criteriaResourceName, criterFilter, version);
             Assert.NotNull(response);
             Assert.Empty(response.Content);
             Assert.NotNull(response.Dto);            
-            Assert.IsType<Test>((Test)response.Dto);
+            Assert.IsType<SampleModel>((SampleModel)response.Dto);
             Assert.Equal((int)HttpStatusCode.OK, response.HttpStatusCode);
         }
 
@@ -788,11 +788,11 @@ namespace Ellucian.Ethos.Integration.Test
         public async void GetWithClassCriteriaFilterAsync_ConvertEthosResponseContentToType_Success()
         {
             filterClient = new EthosFilterQueryClient(SampleTestData.API_KEY, SampleTestData.GetResponseWithSingleForStronglyTyped(criteriaFilterStr));
-            EthosResponse response = await filterClient.GetWithCriteriaFilterAsync<Test>(criteriaResourceName, new CriteriaFilter(), version);
+            EthosResponse response = await filterClient.GetWithCriteriaFilterAsync<SampleModel>(criteriaResourceName, new CriteriaFilter(), version);
             Assert.NotNull(response);
             Assert.Empty(response.Content);
             Assert.NotNull(response.Dto);
-            Assert.IsType<Test>((Test)response.Dto);
+            Assert.IsType<SampleModel>((SampleModel)response.Dto);
             Assert.Equal((int)HttpStatusCode.OK, response.HttpStatusCode);
         }
 
