@@ -151,7 +151,7 @@ namespace Ellucian.Ethos.Integration.Config
         public async Task<string> GetAppConfigAsync()
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            return await base.GetStringAsync( headers, EthosIntegrationUrls.AppConfig( Region ) );
+            return await base.GetStringAsync( headers, IntegrationUrls.AppConfig( Region ) );
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Ellucian.Ethos.Integration.Config
         public async Task<string> GetAllAvailableResourcesAsync()
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            return await base.GetStringAsync( headers, EthosIntegrationUrls.AvailableResources( Region ) );
+            return await base.GetStringAsync( headers, IntegrationUrls.AvailableResources( Region ) );
         }
 
         /// <summary>

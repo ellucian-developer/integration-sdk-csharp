@@ -14,7 +14,7 @@ namespace Ellucian.Ethos.Integration
     /// <summary>
     /// Utility class used for building Ethos Integration URLs with various criteria.
     /// </summary>
-    public static class EthosIntegrationUrls
+    public class EthosIntegrationUrls
     {
         /// <summary>
         /// A Dictionary&lt;SupportedRegions,string&gt; of supported regions where each region is assigned the
@@ -35,16 +35,17 @@ namespace Ellucian.Ethos.Integration
         /// </item>
         /// </list>
         /// </summary>
-        private static readonly Dictionary<dynamic, string> RegionUrlPostFix = new Dictionary<dynamic, string>
+        private readonly Dictionary<dynamic, string> RegionUrlPostFix = new Dictionary<dynamic, string>
         {
             [ SupportedRegions.US ] = ".com",
             [ SupportedRegions.Canada ] = ".ca",
             [ SupportedRegions.Europe ] = ".ie",
-            [ SupportedRegions.Australia ] = ".com.au"
+            [ SupportedRegions.Australia ] = ".com.au",
+            [ SupportedRegions.SelfHosted ] = ""
         };
 
         ///<summary>The main domain for Ethos Integration.</summary>
-        private const string MAIN_BASE_URL = "https://integrate.elluciancloud";
+        public string MAIN_BASE_URL = "https://integrate.elluciancloud";
 
         /// <summary>
         /// The base URL for getting Api result(s) in Ethos Integration.
@@ -53,15 +54,15 @@ namespace Ellucian.Ethos.Integration
         /// <param name="resource">The Ethos resource the URL should contain.</param>
         /// <param name="id">The (optional) ID for the given resource to build URLs for "get by ID" requests.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs.</returns>
-        public static string Api( SupportedRegions region, string resource, string id = "" )
+        public string Api( SupportedRegions region, string resource, string id = "" )
         {
-            string url = BuildUrl( region, "/api" );
-            if ( !string.IsNullOrWhiteSpace( resource ) )
+            string url = BuildUrl(region, "/api");
+            if (!string.IsNullOrWhiteSpace(resource))
             {
-                url += ( "/" + resource );
-                if ( !string.IsNullOrWhiteSpace( id ) )
+                url += ("/" + resource);
+                if (!string.IsNullOrWhiteSpace(id))
                 {
-                    url += ( "/" + id );
+                    url += ("/" + id);
                 }
             }
             return url;
@@ -74,7 +75,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="resource">The Ethos resource the URL should contain.</param>
         /// <param name="filter">The resource filter the URL should contain.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs, supporting filters.</returns>
-        public static string ApiFilter( SupportedRegions region, string resource, string filter )
+        public string ApiFilter( SupportedRegions region, string resource, string filter )
         {
             string url = Api( region, resource, null );
             StringBuilder sb = new StringBuilder();
@@ -92,7 +93,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="region">A supported region.</param>
         /// <param name="resource">The Ethos resource the URL should contain.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs.</returns>
-        public static string Qapi( SupportedRegions region, string resource )
+        public string Qapi( SupportedRegions region, string resource )
         {
             string url = BuildUrl( region, "/qapi" );
             if ( !string.IsNullOrWhiteSpace( resource ) )
@@ -110,7 +111,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="offset">The row index from which to begin paging for data for the given resource.</param>
         /// <param name="pageSize">The number of rows each response can contain.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs.</returns>
-        public static string QapiPaging( SupportedRegions region, string resource, int offset, int pageSize )
+        public  string QapiPaging( SupportedRegions region, string resource, int offset, int pageSize )
         {
             string url = Qapi( region, resource );
             return AddPaging( url, offset, pageSize );
@@ -126,7 +127,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="offset">The row index from which to begin paging for data for the given resource.</param>
         /// <param name="pageSize">The number of rows each response can contain.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs, supporting filters.</returns>
-        public static string ApiFilterPaging( SupportedRegions region, string resource, string filter, int offset, int pageSize )
+        public string ApiFilterPaging( SupportedRegions region, string resource, string filter, int offset, int pageSize )
         {
             string url = ApiFilter( region, resource, filter );
             return AddPaging( url, offset, pageSize );
@@ -140,7 +141,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="offset">The row index from which to begin paging for data for the given resource.</param>
         /// <param name="pageSize">The number of rows each response can contain.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs, in support of paging.</returns>
-        public static string ApiPaging( SupportedRegions region, string resource, int offset, int pageSize )
+        public string ApiPaging( SupportedRegions region, string resource, int offset, int pageSize )
         {
             string urlStr = Api( region, resource, null );
             return AddPaging( urlStr, offset, pageSize );
@@ -151,7 +152,7 @@ namespace Ellucian.Ethos.Integration
         /// </summary>
         /// <param name="region">The appropriate supported region to build the URL with.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Errors APIs.</returns>
-        public static string Errors( SupportedRegions region )
+        public  string Errors( SupportedRegions region )
         {
             return BuildUrl( region, "/errors" );
         }
@@ -163,7 +164,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="offset">The row index from which to begin paging for errors.</param>
         /// <param name="pageSize">The number of errors (limit) each response can contain.</param>
         /// <returns>A string value containing the URL to use for interacting with EthosIntegration Errors API, in support of paging.</returns>
-        public static string ErrorsPaging( SupportedRegions region, int offset, int pageSize )
+        public string ErrorsPaging( SupportedRegions region, int offset, int pageSize )
         {
             string url = Errors( region );
             return AddPaging( url, offset, pageSize );
@@ -174,7 +175,7 @@ namespace Ellucian.Ethos.Integration
         /// </summary>
         /// <param name="region">The appropriate supported region to build the URL with.</param>
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Token API.</returns>
-        public static string Auth( SupportedRegions region )
+        public string Auth( SupportedRegions region )
         {
             return BuildUrl( region, "/auth" );
         }
@@ -184,7 +185,7 @@ namespace Ellucian.Ethos.Integration
         /// </summary>
         /// <param name="region">A supported region.</param>
         /// <returns>The region specific /appconfig URL</returns>
-        public static string AppConfig( SupportedRegions region )
+        public  string AppConfig( SupportedRegions region )
         {
             return BuildUrl( region, "/appconfig" );
         }
@@ -194,7 +195,7 @@ namespace Ellucian.Ethos.Integration
         /// </summary>
         /// <param name="region">A supported region.</param>
         /// <returns>The region specific /available-resources URL</returns>
-        public static string AvailableResources( SupportedRegions region )
+        public  string AvailableResources( SupportedRegions region )
         {
             return BuildUrl( region, "/admin/available-resources" );
         }
@@ -209,7 +210,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="limit">A value to use for the 'limit' query parameter. Any value greater than zero will be added to the URL as
         /// a query parameter. If the value is zero or less, it will not be added to the URL.</param>
         /// <returns>The URL to use for calling the Ethos Integration consume endpoint.</returns>
-        public static string Consume( SupportedRegions region, long? lastProcessedID, int? limit )
+        public string Consume( SupportedRegions region, long? lastProcessedID, int? limit )
         {
             StringBuilder builder = new StringBuilder();
 
@@ -236,7 +237,7 @@ namespace Ellucian.Ethos.Integration
         /// </summary>
         /// <param name="region">A supported region.</param>
         /// <returns></returns>
-        public static string BaseUrl( SupportedRegions region )
+        public string BaseUrl( SupportedRegions region )
         {
             return $"{MAIN_BASE_URL}{RegionUrlPostFix [ region ]}";
         }
@@ -245,10 +246,11 @@ namespace Ellucian.Ethos.Integration
         ///  Builds the URL with the mainBaseUrl, the supported region, and the correct path.
         /// </summary>
         /// <param name="region">The appropriate supported region to build the URL with.</param>
-        /// <param name="urlEnd">The correct path for the type of API the URL will be used with (/api for Proxy API URL,
+        /// <param name="urlEnd">The correct path for the type of API the URL will be used with (/api for Proxy API URL,</param>
+        /// <param name="colleagueApiUrl">If provided, swaps out the MAIN_BASE_URL for the ColleagueApiUrl,</param>
         /// <see cref="Auth(SupportedRegions)"/> for Token API URL, etc.).</param>
         /// <returns></returns>
-        private static string BuildUrl( SupportedRegions region, string urlEnd )
+        private string BuildUrl( SupportedRegions region, string urlEnd)
         {
             return $"{MAIN_BASE_URL}{RegionUrlPostFix [ region ]}{urlEnd}";
         }
@@ -260,7 +262,7 @@ namespace Ellucian.Ethos.Integration
         /// <param name="offset">The offset param to page from.</param>
         /// <param name="pageSize">The limit param to page with.</param>
         /// <returns>A URL string containing the offset and limit params for paging.</returns>
-        private static string AddPaging( string urlStr, int offset, int pageSize )
+        private string AddPaging( string urlStr, int offset, int pageSize )
         {
             StringBuilder sb = new StringBuilder( urlStr );
             if ( offset >= 0 && pageSize > 0 )

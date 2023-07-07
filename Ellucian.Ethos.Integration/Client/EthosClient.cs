@@ -28,6 +28,24 @@ namespace Ellucian.Ethos.Integration.Client
         /// </summary>
         private string ApiKey { get; }
 
+        protected EthosIntegrationUrls IntegrationUrls = new EthosIntegrationUrls();
+
+        // Only used by ColleagueWebAPIProxyClients
+        /// <summary>
+        /// Api URL to Self-Hosted Colleague API.
+        /// </summary>
+        protected string ColleagueApiUrl;
+        /// <summary>
+        /// Self-Hosted Colleague API username.
+        /// </summary>
+        protected string ColleagueApiUsername;
+        /// <summary>
+        /// Self-Hosted Colleague API password.
+        /// </summary>
+        protected string ColleagueApiPassword;
+
+
+
         /// <summary>
         /// Default token expiration time.
         /// </summary>
@@ -100,6 +118,28 @@ namespace Ellucian.Ethos.Integration.Client
             }
             ApiKey = apiKey;
             this.HttpProtocolClientBuilder ??= new HttpProtocolClientBuilder( client );
+            EthosResponseBuilder ??= new EthosResponseBuilder();
+        }
+        /// <summary>
+        /// Constructor called by subclasses of this class, specifically for ColleagueWebApiProxies.
+        /// </summary>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="client">A <see cref="System.Net.Http.HttpClient"/>.</param>
+        public EthosClient(string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword, HttpClient client)
+        {
+            if (colleagueApiUrl == null || colleagueApiUsername == null
+                || colleagueApiPassword == null || colleagueApiPassword == null)
+            {
+                throw new ArgumentNullException($"Colleague API URL and Credentials are required.");
+            }
+            if (client == null)
+            {
+                throw new ArgumentNullException($"The '{nameof(client)}' parameter is required.");
+            }
+            ApiKey = null;
+            this.HttpProtocolClientBuilder ??= new HttpProtocolClientBuilder(client);
             EthosResponseBuilder ??= new EthosResponseBuilder();
         }
 
@@ -175,7 +215,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// <exception cref="HttpRequestException">Returns <see cref="HttpRequestException"/> exception if the request fails.</exception>
         private async Task<AccessToken> GetNewTokenAsync()
         {
-            string authUrl = $"{ EthosIntegrationUrls.Auth( this.Region )}?expirationMinutes={ ExpirationMinutes }";
+            string authUrl = $"{IntegrationUrls.Auth( this.Region )}?expirationMinutes={ ExpirationMinutes }";
             HttpProtocolClientBuilder.Client.DefaultRequestHeaders.Add( "Authorization", $"Bearer { ApiKey }" );
             //make request
             HttpResponseMessage response = await HttpProtocolClientBuilder.Client.PostAsync( new Uri( authUrl ), null );
@@ -369,11 +409,20 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>A <see cref="Task"/></returns>
         private async Task AddAccessTokenAuthHeaderAsync( Dictionary<string, string> headers )
         {
-            AccessToken token = await GetAccessTokenAsync();
-            if ( token.GetAuthHeader().TryGetValue( "Authorization", out string authValue ) )
+            headers.Remove("Authorization");
+            if (Region == SupportedRegions.SelfHosted)
             {
-                headers.Remove( "Authorization" );
-                headers.Add( "Authorization", authValue );
+                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(ColleagueApiUsername + ":" + ColleagueApiPassword);
+                string token = System.Convert.ToBase64String(bytes);
+                headers.Add("Authorization", "Basic " + token);
+            }
+            else
+            {
+                AccessToken token = await GetAccessTokenAsync();
+                if (token.GetAuthHeader().TryGetValue("Authorization", out string authValue))
+                {
+                    headers.Add("Authorization", authValue);
+                }
             }
         }
 

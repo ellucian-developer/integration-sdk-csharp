@@ -124,6 +124,18 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
 
         }
+        /// <summary>
+        /// Constructs an EthosProxyClient using the given Colleague API URL and credentials.
+        /// </summary>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="client">A <see cref="System.Net.Http.HttpClient"/>.</param>
+        public EthosProxyClient(string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword, HttpClient client)
+            : base(colleagueApiUrl, colleagueApiUsername, colleagueApiPassword, client)
+        {
+
+        }
 
         #region POST
 
@@ -163,7 +175,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 );
             }
             var headers = BuildHeadersMap( version );
-            string url = EthosIntegrationUrls.Api( Region, resourceName, null );
+            string url = IntegrationUrls.Api( Region, resourceName, null );
             return await base.PostAsync( headers, url, requestBody );
         }
 
@@ -245,7 +257,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             }
 
             var headers = BuildHeadersMap( version );
-            string url = EthosIntegrationUrls.Api( Region, resourceName, resourceId );
+            string url = IntegrationUrls.Api( Region, resourceName, resourceId );
             return await base.PutAsync( headers, url, requestBody );
         }
 
@@ -311,7 +323,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 );
             }
             var headers = BuildHeadersMap( null );
-            string url = EthosIntegrationUrls.Api( Region, resourceName, id );
+            string url = IntegrationUrls.Api( Region, resourceName, id );
             await base.DeleteAsync( headers, url );
         }
 
@@ -553,7 +565,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
 
             var version = DEFAULT_VERSION;
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{ EthosIntegrationUrls.Api( Region, resourceName ) }";
+            string url = $"{IntegrationUrls.Api( Region, resourceName ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -570,7 +582,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
 
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{ EthosIntegrationUrls.Api( Region, resourceName ) }";
+            string url = $"{IntegrationUrls.Api( Region, resourceName ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -618,7 +630,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
 
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{ EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize ) }";
+            string url = $"{IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -1341,7 +1353,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             }
 
             var headersMap = BuildHeadersMap( version );
-            string url = EthosIntegrationUrls.Api( Region, resourceName, id );
+            string url = IntegrationUrls.Api( Region, resourceName, id );
             EthosResponse ethosResponse = await GetAsync( headersMap, url );
             return ethosResponse;
         }
@@ -1616,11 +1628,11 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 string url;
                 if ( string.IsNullOrWhiteSpace( filter ) )
                 {
-                    url = EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
+                    url = IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
                 }
                 else
                 {
-                    url = EthosIntegrationUrls.ApiFilterPaging( Region, resourceName, filter, offset, pageSize );
+                    url = IntegrationUrls.ApiFilterPaging( Region, resourceName, filter, offset, pageSize );
                 }
                 EthosResponse response = await GetAsync( headers, url );
                 ethosResponseList.Add( response );
@@ -1667,7 +1679,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 {
                     break;
                 }
-                string url = EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
+                string url = IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
                 EthosResponse response = await GetAsync( headers, url );
                 ethosResponseList.Add( response );
                 offset += pageSize;
@@ -1721,7 +1733,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 {
                     pageSize = rowsRemaining;
                 }
-                string url = EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
+                string url = IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
                 EthosResponse response = await GetAsync( headers, url );
                 ethosResponseList.Add( response );
                 offset += pageSize;

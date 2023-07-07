@@ -123,8 +123,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>An ColleagueWebApiProxyClient using the given Colleague credentials.</returns>
         public ColleagueWebApiProxyClient BuildColleagueWebApiProxyclient()
         {
-            //TODO
-            return null;
+            return new ColleagueWebApiProxyClient(ColleagueApiUrl, ColleagueApiUsername, ColleagueApiPassword, builder.Client);
         }
 
         /// <summary>

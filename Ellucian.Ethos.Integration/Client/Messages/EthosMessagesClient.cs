@@ -102,7 +102,7 @@ namespace Ellucian.Ethos.Integration.Client.Messages
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add( "Accept", cnType );
 
-            EthosResponse response = await GetAsync( headers, EthosIntegrationUrls.Consume( Region, lastProcessedID, limit ) );
+            EthosResponse response = await GetAsync( headers, IntegrationUrls.Consume( Region, lastProcessedID, limit ) );
             return new EthosResponseConverter().ToCNList( response );
         }
 
@@ -113,7 +113,7 @@ namespace Ellucian.Ethos.Integration.Client.Messages
         /// <returns>The number of available messages in the application's queue.</returns>
         public async Task<int> GetNumAvailableMessagesAsync()
         {
-            EthosResponse response = await HeadAsync( EthosIntegrationUrls.Consume( Region, -1, -1 ) );
+            EthosResponse response = await HeadAsync(IntegrationUrls.Consume( Region, -1, -1 ) );
             string remaining = response.GetHeader( "x-remaining" );
             if ( int.TryParse( remaining, out int numMessages ) )
             {

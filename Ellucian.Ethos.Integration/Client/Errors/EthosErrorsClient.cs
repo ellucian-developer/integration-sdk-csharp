@@ -65,7 +65,7 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         public async Task<EthosResponse> GetAsync()
         {
             Dictionary<string, string> headers = BuildHeadersMap();
-            return await base.GetAsync( headers, EthosIntegrationUrls.Errors( Region ) );
+            return await base.GetAsync( headers, IntegrationUrls.Errors( Region ) );
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Ellucian.Ethos.Integration.Client.Errors
             }
 
             Dictionary<string, string> headers = BuildHeadersMap();
-            return await base.GetAsync( headers, EthosIntegrationUrls.Errors( Region ) + "/" + id );
+            return await base.GetAsync( headers, IntegrationUrls.Errors( Region ) + "/" + id );
         }
 
         /// <summary>
@@ -351,7 +351,7 @@ namespace Ellucian.Ethos.Integration.Client.Errors
             int numPages = CalculateNumberOfPages( totalErrorCount, pageSize, offset );
             for ( int index = 0; index < numPages; index++ )
             {
-                string url = EthosIntegrationUrls.ErrorsPaging( Region, offset, pageSize );
+                string url = IntegrationUrls.ErrorsPaging( Region, offset, pageSize );
                 EthosResponse response = await GetAsync( headersMap, url );
                 ethosResponseList.Add( response );
                 offset += pageSize;
@@ -397,7 +397,7 @@ namespace Ellucian.Ethos.Integration.Client.Errors
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers [ "Accept" ] = errorType;
             string errorRequestBody = JsonConvert.SerializeObject( newError );
-            var response = await base.PostAsync( headers, EthosIntegrationUrls.Errors( Region ), errorRequestBody );
+            var response = await base.PostAsync( headers, IntegrationUrls.Errors( Region ), errorRequestBody );
             return response;
         }
 
@@ -410,7 +410,7 @@ namespace Ellucian.Ethos.Integration.Client.Errors
         /// server certificate validation or timeout.</exception>
         public async Task DeleteAsync( string id )
         {
-            await base.DeleteAsync( new Dictionary<string, string>(), EthosIntegrationUrls.Errors( Region ) + "/" + id );
+            await base.DeleteAsync( new Dictionary<string, string>(), IntegrationUrls.Errors( Region ) + "/" + id );
         }
 
         /// <summary>
