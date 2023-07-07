@@ -132,8 +132,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>An ColleagueWebApiFilterQueryClient using the given Colleague credentials.</returns>
         public ColleagueWebApiFilterQueryClient BuildColleagueWebApiFilterQueryClient()
         {
-            // TODO
-            return null;
+            return new ColleagueWebApiFilterQueryClient(ColleagueApiUrl, ColleagueApiUsername, ColleagueApiPassword, builder.Client);
         }
     }
 }

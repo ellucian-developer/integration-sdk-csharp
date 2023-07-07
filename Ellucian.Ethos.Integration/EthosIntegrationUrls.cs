@@ -247,12 +247,15 @@ namespace Ellucian.Ethos.Integration
         /// </summary>
         /// <param name="region">The appropriate supported region to build the URL with.</param>
         /// <param name="urlEnd">The correct path for the type of API the URL will be used with (/api for Proxy API URL,</param>
-        /// <param name="colleagueApiUrl">If provided, swaps out the MAIN_BASE_URL for the ColleagueApiUrl,</param>
-        /// <see cref="Auth(SupportedRegions)"/> for Token API URL, etc.).</param>
+        /// <see cref="Auth(SupportedRegions)"> for Token API URL, etc.).</see>
         /// <returns></returns>
         private string BuildUrl( SupportedRegions region, string urlEnd)
         {
-            return $"{MAIN_BASE_URL}{RegionUrlPostFix [ region ]}{urlEnd}";
+            return region == SupportedRegions.SelfHosted
+                ? $"{MAIN_BASE_URL}"
+                : $"{MAIN_BASE_URL}{RegionUrlPostFix[region]}{urlEnd}";
+
+            // return $"{MAIN_BASE_URL}{RegionUrlPostFix [ region ]}{urlEnd}";
         }
 
         /// <summary>

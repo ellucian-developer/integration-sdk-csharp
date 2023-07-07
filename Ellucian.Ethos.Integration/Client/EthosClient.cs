@@ -139,6 +139,9 @@ namespace Ellucian.Ethos.Integration.Client
                 throw new ArgumentNullException($"The '{nameof(client)}' parameter is required.");
             }
             ApiKey = null;
+            this.ColleagueApiUrl = colleagueApiUrl;
+            this.ColleagueApiUsername = colleagueApiUsername;
+            this.ColleagueApiPassword = colleagueApiPassword;
             this.HttpProtocolClientBuilder ??= new HttpProtocolClientBuilder(client);
             EthosResponseBuilder ??= new EthosResponseBuilder();
         }
