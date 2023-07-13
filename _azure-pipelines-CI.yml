@@ -1,0 +1,76 @@
+# Build Pipeline - Continuous Integration
+# if trigger is not merge commit from pull request, then pipeline will abort
+
+trigger:
+- main
+
+pr: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: PowerShell@2
+  displayName: Get Pull Request
+  inputs:
+    targetType: 'inline'
+    script: |
+      try {
+        $headers = @{ "Authorization" = "Bearer $(GitHubToken)"}
+        $uri = 'https://api.github.com/repos/$(Build.Repository.Name)/commits/$(Build.SourceVersion)/pulls'
+        $response = Invoke-WebRequest -Uri $uri -Headers $headers -Method Get
+        $content = $response.content | ConvertFrom-Json
+        if (-not($content -and $content[0] -and $content[0].id)) {
+          throw "** abort non-PR commit"
+        }
+      } catch {
+        Write-Host "Error getting pull request | $_"
+        exit 1
+      }
+
+- task: NuGetToolInstaller@1
+  displayName: Install NuGet Tool
+
+- task: NuGetCommand@2
+  displayName: Restore Solution
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: SonarQubePrepare@5
+  displayName: SonarQube - Prepare Analysis Configuration
+  inputs:
+    SonarQube: 'SonarQube'
+    scannerMode: 'MSBuild'
+    projectKey: 'Ethos-Integration-SDK'
+
+- task: VSBuild@1
+  displayName: Build Solution
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: SonarQubeAnalyze@5
+  displayName: SonarQube - Run Code Analysis
+
+- task: SonarQubePublish@5
+  displayName: SonarQube - Publish Quality Gate Result
+  inputs:
+    pollingTimeoutSec: '300'
+
+- task: sonar-buildbreaker@8
+  inputs:
+    SonarQube: 'SonarQube'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Pipeline Artifacts
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
