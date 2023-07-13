@@ -1,0 +1,65 @@
+name: Build and Publish to Azure Artifacts
+
+on:
+  release:
+    types: [published]
+
+env:
+  AZURE_ARTIFACTS_FEED_URL: https://pkgs.dev.azure.com/intuitionps/01c84548-9607-4655-80e7-6ad95390a38c/_packaging/private/nuget/v3/index.json  
+  BUILD_CONFIGURATION: 'Release'    # set this to the appropriate build configuration
+  DOTNET_VERSION: '6.x' 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo
+      - uses: actions/checkout@v2
+
+      # Setup .NET Core SDK
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # Run dotnet build and test
+      - name: dotnet build and test
+        run: |
+          dotnet restore
+          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
+          dotnet test --configuration '${{ env.BUILD_CONFIGURATION }}'
+
+  az-artifacts-build-and-deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo
+      - uses: actions/checkout@v2
+      
+      # Extract git version
+      - name: Extract git tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      # Setup .NET Core SDK
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          source-url: ${{ env.AZURE_ARTIFACTS_FEED_URL }}
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.AZURE_ARTIFACTS_PAT }} 
+
+      # Run dotnet build and package
+      - name: dotnet build and publish
+        run: |
+          dotnet restore
+          dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}' /p:Version=${{ github.event.release.tag_name }}
+          dotnet pack -c '${{ env.BUILD_CONFIGURATION }}'
+
+      # Publish the package to Azure Artifacts
+      - name: 'dotnet publish to Azure Artifacts'
+        run: dotnet nuget push --api-key AzureArtifacts Ellucian.Ethos.Integration/bin/Release/*.nupkg
+
+      # Publish the package to GitHub Packages
+      - name: 'dotnet publish to GitHub Packages'
+        run: dotnet nuget push --api-key ${{ secrets.GH_PACKAGES_PAT }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json Ellucian.Ethos.Integration/bin/Release/*.nupkg
