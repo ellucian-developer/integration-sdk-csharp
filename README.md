@@ -1,4 +1,5 @@
 # Ellucian Ethos Integration SDK
+> Modifications by Intuition Payment Solutions
 
 Ethos Integration SDK provides utilities and libraries that make it easier for developers to quickly start building Ethos-based integrations.
 
