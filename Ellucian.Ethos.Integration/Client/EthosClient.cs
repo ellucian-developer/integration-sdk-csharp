@@ -28,7 +28,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// </summary>
         private string ApiKey { get; }
 
-        protected EthosIntegrationUrls IntegrationUrls = new EthosIntegrationUrls();
+        // protected EthosEthosIntegrationUrls EthosIntegrationUrls = new EthosEthosIntegrationUrls();
 
         // Only used by ColleagueWebAPIProxyClients
         /// <summary>
@@ -218,7 +218,7 @@ namespace Ellucian.Ethos.Integration.Client
         /// <exception cref="HttpRequestException">Returns <see cref="HttpRequestException"/> exception if the request fails.</exception>
         private async Task<AccessToken> GetNewTokenAsync()
         {
-            string authUrl = $"{IntegrationUrls.Auth( this.Region )}?expirationMinutes={ ExpirationMinutes }";
+            string authUrl = $"{EthosIntegrationUrls.Auth( this.Region )}?expirationMinutes={ ExpirationMinutes }";
             HttpProtocolClientBuilder.Client.DefaultRequestHeaders.Add( "Authorization", $"Bearer { ApiKey }" );
             //make request
             HttpResponseMessage response = await HttpProtocolClientBuilder.Client.PostAsync( new Uri( authUrl ), null );

@@ -175,7 +175,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 );
             }
             var headers = BuildHeadersMap( version );
-            string url = IntegrationUrls.Api( Region, resourceName, null );
+            string url = EthosIntegrationUrls.Api( Region, resourceName, null );
             return await base.PostAsync( headers, url, requestBody );
         }
 
@@ -257,7 +257,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             }
 
             var headers = BuildHeadersMap( version );
-            string url = IntegrationUrls.Api( Region, resourceName, resourceId );
+            string url = EthosIntegrationUrls.Api( Region, resourceName, resourceId );
             return await base.PutAsync( headers, url, requestBody );
         }
 
@@ -323,7 +323,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 );
             }
             var headers = BuildHeadersMap( null );
-            string url = IntegrationUrls.Api( Region, resourceName, id );
+            string url = EthosIntegrationUrls.Api( Region, resourceName, id );
             await base.DeleteAsync( headers, url );
         }
 
@@ -565,7 +565,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
 
             var version = DEFAULT_VERSION;
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{IntegrationUrls.Api( Region, resourceName ) }";
+            string url = $"{EthosIntegrationUrls.Api( Region, resourceName ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -582,7 +582,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
 
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{IntegrationUrls.Api( Region, resourceName ) }";
+            string url = $"{EthosIntegrationUrls.Api( Region, resourceName ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -630,7 +630,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
 
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize ) }";
+            string url = $"{EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -1353,7 +1353,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             }
 
             var headersMap = BuildHeadersMap( version );
-            string url = IntegrationUrls.Api( Region, resourceName, id );
+            string url = EthosIntegrationUrls.Api( Region, resourceName, id );
             EthosResponse ethosResponse = await GetAsync( headersMap, url );
             return ethosResponse;
         }
@@ -1628,11 +1628,11 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 string url;
                 if ( string.IsNullOrWhiteSpace( filter ) )
                 {
-                    url = IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
+                    url = EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
                 }
                 else
                 {
-                    url = IntegrationUrls.ApiFilterPaging( Region, resourceName, filter, offset, pageSize );
+                    url = EthosIntegrationUrls.ApiFilterPaging( Region, resourceName, filter, offset, pageSize );
                 }
                 EthosResponse response = await GetAsync( headers, url );
                 ethosResponseList.Add( response );
@@ -1679,7 +1679,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 {
                     break;
                 }
-                string url = IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
+                string url = EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
                 EthosResponse response = await GetAsync( headers, url );
                 ethosResponseList.Add( response );
                 offset += pageSize;
@@ -1733,7 +1733,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 {
                     pageSize = rowsRemaining;
                 }
-                string url = IntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
+                string url = EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize );
                 EthosResponse response = await GetAsync( headers, url );
                 ethosResponseList.Add( response );
                 offset += pageSize;

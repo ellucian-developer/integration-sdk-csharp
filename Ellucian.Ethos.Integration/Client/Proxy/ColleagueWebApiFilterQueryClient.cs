@@ -34,7 +34,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             : base(colleagueApiUrl, colleagueApiUsername, colleagueApiPassword, client)
         {
             Region = Authentication.SupportedRegions.SelfHosted;
-            IntegrationUrls.MAIN_BASE_URL = colleagueApiUrl;
+            EthosIntegrationUrls.SelfHostBaseUrl = colleagueApiUrl;
         }
     }
 }

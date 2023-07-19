@@ -384,7 +384,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
             var filterStr = EncodeString( criteria );
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            EthosResponse response = await GetAsync( headers, IntegrationUrls.ApiFilter( Region, resourceName, filterStr ) );
+            EthosResponse response = await GetAsync( headers, EthosIntegrationUrls.ApiFilter( Region, resourceName, filterStr ) );
             return response;
         }
 
@@ -548,7 +548,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 throw new ArgumentNullException( $"Error: Cannot get resource '{ resourceName }' with filter map due to a null or blank filter map string." );
             }
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            EthosResponse response = await GetAsync( headers, IntegrationUrls.ApiFilter( Region, resourceName, filterMapStr ) );
+            EthosResponse response = await GetAsync( headers, EthosIntegrationUrls.ApiFilter( Region, resourceName, filterMapStr ) );
             return response;
         }
 
@@ -989,7 +989,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 );
             }
             var headers = BuildHeadersMap( version );
-            string url = IntegrationUrls.Qapi( Region, resourceName );
+            string url = EthosIntegrationUrls.Qapi( Region, resourceName );
             return await base.PostAsync( headers, url, qapiRequestBody );
         }
 
@@ -1257,7 +1257,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             decimal numPages = Math.Ceiling( ( Convert.ToDecimal( totalCount ) - Convert.ToDecimal( offset ) ) / Convert.ToDecimal( pageSize ) );
             for ( int i = 0; i < numPages; i++ )
             {
-                string url = IntegrationUrls.QapiPaging( Region, resourceName, offset, pageSize );
+                string url = EthosIntegrationUrls.QapiPaging( Region, resourceName, offset, pageSize );
                 EthosResponse response = await base.PostAsync( headers, url, qapiRequestBody );
                 ethosResponseList.Add( response );
                 offset += pageSize;
