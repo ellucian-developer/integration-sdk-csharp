@@ -37,6 +37,18 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
 
         }
+        /// <summary>
+        /// Instantiates this class using the given Colleague URL and credentials  and HttpClient.
+        /// </summary>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="client">A HttpClient. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        public EthosFilterQueryClient(string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword, HttpClient client)
+            : base(colleagueApiUrl, colleagueApiUsername, colleagueApiPassword, client)
+        {
+
+        }
 
         #region Strongly Typed GET
 

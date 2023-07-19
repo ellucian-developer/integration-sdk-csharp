@@ -26,9 +26,20 @@ namespace Ellucian.Ethos.Integration.Service
         /// Constructs this service with the given API key.
         /// </summary>
         /// <param name="apiKey">apiKey The API key used by the EthosClients of this service when obtaining an access token per request.</param>
-        protected EthosService( string apiKey )
+        protected EthosService(string apiKey)
         {
-            EthosClientBuilder = new EthosClientBuilder( apiKey );
+            EthosClientBuilder = new EthosClientBuilder(apiKey);
+        }
+
+        /// <summary>
+        /// Constructs this service with the given Colleague API and credentials.
+        /// </summary>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API.</param>
+        protected EthosService(string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword)
+        {
+            EthosClientBuilder = new EthosClientBuilder(colleagueApiUrl, colleagueApiUsername, colleagueApiPassword);
         }
 
         /// <summary>

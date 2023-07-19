@@ -28,6 +28,10 @@ namespace Ellucian.Ethos.Integration.Client
         /// </summary>
         private int? ConnectionTimeout = null;
 
+        private readonly string ColleagueApiUrl;
+        private readonly string ColleagueApiUsername;
+        private readonly string ColleagueApiPassword;
+
         /// <summary>
         /// Interface used in HttpProtocolClientBuilder.
         /// </summary>
@@ -41,6 +45,19 @@ namespace Ellucian.Ethos.Integration.Client
         {
             this.apiKey = apiKey;
             builder ??= new HttpProtocolClientBuilder( null, ConnectionTimeout );
+        }
+        /// <summary>
+        /// Constructs this class with the given Colleauge API URL/Credentials.
+        /// </summary>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API.</param>
+        public EthosClientBuilder(string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword)
+        {
+            builder ??= new HttpProtocolClientBuilder(null, ConnectionTimeout);
+            ColleagueApiUrl = colleagueApiUrl;
+            ColleagueApiUsername = colleagueApiUsername;
+            ColleagueApiPassword = colleagueApiPassword;
         }
 
         /// <summary>
@@ -97,7 +114,25 @@ namespace Ellucian.Ethos.Integration.Client
         /// <returns>An EthosFilterQueryClient using the given apiKey and timeout values.</returns>
         public EthosFilterQueryClient BuildEthosFilterQueryClient()
         {
-            return new EthosFilterQueryClient( apiKey, builder.Client );
+            return new EthosFilterQueryClient(apiKey, builder.Client);
+        }
+
+        /// <summary>
+        /// Gets an <see cref="EthosProxyClient"/> that will use the given Colleague credentials to authenticate.
+        /// </summary>
+        /// <returns>An ColleagueWebApiProxyClient using the given Colleague credentials.</returns>
+        public ColleagueWebApiProxyClient BuildColleagueWebApiProxyclient()
+        {
+            return new ColleagueWebApiProxyClient(ColleagueApiUrl, ColleagueApiUsername, ColleagueApiPassword, builder.Client);
+        }
+
+        /// <summary>
+        /// Gets an <see cref="ColleagueWebApiFilterQueryClient"/> that will use the Colleague credentials to authenticate.
+        /// </summary>
+        /// <returns>An ColleagueWebApiFilterQueryClient using the given Colleague credentials.</returns>
+        public ColleagueWebApiFilterQueryClient BuildColleagueWebApiFilterQueryClient()
+        {
+            return new ColleagueWebApiFilterQueryClient(ColleagueApiUrl, ColleagueApiUsername, ColleagueApiPassword, builder.Client);
         }
     }
 }

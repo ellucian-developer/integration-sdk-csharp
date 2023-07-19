@@ -27,6 +27,10 @@ namespace Ellucian.Ethos.Integration.Authentication
 		/// <summary>
 		/// Europe.
 		/// </summary>
-		Europe
-	}
+		Europe,
+        /// <summary>
+        /// Self-Hosted.
+        /// </summary>
+        SelfHosted
+    }
 }
