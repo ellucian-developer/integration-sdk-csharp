@@ -58,8 +58,8 @@ jobs:
 
       # Publish the package to Azure Artifacts
       - name: 'dotnet publish to Azure Artifacts'
-        run: dotnet nuget push --api-key AzureArtifacts Ellucian.Ethos.Integration/bin/Release/*.nupkg
+        run: dotnet nuget push --api-key AzureArtifacts Ellucian.Ethos.Integration/bin/Release/Ellucian.Ethos.Integration.${{ github.event.release.tag_name }}.nupkg
 
       # Publish the package to GitHub Packages
       - name: 'dotnet publish to GitHub Packages'
-        run: dotnet nuget push --api-key ${{ secrets.GH_PACKAGES_PAT }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json Ellucian.Ethos.Integration/bin/Release/*.nupkg
+        run: dotnet nuget push --api-key ${{ secrets.GH_PACKAGES_PAT }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json Ellucian.Ethos.Integration/bin/Release/Ellucian.Ethos.Integration.${{ github.event.release.tag_name }}.nupkg
