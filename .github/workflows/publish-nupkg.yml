@@ -64,8 +64,8 @@ jobs:
 
       # Publish the package to Azure Artifacts | must specify our version since the ellucian-developer/integration-sdk-csharp gets packaged as well
       - name: 'dotnet publish to Azure Artifacts'
-        run: dotnet nuget push --api-key AzureArtifacts ${{ env.PROJECT_NAME }}.${{ github.event.release.tag_name }}\bin\Release\*.nupkg
+        run: dotnet nuget push --api-key AzureArtifacts ${{ env.PROJECT_NAME }}\bin\Release\${{ env.PROJECT_NAME }}.${{ github.event.release.tag_name }}.nupkg
 
       # Publish the package to GitHub Packages | must specify our version since the ellucian-developer/integration-sdk-csharp gets packaged as well
       - name: 'dotnet publish to GitHub Packages'
-        run: dotnet nuget push --api-key ${{ secrets.GH_PACKAGES_PAT }} --source ${{ env.GITHUB_PACKAGES_URL }} ${{ env.PROJECT_NAME }}.${{ github.event.release.tag_name }}\bin\Release\*.nupkg
+        run: dotnet nuget push --api-key ${{ secrets.GH_PACKAGES_PAT }} --source ${{ env.GITHUB_PACKAGES_URL }} ${{ env.PROJECT_NAME }}\bin\Release\${{ env.PROJECT_NAME }}.${{ github.event.release.tag_name }}.nupkg
