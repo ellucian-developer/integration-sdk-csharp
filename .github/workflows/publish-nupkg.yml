@@ -1,17 +1,19 @@
-name: Build and Publish to Azure Artifacts
+name: Build and Publish to Azure Artifacts / GitHub Packages
 
 on:
   release:
     types: [published]
 
 env:
-  AZURE_ARTIFACTS_FEED_URL: https://pkgs.dev.azure.com/intuitionps/01c84548-9607-4655-80e7-6ad95390a38c/_packaging/private/nuget/v3/index.json  
+  AZURE_ARTIFACTS_FEED_URL: https://pkgs.dev.azure.com/intuitionps/01c84548-9607-4655-80e7-6ad95390a38c/_packaging/private/nuget/v3/index.json
+  GITHUB_PACKAGES_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+  PROJECT_NAME: Ellucian.Ethos.Integration
   BUILD_CONFIGURATION: 'Release'    # set this to the appropriate build configuration
-  DOTNET_VERSION: '6.x' 
-
+  DOTNET_VERSION: '6.x'
+  
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       # Checkout the repo
       - uses: actions/checkout@v2
@@ -25,13 +27,15 @@ jobs:
       # Run dotnet build and test
       - name: dotnet build and test
         run: |
+          dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} --name intuitionps --username ${{ github.actor }} --password ${{ secrets.GH_PACKAGES_PAT }}
+          dotnet nuget add source https://api.nuget.org/v3/index.json -name nugetorg
           dotnet restore
           dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}'
           dotnet test --configuration '${{ env.BUILD_CONFIGURATION }}'
 
   az-artifacts-build-and-deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       # Checkout the repo
       - uses: actions/checkout@v2
@@ -52,14 +56,16 @@ jobs:
       # Run dotnet build and package
       - name: dotnet build and publish
         run: |
+          dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} --name intuitionps --username ${{ github.actor }} --password ${{ secrets.GH_PACKAGES_PAT }}
+          dotnet nuget add source https://api.nuget.org/v3/index.json -name nugetorg
           dotnet restore
           dotnet build --configuration '${{ env.BUILD_CONFIGURATION }}' /p:Version=${{ github.event.release.tag_name }}
           dotnet pack -c '${{ env.BUILD_CONFIGURATION }}'
 
-      # Publish the package to Azure Artifacts
+      # Publish the package to Azure Artifacts | must specify our version since the ellucian-developer/integration-sdk-csharp gets packaged as well
       - name: 'dotnet publish to Azure Artifacts'
-        run: dotnet nuget push --api-key AzureArtifacts Ellucian.Ethos.Integration/bin/Release/Ellucian.Ethos.Integration.${{ github.event.release.tag_name }}.nupkg
+        run: dotnet nuget push --api-key AzureArtifacts ${{ env.PROJECT_NAME }}.${{ github.event.release.tag_name }}\bin\Release\*.nupkg
 
-      # Publish the package to GitHub Packages
+      # Publish the package to GitHub Packages | must specify our version since the ellucian-developer/integration-sdk-csharp gets packaged as well
       - name: 'dotnet publish to GitHub Packages'
-        run: dotnet nuget push --api-key ${{ secrets.GH_PACKAGES_PAT }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json Ellucian.Ethos.Integration/bin/Release/Ellucian.Ethos.Integration.${{ github.event.release.tag_name }}.nupkg
+        run: dotnet nuget push --api-key ${{ secrets.GH_PACKAGES_PAT }} --source ${{ env.GITHUB_PACKAGES_URL }} ${{ env.PROJECT_NAME }}.${{ github.event.release.tag_name }}\bin\Release\*.nupkg

@@ -1,5 +1,5 @@
 # Build Pipeline - Continuous Integration
-# if trigger is not merge commit from pull request, then pipeline will abort
+# if commit is not from a pull request, then the pipeline will abort - bypass this check by setting the SkipPullRequestCheck variable at queue time
 
 trigger:
 - main
@@ -12,41 +12,124 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 steps:
+- checkout: self
+  persistCredentials: true
+
 - task: PowerShell@2
   displayName: Get Pull Request
+  condition: and(succeeded(), eq(variables['SkipPullRequestCheck'], ''))
   inputs:
     targetType: 'inline'
     script: |
       try {
         $headers = @{ "Authorization" = "Bearer $(GitHubToken)"}
         $uri = 'https://api.github.com/repos/$(Build.Repository.Name)/commits/$(Build.SourceVersion)/pulls'
+        Write-Output "uri = $uri"
         $response = Invoke-WebRequest -Uri $uri -Headers $headers -Method Get
         $content = $response.content | ConvertFrom-Json
-        if (-not($content -and $content[0] -and $content[0].id)) {
-          throw "** abort non-PR commit"
+        # Check if the $content is not empty and iterate through each pull request
+        if (-not ($content -and $content.Count -gt 0)) {
+          Write-Host "##vso[task.logissue type=error;]Failed: Commit is not from a pull request."
+          exit 1
         }
+        $matchedPullRequest = $null
+        foreach ($pullRequest in $content) {
+          if ($pullRequest.merge_commit_sha -eq "$(Build.SourceVersion)") {
+            $matchedPullRequest = $pullRequest
+            break
+          }
+        }
+        # Check if a matching pull request was found
+        if (-not $matchedPullRequest) {
+          Write-Host "##vso[task.logissue type=error;]Failed: No pull request found with merge commit SHA = '$(Build.SourceVersion)'."
+          exit 1
+        }
+        # If a matching pull request is found, set the variables and continue
+        Write-Host "##vso[task.setvariable variable=pullRequestHeadRef;]$($matchedPullRequest.head.ref)"
+        Write-Host "##vso[task.setvariable variable=pullRequestBaseRef;]$($matchedPullRequest.base.ref)"
       } catch {
-        Write-Host "Error getting pull request | $_"
+        Write-Host "##vso[task.logissue type=error;]Error getting pull request - | $_"
         exit 1
       }
+      
+- task: PowerShell@2
+  displayName: Reset Development Branch
+  condition: and(succeeded(), eq(variables['SkipPullRequestCheck'], ''))
+  inputs:
+    targetType: 'inline'
+    script: |
+      if ("$(pullRequestHeadRef)" -eq "development" -and "$(pullRequestBaseRef)" -eq "main") {
+        # Define required headers for Azure DevOps | url is pulled from 'common' variable group in library 
+        $azureDevOpsAuthenicationHeader = @{Authorization = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$(AzureDevOpsToken)")); "Content-Type" = "application/json"}
+        # Define the base URL for Azure DevOps API
+        $azureDevOpsRequestUri = "$(AzureDevOpsBuildApiUrl)/_apis/build/definitions/$(System.DefinitionId)?api-version=7.0"
+        try {
+          $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f "", "$(GitHubToken)")))
+          # Get the current pipeline definition
+          $current_definition = Invoke-RestMethod -Method Get -Uri $azureDevOpsRequestUri -Headers $azureDevOpsAuthenicationHeader
+          # Disable build pipeline
+          $current_definition.queueStatus = "disabled"
+          $disabled_definition = $current_definition | ConvertTo-Json -Depth 100
+          Invoke-RestMethod -Method Put -Uri $azureDevOpsRequestUri -Headers $azureDevOpsAuthenicationHeader -Body $disabled_definition
+          # Perform the reset
+          git config user.email "no-reply@intuitionps.com"
+          git config user.name "intuitionps Azure DevOps"
+          git checkout development
+          if ($LASTEXITCODE -ne 0) { throw "git checkout development" }
+          git fetch origin
+          if ($LASTEXITCODE -ne 0) { throw "git fetch origin" }
+          git reset --hard origin/main
+          if ($LASTEXITCODE -ne 0) { throw "git reset --hard origin/main" }
+          git push --force origin development
+          if ($LASTEXITCODE -ne 0) { throw "git push --force origin development" }
+          Write-Host "Successfully reset development branch from main branch."
+        } catch {
+          Write-Host "##vso[task.logissue type=error;]Error resetting development branch with main branch - | $_"
+        } finally {
+          try {
+            # Get the current pipeline definition
+            $current_definition = Invoke-RestMethod -Method Get -Uri $azureDevOpsRequestUri -Headers $azureDevOpsAuthenicationHeader
+            # Enable build pipeline
+            $current_definition.queueStatus = "enabled"
+            $enabled_definition = $current_definition | ConvertTo-Json -Depth 100
+            Invoke-RestMethod -Method Put -Uri $azureDevOpsRequestUri -Headers $azureDevOpsAuthenicationHeader -Body $enabled_definition
+          } catch {
+            Write-Host "##vso[task.logissue type=error;]Error re-enabling build pipeline - | $_"
+          }
+        }
+      } else {
+        Write-Host "##vso[task.logissue type=warning;]Aborted: Only reset if base branch is 'main' and head branch is 'development'."
+      }
+    ignoreLASTEXITCODE: true
 
 - task: NuGetToolInstaller@1
   displayName: Install NuGet Tool
+
+- task: Cache@2
+  displayName: Cache NuGet packages
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+    restoreKeys: |
+       nuget | "$(Agent.OS)"
+       nuget
+    path: '$(NUGET_PACKAGES)'
 
 - task: NuGetCommand@2
   displayName: Restore Solution
   inputs:
     restoreSolution: '$(solution)'
+    feedsToUse: 'select'
+    vstsFeed: '01c84548-9607-4655-80e7-6ad95390a38c/3823d26d-e8ca-40c4-a6f3-c3bd13f9658b'
 
 - task: SonarQubePrepare@5
   displayName: SonarQube - Prepare Analysis Configuration
   inputs:
     SonarQube: 'SonarQube'
     scannerMode: 'MSBuild'
-    projectKey: 'Ethos-Integration-SDK'
+    projectKey: '$(SonarQubeProjectKey)'
 
 - task: VSBuild@1
   displayName: Build Solution
@@ -64,9 +147,30 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
-- task: sonar-buildbreaker@8
+- task: PowerShell@2
+  displayName: SonarQube - Get Project Status
   inputs:
-    SonarQube: 'SonarQube'
+    targetType: 'inline'
+    script: |
+      try {
+        $headers = @{
+          "Content-Type" = "application/json"
+          "Authorization" = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$(SonarQubeToken):"))
+        }
+        $uri = 'https://ca-intuition-devops-sonarqube.azurewebsites.net/api/qualitygates/project_status?projectKey=$(SonarQubeProjectKey)&branch=$(Build.SourceBranchName)'
+        Write-Output "uri = $uri"
+        $response = Invoke-WebRequest -Uri $uri -Headers $headers -Method Get
+        $content = $response.Content | ConvertFrom-Json
+        $status = $content.projectStatus.status
+        Write-Output "SonarQube Project Status = $status"
+        if ($content.projectStatus.status -eq "ERROR") {
+          Write-Host "##vso[task.logissue type=error;]Failed: Code analysis did not pass SonarQube quality gate."
+          exit 1
+        }
+      } catch {
+        Write-Host "##vso[task.logissue type=error;]Error getting project status - | $_"
+        exit 1
+      }
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Pipeline Artifacts

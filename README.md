@@ -1,6 +1,17 @@
 # Ellucian Ethos Integration SDK
 > Modifications by Intuition Payment Solutions
 
+![Azure DevOps Release Pipeline Status](https://vsrm.dev.azure.com/intuitionps/_apis/public/Release/badge/01c84548-9607-4655-80e7-6ad95390a38c/18/46)
+
+[![Build and Publish to Azure Artifacts / GitHub Packages](https://github.com/iNtuitionPS/ethos-integration-sdk-fork/actions/workflows/publish-nupkg.yml/badge.svg)](https://github.com/iNtuitionPS/ethos-integration-sdk-fork/actions/workflows/publish-nupkg.yml)
+
+| Branch | Build Pipeline Status |
+|:---|:---|
+| `main` | <img align="center" src="https://dev.azure.com/intuitionps/iNtuition%20API%20Service%20Environment/_apis/build/status%2FBuild%20Pipeline%20-%20CI%20%5B%20Ethos%20Integration%20SDK%20%5D?branchName=main"> |
+| `developmment` | N/A |
+
+#
+
 Ethos Integration SDK provides utilities and libraries that make it easier for developers to quickly start building Ethos-based integrations.
 
 The Ethos Integration SDK for .NET allows you to easily develop applications in C# that integrate with Ellucian Ethos Integration. The SDK

@@ -1,4 +1,5 @@
 # Build Pipeline - Pull Request
+# if target branch is 'main' and source branch is not 'development', then the pipeline will abort
 
 trigger: none
 
@@ -12,23 +13,44 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Debug'
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 steps:
+- task: PowerShell@2
+  displayName: Check Target Branch
+  inputs:
+    targetType: 'inline'
+    script: |
+      if ("$(system.pullRequest.targetBranch)" -eq "main" -and "$(system.pullRequest.sourceBranch)" -ne "development") {
+        Write-Host "##vso[task.logissue type=error;]Failed: Target branch is 'main' and source branch is not 'development'."
+        exit 1
+      }
+
 - task: NuGetToolInstaller@1
   displayName: Install NuGet Tool
+
+- task: Cache@2
+  displayName: Cache NuGet packages
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+    restoreKeys: |
+       nuget | "$(Agent.OS)"
+       nuget
+    path: '$(NUGET_PACKAGES)'
 
 - task: NuGetCommand@2
   displayName: Restore Solution
   inputs:
     restoreSolution: '$(solution)'
+    feedsToUse: 'select'
+    vstsFeed: '01c84548-9607-4655-80e7-6ad95390a38c/3823d26d-e8ca-40c4-a6f3-c3bd13f9658b'
 
 - task: SonarQubePrepare@5
   displayName: Prepare Analysis Configuration
   inputs:
     SonarQube: 'SonarQube'
     scannerMode: 'MSBuild'
-    projectKey: 'Ethos-Integration-SDK'
+    projectKey: '$(SonarQubeProjectKey)'
 
 - task: VSBuild@1
   displayName: Build Solution
@@ -46,6 +68,27 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
-- task: sonar-buildbreaker@8
+- task: PowerShell@2
+  displayName: SonarQube - Get Project Status
   inputs:
-    SonarQube: 'SonarQube'
+    targetType: 'inline'
+    script: |
+      try {
+        $headers = @{
+          "Content-Type" = "application/json"
+          "Authorization" = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$(SonarQubeToken):"))
+        }
+        $uri = 'https://ca-intuition-devops-sonarqube.azurewebsites.net/api/qualitygates/project_status?projectKey=$(SonarQubeProjectKey)&pullRequest=$(system.pullRequest.pullRequestNumber)'
+        Write-Output "uri = $uri"
+        $response = Invoke-WebRequest -Uri $uri -Headers $headers -Method Get
+        $content = $response.Content | ConvertFrom-Json
+        $status = $content.projectStatus.status
+        Write-Output "SonarQube Project Status = $status"
+        if ($content.projectStatus.status -eq "ERROR") {
+          Write-Host "##vso[task.logissue type=error;]Failed: Code analysis did not pass SonarQube quality gate."
+          exit 1
+        }
+      } catch {
+        Write-Host "##vso[task.logissue type=error;]Error getting project status - | $_"
+        exit 1
+      }
