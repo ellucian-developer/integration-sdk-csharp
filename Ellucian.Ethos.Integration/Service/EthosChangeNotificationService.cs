@@ -35,7 +35,20 @@ namespace Ellucian.Ethos.Integration.Service
         /// This constructor is only called from the inner Builder class.
         /// </summary>
         /// <param name="apiKey">A <see cref="Guid"/> api key.</param>
-        private EthosChangeNotificationService( string apiKey ) : this( new EthosClientBuilder( apiKey ) )
+        private EthosChangeNotificationService(string apiKey)
+            : this( new EthosClientBuilder(apiKey))
+        {
+
+        }
+
+        /// <summary>
+        /// Instantiates this service class with Colleague API and credentials.
+        /// </summary>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API.</param>
+        private EthosChangeNotificationService(string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword)
+            : this( new EthosClientBuilder(colleagueApiUrl, colleagueApiUsername, colleagueApiPassword))
         {
 
         }
@@ -333,10 +346,23 @@ namespace Ellucian.Ethos.Integration.Service
         /// <param name="action">Actions delegate.</param>
         /// <param name="apiKey">A <see cref="Guid"/> api key.</param>
         /// <returns>An instance of the EthosChangeNotificationService.</returns>
-        public static EthosChangeNotificationService Build( Action<EthosChangeNotificationService> action, string apiKey )
+        public static EthosChangeNotificationService Build( Action<EthosChangeNotificationService> action, string apiKey)
         {
-            EthosChangeNotificationService ethosChangeNotificationService = new EthosChangeNotificationService( apiKey );
+            EthosChangeNotificationService ethosChangeNotificationService = new EthosChangeNotificationService(apiKey);
             action( ethosChangeNotificationService );
+            return ethosChangeNotificationService;
+        }
+        /// <summary>
+        /// Builds an instance of the EthosChangeNotificationService with the given ethosClientBuilder and any resource version overrides.
+        /// </summary>
+        /// <param name="action">Actions delegate.</param>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API.</param>
+        public static EthosChangeNotificationService Build(Action<EthosChangeNotificationService> action, string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword)
+        {
+            EthosChangeNotificationService ethosChangeNotificationService = new EthosChangeNotificationService(colleagueApiUrl, colleagueApiUsername, colleagueApiPassword);
+            action(ethosChangeNotificationService);
             return ethosChangeNotificationService;
         }
 

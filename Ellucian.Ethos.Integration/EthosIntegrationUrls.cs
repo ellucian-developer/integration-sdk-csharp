@@ -33,6 +33,9 @@ namespace Ellucian.Ethos.Integration
         /// <item>
         /// <description>AUSTRALIA: .com.au</description>
         /// </item>
+        /// <item>
+        /// <description>SELF-HOSTED</description>
+        /// </item>
         /// </list>
         /// </summary>
         private static readonly Dictionary<dynamic, string> RegionUrlPostFix = new Dictionary<dynamic, string>
@@ -40,11 +43,29 @@ namespace Ellucian.Ethos.Integration
             [ SupportedRegions.US ] = ".com",
             [ SupportedRegions.Canada ] = ".ca",
             [ SupportedRegions.Europe ] = ".ie",
-            [ SupportedRegions.Australia ] = ".com.au"
+            [ SupportedRegions.Australia ] = ".com.au",
+            [ SupportedRegions.SelfHosted ] = ""
         };
 
+
+#pragma warning disable S1075
+        const string MAIN_ETHOS_BASE_URL = "https://integrate.elluciancloud";
+#pragma warning restore S1075
+
+        /// <summary>The override for self-hosted ERP clients.</summary>
+        public static string SelfHostBaseUrl { get; set; } = "";
+
         ///<summary>The main domain for Ethos Integration.</summary>
-        private const string MAIN_BASE_URL = "https://integrate.elluciancloud";
+        public static string MAIN_BASE_URL
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(SelfHostBaseUrl))
+                    return MAIN_ETHOS_BASE_URL;
+
+                return SelfHostBaseUrl;
+            }
+        }
 
         /// <summary>
         /// The base URL for getting Api result(s) in Ethos Integration.
@@ -55,13 +76,13 @@ namespace Ellucian.Ethos.Integration
         /// <returns>A string value containing the URL to use for interacting with Ethos Integration Proxy APIs.</returns>
         public static string Api( SupportedRegions region, string resource, string id = "" )
         {
-            string url = BuildUrl( region, "/api" );
-            if ( !string.IsNullOrWhiteSpace( resource ) )
+            string url = BuildUrl(region, "/api");
+            if (!string.IsNullOrWhiteSpace(resource))
             {
-                url += ( "/" + resource );
-                if ( !string.IsNullOrWhiteSpace( id ) )
+                url += ("/" + resource);
+                if (!string.IsNullOrWhiteSpace(id))
                 {
-                    url += ( "/" + id );
+                    url += ("/" + id);
                 }
             }
             return url;
@@ -245,12 +266,14 @@ namespace Ellucian.Ethos.Integration
         ///  Builds the URL with the mainBaseUrl, the supported region, and the correct path.
         /// </summary>
         /// <param name="region">The appropriate supported region to build the URL with.</param>
-        /// <param name="urlEnd">The correct path for the type of API the URL will be used with (/api for Proxy API URL,
-        /// <see cref="Auth(SupportedRegions)"/> for Token API URL, etc.).</param>
+        /// <param name="urlEnd">The correct path for the type of API the URL will be used with (/api for Proxy API URL,</param>
+        /// <see cref="Auth(SupportedRegions)"> for Token API URL, etc.).</see>
         /// <returns></returns>
-        private static string BuildUrl( SupportedRegions region, string urlEnd )
+        private static string BuildUrl( SupportedRegions region, string urlEnd)
         {
-            return $"{MAIN_BASE_URL}{RegionUrlPostFix [ region ]}{urlEnd}";
+            return region == SupportedRegions.SelfHosted
+                ? $"{MAIN_BASE_URL}"
+                : $"{MAIN_BASE_URL}{RegionUrlPostFix[region]}{urlEnd}";
         }
 
         /// <summary>

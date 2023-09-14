@@ -124,6 +124,18 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         {
 
         }
+        /// <summary>
+        /// Constructs an EthosProxyClient using the given Colleague API URL and credentials.
+        /// </summary>
+        /// <param name="colleagueApiUrl">The URL to the Colleague API instance. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiUsername">The username used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="colleagueApiPassword">The password used to connect to the Colleague API. If it is null/empty, then an <see cref="ArgumentNullException"/> will be thrown.</param>
+        /// <param name="client">A <see cref="System.Net.Http.HttpClient"/>.</param>
+        public EthosProxyClient(string colleagueApiUrl, string colleagueApiUsername, string colleagueApiPassword, HttpClient client)
+            : base(colleagueApiUrl, colleagueApiUsername, colleagueApiPassword, client)
+        {
+
+        }
 
         #region POST
 
@@ -553,7 +565,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
 
             var version = DEFAULT_VERSION;
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{ EthosIntegrationUrls.Api( Region, resourceName ) }";
+            string url = $"{EthosIntegrationUrls.Api( Region, resourceName ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -570,7 +582,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
 
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{ EthosIntegrationUrls.Api( Region, resourceName ) }";
+            string url = $"{EthosIntegrationUrls.Api( Region, resourceName ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }
@@ -618,7 +630,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
             if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
 
             Dictionary<string, string> headers = BuildHeadersMap( version );
-            string url = $"{ EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize ) }";
+            string url = $"{EthosIntegrationUrls.ApiPaging( Region, resourceName, offset, pageSize ) }";
             EthosResponse response = await GetAsync( headers, url );
             return response;
         }

@@ -113,7 +113,7 @@ namespace Ellucian.Ethos.Integration.Client.Messages
         /// <returns>The number of available messages in the application's queue.</returns>
         public async Task<int> GetNumAvailableMessagesAsync()
         {
-            EthosResponse response = await HeadAsync( EthosIntegrationUrls.Consume( Region, -1, -1 ) );
+            EthosResponse response = await HeadAsync(EthosIntegrationUrls.Consume( Region, -1, -1 ) );
             string remaining = response.GetHeader( "x-remaining" );
             if ( int.TryParse( remaining, out int numMessages ) )
             {
